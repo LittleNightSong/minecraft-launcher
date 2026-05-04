@@ -1,0 +1,38 @@
+tags:
+  VersionInfo:
+    - host: piston-meta.mojang.com
+  #    - no-allow:
+  #        path-startswith: v1/products
+  
+  Assets:
+    - host: resources.download.minecraft.net
+
+  Libraries:
+    - host: libraries.minecraft.net
+
+mirrors:
+  BMCLAPI:
+    - replace:
+        tags: VersionInfo
+        old: https://piston-meta.mojang.com
+        new: https://bmclapi2.bangbang93.com
+
+    - replace:
+        tags: Libraries
+        old: https://libraries.minecraft.net
+        new: https://bmclapi2.bangbang93.com/maven
+
+    - replace:
+        tags: Assets
+        old: https://resources.download.minecraft.net
+        new: https://bmclapi2.bangbang93.com/assets
+
+methods:
+  - version_manifest:
+      url: https://piston-meta.mojang.com/mc/game/version_manifest_v2.json
+  - asset_index:
+      url: https://piston-meta.mojang.com/v1/packages/${path}
+  - asset:
+      url: https://resources.download.minecraft.net/${hash_prefix}/${hash}
+  - library:
+      url: https://libraries.minecraft.net/${path}

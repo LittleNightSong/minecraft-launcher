@@ -1,0 +1,36 @@
+[project]
+name = "minecraft-launcher"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.14"
+dependencies = [
+    "flufl-i18n>=6.0.0",
+    "furl>=2.1.4",
+    "hydrogenlib-core>=0.7.0",
+    "hydrogenlib-reimporter>=14",
+    "ijson>=3.5.0",
+    "loguru>=0.7.3",
+    "msgspec>=0.20.0",
+    "niquests>=3.18.2",
+    "orjson>=3.11.7",
+    "platformdirs>=4.9.6",
+    "prompt-toolkit==3.0.52",
+    "psutil>=7.2.2",
+    "pybind11>=3.0.4",
+    "pyyaml>=6.0.3",
+    "typeguard>=4.5.1",
+    "typer~=0.25",
+    "windows-curses>=2.4.2",
+    "winloop>=0.5.0",
+]
+
+[tool.uv]
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[dependency-groups]
+dev = [
+    "rich>=14.3.3",
+]
