@@ -1,3 +1,5 @@
+import shlex
+
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
@@ -6,7 +8,9 @@ from prompt_toolkit.shortcuts import CompleteStyle
 from typer import Typer
 
 from app.common.config import USER_STATE_DIR
+from app.i18n import tr
 from app.interfaces.command import typer_app
+from app.interfaces.command.common import console
 
 
 def shell_main(app: Typer):
@@ -30,6 +34,12 @@ def shell_main(app: Typer):
         if command == 'exit':
             break
 
+        try:
+            command_args = shlex.split(command)
+            app(command_args)
+        except SystemExit as e:
+            if e.code != 0:
+                console.print(tr("命令执行失败"))
 
 if __name__ == '__main__':
     shell_main(typer_app)

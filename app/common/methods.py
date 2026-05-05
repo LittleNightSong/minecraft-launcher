@@ -1,4 +1,6 @@
 import functools
+import os
+import shutil
 
 import orjson
 
@@ -47,62 +49,50 @@ def listpath(obj, *path):
 
     return obj
 
-# except KeyError as e:
-#     trace = []
-#     error_key = e
-#     obj = original_obj
-#     try:
-#         for part in path.split('.'):
-#             if not part:
-#                 continue
-#
-#             trace.append(obj)
-#             obj = obj[part]
-#     except KeyError as e:
-#         pass
-#
-#     logger.error(
-#         f"向对象{original_obj}请求 {path} 时出现问题:\n"
-#         f"parts: {path.split('.')}\n"
-#         f"trace: {trace}, error_key: {error_key}"
-#     )
 
-class Object:
-    __slots__ = ['_dct']
+def format_args(args, kwargs):
+    parts = [*map(repr, args), *[f"{k}={v!r}" for k, v in kwargs.items()]]
+    return '(' + ', '.join(parts) + ')'
 
-    def __init__(self, dct):
-        self._dct = dct
 
-    def __getattr__(self, name):
-        value = self._dct[name]
-        if isinstance(value, dict):
-            return Object(value)
-        return value
+def trace(maybe_func=None, *, hide_return=False, hide_args=False):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                value = func(*args, **kwargs)
+            finally:
+                args_ = format_args(args, kwargs) if not hide_args else '...'
+                return_value = repr(value if 'value' in locals() else '<Error>') if not hide_return else '<Not Trace>'
 
-    def __setattr__(self, key, value):
-        if key in self.__slots__:
-            super().__setattr__(key, value)
-        self._dct[key] = value
+                print(f"TRACE {func.__name__}{args_} -> {return_value}")
 
-    def __getitem__(self, item):
-        return self._dct[item]
+            if 'value' in locals():
+                return value
+            return None
 
-    def __setitem__(self, key, value):
-        self._dct[key] = value
+        return wrapper
 
-    def dotpath(self, path):
-        return dotpath(self._dct, path)
+    return decorator if maybe_func is None else decorator(maybe_func)
 
-    def xpath(self, path):
-        return xpath(self._dct, path)
 
-    def get(self, path, default=None, *, method='dot'):
-        try:
-            if method == 'dot':
-                return dotpath(self._dct, path)
-            elif method == 'xpath':
-                return xpath(self._dct, path)
-            else:
-                raise NotImplementedError("method not supported")
-        except KeyError:
-            return default
+def hardlink_copy(src: str, dest: str):
+    """硬链接复制函数"""
+    os.link(src, dest)
+
+
+def fastcopy(src: os.PathLike[str], dest: os.PathLike[str]):
+    src = os.path.realpath(src)
+    dest = os.path.realpath(dest)
+
+    if not os.path.isdir(src):
+        raise NotADirectoryError(src)
+
+    # 选择复制函数
+    if os.stat(src).st_dev != os.stat(dest).st_dev:
+        copy_func = shutil.copy2  # 不同设备用完整复制
+    else:
+        copy_func = hardlink_copy  # 同一设备用硬链接
+
+    # 使用 copytree 的 dirs_exist_ok (Python 3.8+)
+    shutil.copytree(src, dest, copy_function=copy_func, dirs_exist_ok=True)

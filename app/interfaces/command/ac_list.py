@@ -1,111 +1,116 @@
-import builtins
-import os
 from typing import Literal
 
-import rich.table
 import typer
-from rich.columns import Columns
+from rich.panel import Panel
 
 from app.common.concurrent_ import as_sync
-from app.i18n.translator import trs, tr
+from app.i18n.translator import tr
 from app.interfaces.command.ac_install import find_repo
-from app.interfaces.command.common import typer_app, console, session
+from app.interfaces.command.common import typer_app, console
 from app.interfaces.command.methods import get_version_manifest
+from app.minecraft.version_parser import MinecraftVersion
 from app.resources.instance import InstanceDirectory
 from app.resources.repository import Repository
 
 
-def split_list(lst, n):
-    """
-    将列表平分成 n 份
-
-    Args:
-        lst: 要分割的列表
-        n: 分割的份数
-
-    Returns:
-        包含 n 个子列表的列表
-    """
-    if n <= 0:
-        raise ValueError("份数必须大于0")
-
-    k, m = divmod(len(lst), n)
-    return [lst[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
-
-
-def new_table():
-    return rich.table.Table(*trs("版本", "名称", "位置"))
+# @trace
+def get_version_without_patch(version: MinecraftVersion):
+    match version.type:
+        case x if x in {'release', 'pre', 'snapshot', 'rc'}:
+            return x, version.major, version.minor
+        case 'snapshot(legacy)':
+            return version.year
+        case _:
+            return version.version
 
 
 @typer_app.command()
 @as_sync
 async def list(
+        version=None,
         *,
         online: bool = False,
         repo: str | None = typer.Option(None, '-r', '--repo'),
-        tables: int | None = typer.Option(2, '-t', "--tables"),
-        type: Literal['release', 'snapshot', 'all'] = typer.Option('release', '-T', "--type")
+        type: Literal['release', 'snapshot', 'all'] = typer.Option('release', '-t', "--type"),
+        full: bool = typer.Option(False, '-f', '--full')
 ):
-    repo = find_repo(repo)
-    mapping = None
-    minecraft = None
+    repo = find_repo(repo, ask=False)
+    if repo is None:
+        console.print(f'[red]{tr("错误：无法找到且没有指定储存库")}[/red]')
 
-    if repo is not None:
-        minecraft = Repository(repo)
-        mapping = minecraft.versions.mapping
-
-    info_list = []
+    minecraft = Repository(repo)
 
     if online:
-        async with session:
-            manifest = await get_version_manifest()
+        manifest = await get_version_manifest()
+    else:
+        manifest = {'versions': minecraft.versions.instances(skip_broken=False)}
 
-        versions = manifest['versions']
-        for ver in versions:
-            id = ver['id']
+    if version is None and online:
+        latest = manifest['latest']
+        console.print(Panel(
+            f" [green]*[/green] Release  [bold]{latest['release']}[/bold]\n"
+            f" [green]*[/green] Snapshot [bold]{latest['snapshot']}[/bold]",
+            title=tr("最新版"), title_align='left'
+        ))
 
-            if type != 'all' and type != ver['type']:
+    record = set()
+    version_groups = {
+        'rc': [],
+        'pre': [],
+        'snapshot': [],
+        'release': [],
+        'april fool': [],
+        'broken': [],
+    }
+
+    for version in manifest['versions']:
+        if online:
+            if type != 'all' and version['type'] != type:
                 continue
 
-            version = id
+            if version['id'].startswith('b'):
+                continue
 
-            if mapping and (local_versions := mapping.get(version)):
-                local_ver: InstanceDirectory
-                for local_ver in local_versions:
-                    info_list.append((
-                        version,
-                        local_ver.name,
-                        os.sep + local_ver.path.relative_to(minecraft.path).__fspath__()
-                    ))
-                    version = ''
-            else:
-                info_list.append((version, tr("[green] 可下载 [/green]"), None))
+        elif isinstance(version, InstanceDirectory) and not version.check():
+            version_groups['broken'].append(version)
+            continue
 
-    else:
-        if repo is None:
-            console.print(tr("[red]未指定本地储存库位置，无法列出版本[/red]"))
-            console.print(tr("[red]如果你想在线浏览版本列表，可以加上[blue] --online [/blue]标志"))
-            raise typer.Abort()
+        mc_version = MinecraftVersion(version['id'])
+        if not full and online:
+            if (key := get_version_without_patch(mc_version)) in record:
+                continue
+            record.add(key)
 
-        for version, instances in reversed(minecraft.versions.mapping.items()):
-            _ = iter(instances)
-            ins = next(_)
-            info_list.append((version, ins.name, ins.path.relative_to(minecraft.path).__fspath__()))
-            for ins in _:
-                info_list.append(('', ins.name, ins.path.relative_to(minecraft.path).__fspath__()))
+        version_groups[mc_version.type.removesuffix('(legacy)')].append(mc_version)
 
-    if info_list:
-        lists = split_list(info_list, tables)
+    text_mapping = {
+        'release': tr("正式版"),
+        'april fool': tr("愚人节版本"),
+        'snapshot': tr("快照版"),
+        'rc': tr("预览版"),
+        'pre': tr("预发布版"),
+    }
 
-        # console.print(lists)
+    for type, text in text_mapping.items():
+        type = type.removesuffix("(legacy)")
+        group = version_groups[type]
+        if not group:
+            continue
 
-        # 转换成 Table
-        def convert(x):
-            t = new_table()
-            [t.add_row(*row) for row in x]
-            return t
+        console.print(Panel(
+            '\n'.join([
+                f" [green]*[/green] [bold]{v.version}[/bold]"
+                for v in group]),
+            title=text, title_align='left'
+        ))
 
-        tables = builtins.map(convert, lists)
-        console.print(Columns(tables, padding=(0, 4)))
-    else:
-        console.print(tr("没有安装的版本"))
+    if broken_versions := version_groups['broken']:
+        console.print(Panel(
+            '\n'.join([
+                f" [red]*[/red] [bold]{v.name}[/bold]"
+                for v in broken_versions
+            ]), title=tr("损坏的版本"), title_align='left'
+        ))
+
+    if not full:
+        console.print(f"\n\n[dim]{tr('仅显示每个主版本的最新子版本，如果想要完整的版本号列表，请使用 --full')}[/dim]")

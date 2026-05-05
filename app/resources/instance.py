@@ -16,11 +16,13 @@ class InstanceDirectory:
             self._desc = orjson.loads(Path(self.desc_file).read_bytes())
 
         return self._desc
+
     desc_file: Path = property(lambda self: Path(self.path / (self.path.name + '.json')))
     main_file: Path = property(lambda self: self.path / (self.path.name + '.jar'))
     id: str = property(lambda self: self.desc['id'])
     main_class: str = property(lambda self: self.desc['mainClass'])
     name: str = property(lambda self: self.path.name)
+    type: str = property(lambda self: self.desc['type'])
 
     def ensure_exists(self):
         self.path.mkdir(parents=True, exist_ok=True)
@@ -28,4 +30,5 @@ class InstanceDirectory:
     def check(self):
         return (self.path / (self.path.name + '.json')).exists()
 
-
+    def __getitem__(self, item):
+        return getattr(self, item)

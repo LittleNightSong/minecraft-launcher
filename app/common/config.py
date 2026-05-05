@@ -10,16 +10,18 @@ app_dir = platformdirs.PlatformDirs(APP_NAME, ensure_exists=True)
 USER_CONFIG_DIR = Path(app_dir.user_config_dir)
 USER_STATE_DIR = Path(app_dir.user_state_dir)
 
+
 def load():
-    config = {}
+    config = {
+        'repos': []
+    }
 
     # Load repos
-    file = USER_CONFIG_DIR / "config.json"
+    file = USER_CONFIG_DIR / "repos.json"  # TODO: Finish me
     if file.exists():
-        return orjson.loads(file.read_bytes())
+        config['repos'] = orjson.loads(file.read_bytes())
 
-    else:
-        return {}
+    return config
 
 
 cfg = load()

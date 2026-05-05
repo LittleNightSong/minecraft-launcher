@@ -11,17 +11,19 @@ dependencies = [
     "ijson>=3.5.0",
     "loguru>=0.7.3",
     "msgspec>=0.20.0",
-    "niquests>=3.18.2",
+    "niquests[http3]>=3.18.2",
     "orjson>=3.11.7",
     "platformdirs>=4.9.6",
     "prompt-toolkit==3.0.52",
     "psutil>=7.2.2",
     "pybind11>=3.0.4",
     "pyyaml>=6.0.3",
+    "rich>=15.0.0",
     "typeguard>=4.5.1",
     "typer~=0.25",
     "windows-curses>=2.4.2",
     "winloop>=0.5.0",
+    "yarl>=1.23.0",
 ]
 
 [tool.uv]

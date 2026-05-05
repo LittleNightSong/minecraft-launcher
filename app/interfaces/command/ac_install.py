@@ -1,6 +1,5 @@
 import asyncio
 import os.path
-import shutil
 import time
 from pathlib import Path
 
@@ -8,7 +7,6 @@ import psutil
 import rich.progress
 import typer
 from loguru import logger
-from orjson import orjson
 from rich.progress import TextColumn, BarColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, \
     TimeRemainingColumn
 
@@ -193,7 +191,7 @@ def find_repo(repo, ask=True):
             repo = cfg['repo']
 
         elif ask:
-            typer.confirm(tr("未发现且没有指定 Minecraft 储存库位置, 在本地创建储存库? "), abort=True)
+            typer.confirm(tr("未发现且没有指定 Minecraft 存储库位置, 在本地创建存储库? "), abort=True)
             repo = repo / '.minecraft'
             return repo
 
@@ -211,8 +209,7 @@ async def install(
         modloader: str | None = typer.Option(None, '-l', "--modloader"),
         repo: Path | None = typer.Option(None, '-r', "--repo"),
         max_threads: int = typer.Option((psutil.cpu_count() or 4) * 2, '-m', "--max-threads"),
-        max_connections: int = typer.Option(64, '-M', "--max-connections"),
-        offline: bool = typer.Option(False, '-F', "--offline"),
+        max_connections: int = typer.Option(64, '-M', "--max-connections")
 ):
     """
     安装版本
@@ -234,62 +231,35 @@ async def install(
         version = name
 
     # 创建版本实例
-    instance = minecraft.versions.instance(name)
-    if instance.check():
+    target_instance = minecraft.versions.instance(name)
+    if target_instance.check():
         typer.confirm((tr(
-            "名为 `{name}` 的实例({version})已存在，是否覆盖？", name=name, version=instance.id)),
+            "名为 `{name}` 的实例({version})已存在，是否覆盖？", name=name, version=target_instance.id)),
             abort=True
         )
     else:
-        instance.ensure_exists()
+        target_instance.ensure_exists()
 
     async with session:
-        if not offline:  # 离线安装时无法从官方源获取清单等信息
-            manifest = await get_version_manifest()
+        manifest = await get_version_manifest()
 
-            # 特殊名称处理
-            if name == 'latest':
-                name = dotpath(manifest, 'latest.release')
-            elif name == "latest-snapshot":
-                name = dotpath(manifest, 'latest.snapshot')
+        # 特殊版本号处理
+        if version == 'latest':
+            version = dotpath(manifest, 'latest.release')
+        elif version == "latest-snapshot":
+            version = dotpath(manifest, 'latest.snapshot')
 
-            # 查找关于这个版本的记录
-            version_desc_url = None
-            for item in manifest['versions']:
-                if item['id'] == version:
-                    version_desc_url = item['url']
-            if version_desc_url is None:
-                raise RuntimeError(tr("无法找到版本 {name}", name=version))
-
-        else:  # 离线模式安装的特殊处理
-            try:
-                local_instances = minecraft.versions.mapping
-                instances = local_instances[version]
-                console.print(tr("本地找到的版本相同的实例如下"))
-                console.print()
-                for ins in instances:
-                    console.print('  [green]*[/green]', ins.name)
-                console.print()
-                console.print(tr("我们将选择第一个版本"))
-
-                source_instance = instances[0]
-                version_desc = source_instance.desc
-                with console.status(tr("同步实例信息")):
-                    shutil.copy2(source_instance.desc_file, instance.desc_file)
-
-            except KeyError:
-                console.print(
-                    tr(f"[red]本地没有找到为[/red] {version} [red]的版本，离线安装需要一个相同版本且已安装的实例[/red]"))
-                raise typer.Exit(1)
-        # Offline Process End
+        # 查找关于这个版本的记录
+        version_desc_url = None
+        for item in manifest['versions']:
+            if item['id'] == version:
+                version_desc_url = item['url']
+        if version_desc_url is None:
+            raise RuntimeError(tr("无法找到版本 {name}", name=version))
 
         # 2. 下载版本描述文件
-        if not offline:  # 下载只在在线安装时有用
-            with console.status(tr("获取版本描述文件")):
-                version_desc = await session.call(version_desc_url)
-        # else:
-        #     pass  # 离线时的版本描述文件已经被提前处理了
-        #           # line to: 253
+        with console.status(tr("获取版本描述文件")):
+            version_desc = await session.call_file_based(version_desc_url, target_instance.desc_file)
 
         # 这里一部分逻辑不需要区分在线不在线
         asset_index_name = version_desc['assets']
@@ -299,15 +269,11 @@ async def install(
                 minecraft.assets.index_exists(asset_index_name) and
                 await check_hash(asset_index_file, version_desc['assetIndex']['sha1'])
         ):
-            if not offline:  # 同理，离线模式不能下载
-                with console.status(tr("获取资源文件索引")):  # 重新下载
-                    asset_index = await session.call_file_based(
-                        url=version_desc['assetIndex']['url'],
-                        filename=asset_index_file,
-                    )
-            else:  # 如果运行到了这里，说明 asset index 已损坏
-                console.print(tr("[red]致命错误：本地资源索引已损坏[/red]"))
-                raise typer.Exit(1)
+            with console.status(tr("获取资源文件索引")):  # 重新下载
+                asset_index = await session.call_file_based(
+                    url=version_desc['assetIndex']['url'],
+                    filename=asset_index_file,
+                )
 
         else:
             asset_index = read_json(
@@ -329,7 +295,7 @@ async def install(
             ) = await asyncio.gather(
                 process_assets(asset_index['objects'], minecraft.assets),
                 process_libraries(version_desc['libraries'], minecraft.libraries, matcher=rules_matcher),
-                process_main_file(version_desc['downloads']['client'], instance.main_file)
+                process_main_file(version_desc['downloads']['client'], target_instance.main_file)
             )
 
             # 汇总信息
@@ -340,24 +306,8 @@ async def install(
             console.print(tr("版本已正确安装"))
             raise typer.Exit()  # 结束
 
-        if not offline:  # 只有在线的时候能下载，所以这里的消息要区分
-            console.print(tr("需要下载的文件: {files}\t\t需要下载的大小: {size}", files=total_files, size=total_size))
-            typer.confirm(tr("确定? "), abort=True)
-        else:  # 离线还需要下载文件的话，可能是主文件没有处理到
-            if not main_jar_url:  # 无需下载主文件，说明其它文件有问题，离线安装无能为力
-                console.print(tr("[red]致命错误：本地缺失安装此版本的文件[/red]"))
-                console.print(tr("资源文件："), tr(f"{len(required_assets)} 个"))
-                console.print(tr("库文件："), tr(f"{len(required_libraries)} 个"))
-                console.print(tr("主文件："), tr(f"{int(bool(main_jar_url))} 个"))
-                raise typer.Exit(1)  # 报错，退出
-            else:
-                # 尝试 copy 一个主文件过来
-                with console.status(tr("从源版本中提取主文件")):
-                    shutil.copy2(source_instance.main_file, instance.main_file)
-                    # 出现异常直接 raise 就行了，不管他
-
-                console.print("[green]离线安装成功！[/green]")
-                raise typer.Exit(0)  # OK
+        console.print(tr("需要下载的文件: {files}\t\t需要下载的大小: {size}", files=total_files, size=total_size))
+        typer.confirm(tr("确定? "), abort=True)
 
         # 4. 下载文件，如果是离线安装，这里不会被执行
 
@@ -366,7 +316,7 @@ async def install(
             if main_jar_url:  # 如果需要下载 主文件 （如果不需要，那么 main_jar_url 将会为 None
                 tm.create_task(
                     url=main_jar_url,
-                    filename=instance.path / (name + '.jar'),
+                    filename=target_instance.path / (name + '.jar'),
                     description=tr("主文件：{name}", name=name + '.jar')
                 )
 

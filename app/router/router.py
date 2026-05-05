@@ -1,15 +1,14 @@
 import dataclasses
-import os
-import random
 import re
 import string
+from contextlib import contextmanager
 from dataclasses import dataclass
-from pathlib import PurePosixPath
 from typing import Any, Literal
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 
 import yaml
 from furl import furl
+from yarl import URL
 
 
 def to_pair(dct: dict):
@@ -81,20 +80,22 @@ class MirrorRule:
     def apply(self, url: str, tags: set[str], mirror: Mirror) -> str:
         match self.method:
             case 'mapping':
-                base_url = furl(mirror['url'])
+                base_url = URL(mirror['url'])
 
                 mapped_tags = set(self.args.keys())
 
                 final_tags = mapped_tags & tags
                 assert len(final_tags) == 1
+
                 tag = final_tags.pop()
 
                 path: str
                 if path := self.args.get(tag):
-                    return ...  #TODO
+                    return str(base_url / path.lstrip('/') / urlparse(url).path.lstrip('/'))
                 # else:
                 # return None
             # case ''  # TODO: More rules
+        return None
 
 
 @dataclass
@@ -119,14 +120,16 @@ class Method:
     name: str
     url: str
     tags: set[str] = dataclasses.field(default_factory=set)
-    template: string.Template | None = None
+    template: string.Template = None
 
     def __post_init__(self):
         self.template = string.Template(self.url)
+        if not self.template.is_valid():
+            raise ValueError("Invalid template {!r}".format(self.url))
 
     def format(self, *args, **kwargs):
         for i, v in enumerate(args):
-            kwargs.setdefault(v, i)
+            kwargs.setdefault(str(i), v)
 
         return self.template.safe_substitute(kwargs)
 
@@ -143,7 +146,7 @@ class Namespace:
     methods: dict[str, Method] = dataclasses.field(default_factory=dict)
     mirrors: dict[str, Mirror] = dataclasses.field(default_factory=dict)
 
-    load_mro: dict[str, int] = dataclasses.field(default_factory=dict)
+    # load_mro: dict[str, int] = dataclasses.field(default_factory=dict)
 
     vis_tags: set[str] = dataclasses.field(default_factory=set)
 
@@ -164,11 +167,21 @@ class Namespace:
     def has_method(self, name):
         return name in self.methods
 
-    def route(self, url, mirror_priority=1):
-        url_tags = self.get_url_tags(url)
-        if mirror_priority == 1 or random.random() < mirror_priority:
-            for mirror in self.mirrors.values():
-                ...  # TODO
+    def route(self, url):
+        tags = set(self.get_url_tags(url))
+        for mirror in self.mirrors.values():
+            if result := mirror.apply(url, tags):
+                return result
+        return url
+
+    @contextmanager
+    def call(self, name, *args, **kwargs):
+        if not self.has_method(name):
+            raise ValueError(f"不存在的源方法 {name}")
+        # try:
+        yield self.methods[name].format(*args, **kwargs)
+        # finally:
+        #     pass
 
 
 class Router:
@@ -245,8 +258,7 @@ class Router:
                     ))
 
     def get_url_tags(self, url: str, namespace: str):
-        np = self.namespaces[namespace]
-        return [tag.name for tag in np.tags if tag.match(url)]
+        return self.namespaces[namespace].get_url_tags(url)
 
     def apply(self, url: str, namespace: str):
         tags = set(self.get_url_tags(url, namespace))

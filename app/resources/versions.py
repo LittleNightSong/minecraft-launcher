@@ -13,11 +13,11 @@ class VersionsDirectory:
     def exists(self, name):
         return (self.path / name).is_dir()
 
-    def instances(self) -> list[InstanceDirectory]:
+    def instances(self, skip_broken=True) -> list[InstanceDirectory]:
         return list(
             map(lambda x: InstanceDirectory(x),
                 filter(
-                    lambda x: x.is_dir() and InstanceDirectory(x).check(),
+                    lambda x: x.is_dir() and (not skip_broken or InstanceDirectory(x).check()),
                     self.path.iterdir()
                 )))
 
