@@ -3,6 +3,8 @@ from os import PathLike
 from pathlib import Path
 
 from app.common import compute_hash
+from app.common.methods import trace
+from app.resources.base import BaseDirectory
 
 
 class Library:
@@ -73,13 +75,14 @@ class Library:
         return self.fullpath
 
 
-class LibrariesDirectory:
+class LibrariesDirectory(BaseDirectory):
     def __init__(self, path):
         self.path = Path(path)
 
     def library(self, name):
         return Library(name, self.path)
 
+    # @trace
     async def check(self, name, hash, size=None):
         lib = self.library(name)
         if not os.path.exists(lib):

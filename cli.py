@@ -8,7 +8,11 @@ import app.interfaces.command.ac_install  # type: ignore
 import app.interfaces.command.ac_list  # type: ignore
 from app.interfaces.command import typer_app
 
+# from app.interfaces.command.common import console
+
 # END
+
+# console.print("PID:", os.getpid())
 
 rich.traceback.install(show_locals=True, locals_max_depth=10000, locals_max_length=10000)
 

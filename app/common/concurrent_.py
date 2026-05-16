@@ -36,18 +36,18 @@ def threaded[**P, T](func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]
     return wrapper
 
 
-def processed[**P, T](func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
+def processed[*P, T](func: Callable[[*P], T]) -> Callable[[*P], Coroutine[Any, Any, T]]:
     @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
-        return await run_in_process(lambda: func(*args, **kwargs))
+    async def wrapper(*args):
+        return await run_in_process(func, *args)
 
     return wrapper
 
 
-def interpreted[**P, T](func: Callable[P, T]) -> Callable[P, Coroutine[Any, Any, T]]:
+def interpreted[*P, T](func: Callable[[*P], T]) -> Callable[[*P], Coroutine[Any, Any, T]]:
     @functools.wraps(func)
-    async def wrapper(*args, **kwargs):
-        return await run_in_interpreter(lambda: func(*args, **kwargs))
+    async def wrapper(*args):
+        return await run_in_interpreter(func, *args)
 
     return wrapper
 

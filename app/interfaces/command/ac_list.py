@@ -37,6 +37,7 @@ async def list(
     repo = find_repo(repo, ask=False)
     if repo is None:
         console.print(f'[red]{tr("错误：无法找到且没有指定储存库")}[/red]')
+        raise typer.Abort()
 
     minecraft = Repository(repo)
 

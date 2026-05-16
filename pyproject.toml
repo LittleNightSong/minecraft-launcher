@@ -1,7 +1,7 @@
 [project]
 name = "minecraft-launcher"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Minecraft Launcher Written in Python"
 requires-python = ">=3.14"
 dependencies = [
     "flufl-i18n>=6.0.0",
@@ -9,7 +9,9 @@ dependencies = [
     "hydrogenlib-core>=0.7.0",
     "hydrogenlib-reimporter>=14",
     "ijson>=3.5.0",
+    "jsonquerylang>=2.1.0",
     "loguru>=0.7.3",
+    "maturin>=1.13.1",
     "msgspec>=0.20.0",
     "niquests[http3]>=3.18.2",
     "orjson>=3.11.7",
@@ -23,16 +25,16 @@ dependencies = [
     "typer~=0.25",
     "windows-curses>=2.4.2",
     "winloop>=0.5.0",
+    "xxhash>=3.7.0",
     "yarl>=1.23.0",
 ]
 
-[tool.uv]
-
 [[tool.uv.index]]
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 [dependency-groups]
 dev = [
+    "py-spy>=0.4.2",
     "rich>=14.3.3",
 ]

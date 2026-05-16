@@ -4,23 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="first add">
-      <change afterPath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/minecraft/version_parser.py" afterDir="false" />
+    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="second add">
+      <change afterPath="$PROJECT_DIR$/app/resources/cache.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/common/sources_loader.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/minecraft/methods.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/minecraft/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/sources/minecraft.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/methods.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/concurrent_.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/concurrent_.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/hash_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hash_computer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/shell.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/shell.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/instance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/versions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/router/router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/router/router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/command/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/launcher.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +61,7 @@
     &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
     &quot;Python.router.executor&quot;: &quot;Run&quot;,
     &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.shell.executor&quot;: &quot;Run&quot;,
+    &quot;Python.shell.executor&quot;: &quot;Debug&quot;,
     &quot;Python.something_bad.executor&quot;: &quot;Run&quot;,
     &quot;Python.sources_loader.executor&quot;: &quot;Run&quot;,
     &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
@@ -75,7 +72,6 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/app/router&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -83,10 +79,13 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="PyDebuggerOptionsProvider">
+    <option name="myDebuggerBackend" value="DEBUGPY" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\.projects\minecraft-launcher\app\router" />
@@ -292,7 +291,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-024ed6589d45-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.23567.174" />
+        <option value="bundled-python-sdk-c59985aa861c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.24374.152" />
       </set>
     </attachedChunks>
   </component>
@@ -335,7 +334,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777879088401</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="second add">
+      <option name="closed" value="true" />
+      <created>1777975688974</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1777975688974</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,7 +364,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first add" />
-    <option name="LAST_COMMIT_MESSAGE" value="first add" />
+    <MESSAGE value="second add" />
+    <option name="LAST_COMMIT_MESSAGE" value="second add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,33 +1,46 @@
 from pathlib import Path
 
 from app.common import compute_hash
+from app.common.methods import read_json
+from app.resources.base import BaseDirectory
 
 
-class AssetsDirectory:
+class ObjectsDirectory(BaseDirectory):
     def __init__(self, path):
         self.path = Path(path)
-        self.objects_dir.mkdir(exist_ok=True, parents=True)
-        self.indexes_dir.mkdir(exist_ok=True, parents=True)
-
-    @property
-    def objects_dir(self):
-        return self.path / 'objects'
-
-    @property
-    def indexes_dir(self):
-        return self.path / 'indexes'
 
     def asset(self, hash) -> Path:
-        return self.objects_dir / hash[:2] / hash
+        hash = str(hash)
+        return self.path / hash[:2] / hash
 
-    def index_exists(self, index_id):
-        return (self.indexes_dir / f'{index_id}.json').exists()
+class IndexesDirectory(BaseDirectory):
+    def __init__(self, path):
+        self.path = Path(path)
 
-    def index_filename(self, index_id):
-        return self.indexes_dir / f'{index_id}.json'
+    def exists(self, index_id):
+        return self.fullpath(index_id).exists()
+
+    def read(self, index_id):
+        return read_json(self.fullpath(index_id))
+
+    def fullpath(self, index_id):
+        return self.path / (str(index_id) + '.json')
+
+
+class AssetsDirectory(BaseDirectory):
+    __slots__ = ['objects', 'indexes']
+    def __init__(self, path):
+        self.path = Path(path)
+        self.objects = ObjectsDirectory(self.path / 'objects')
+        self.indexes = IndexesDirectory(self.path / 'indexes')
+
+    def ensure_exists(self):
+        super().ensure_exists()
+        self.objects.ensure_exists()
+        self.indexes.ensure_exists()
 
     async def check(self, hash, size=None):
-        asset = self.asset(hash)
+        asset = self.objects.asset(hash)
         if not asset.exists():
             return False
 

@@ -2,101 +2,102 @@ import asyncio
 import os.path
 import time
 from pathlib import Path
+from typing import overload, Any, Literal
 
 import psutil
 import rich.progress
 import typer
 from loguru import logger
-from rich.progress import TextColumn, BarColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn, \
-    TimeRemainingColumn
+from niquests import HTTPError
+from rich import markup
+from rich.console import RenderableType
+from rich.progress import TextColumn, BarColumn, ProgressColumn, Task
 
-from app.common.concurrent_ import as_sync, reset_max_threads
+from app.common import run_in_thread
+from app.common.concurrent_ import as_sync, reset_max_processes
 from app.common.config import cfg
 from app.common.hash_computer import check_hash
-from app.common.methods import dotpath, read_json
+from app.common.methods import dotpath, read_json, write_json
+from app.common.tasks import StatusColumn
 from app.i18n import tr
-from app.interfaces.command.common import typer_app, assert_, console
+from app.interfaces.command.common import typer_app, console
 from app.interfaces.command.methods import get_version_manifest
+from app.network import Session
 from app.network.session import session
 from app.resources.assets import AssetsDirectory
 from app.resources.base import rules_matcher, RulesMatcher
 from app.resources.libraries import LibrariesDirectory
 from app.resources.repository import Repository
 
-progress_bar = rich.progress.Progress(
-    TextColumn("[progress.description]{task.description}"),
-    BarColumn(),
-    TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-    FileSizeColumn(),
-    TotalFileSizeColumn(),
-    TransferSpeedColumn(),
-    TimeRemainingColumn(),
-)
+
 
 
 class TaskManager:
-    def __init__(self, max_tasks: int, total=None):
+    def __init__(self, total=None, max_tasks: int = 1):
         self.progress_bar = rich.progress.Progress(
+            StatusColumn(),
             TextColumn("[progress.description]{task.description}"),
             BarColumn(),
             TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            FileSizeColumn(),
-            TotalFileSizeColumn(),
-            TransferSpeedColumn(),
-            TimeRemainingColumn(),
+            refresh_per_second=2, transient=True
         )
-        self.sem = asyncio.Semaphore(max_tasks)
         self.progress_total = self.progress_bar.add_task("Total", total=total)
+        self.session = Session()
+        self.sem = asyncio.Semaphore(max_tasks)
         self.tg = asyncio.TaskGroup()
 
     def set_total(self, total):
         self.progress_bar.update(self.progress_total, total=total)
 
     async def download(self, url: str, filename: str, description: str | None = None):
-        Path(filename).parent.mkdir(parents=True, exist_ok=True)  # 保证文件路径存在
+        await run_in_thread(lambda: Path(filename).parent.mkdir(parents=True, exist_ok=True))
 
         progress = 0  # 下载完成部分的大小
-        task_id = None  # 如果创建了进度条，它就是一个 TaskID 实例
+        task_id = self.progress_bar.add_task(description or '', visible=False)  # 如果创建了进度条，它就是一个 TaskID 实例
 
         for i in range(5):  # 一共尝试 5 次
             try:
-                async with self.sem:  # 并发限制
+                async with self.sem:
                     with open(filename, 'ab') as f:  # 追加模式打开，防止意外清除下载进度
                         f.seek(progress)  # 导航到完成的位置
                         f.truncate()  # 截取掉后面的无效数据
 
-                        stream, resp = await session.stream_(
+                        stream, resp = await self.session.stream_(
                             url, 65536, headers={'Range': f'bytes={progress}-'},
                             errorcheck=lambda x: x.status_code == 206
                         )  # 发送下载请求，包含 Range 头部实现断点续传
                         total_size = int(resp.headers.get('Content-Length', 0))
                         start_time = time.time()  # 记录本次下载的起始时间
                         async for chunk in stream:
-                            f.write(chunk)
+                            await run_in_thread(f.write, chunk)
 
                             progress += len(chunk)
 
                             # 计算剩余时间
                             time_remaining = total_size / (progress / (time.time() - start_time))
+                            self.progress_bar.update(task_id, completed=progress, total=total_size)
 
-                            if task_id is not None:  # 如果创建了进度条，那么更新它
-                                self.progress_bar.update(task_id, completed=progress)
-
-                            elif time_remaining > 5:  # 如果没有创建进度条，剩余时间大于 5s，创建进度条
-                                task_id = self.progress_bar.add_task(description or '', total=total_size,
-                                                                     completed=progress)
+                            if time_remaining > 5:  # 如果没剩余时间大于 5s，显示进度条
+                                self.progress_bar.update(task_id, visible=True)
+                            # else:
+                            #     self.progress_bar.update(task_id, visible=False)
 
                             self.progress_bar.advance(self.progress_total, len(chunk))
 
+                # Finished
                 if task_id is not None:
                     self.progress_bar.remove_task(task_id)  # 完成后删除进度条
 
                 logger.info(f"Downloading finished {url}")
                 return
 
+            except HTTPError as e:
+                if 400 <= e.response.status_code < 500:
+                    raise e
+
             except Exception as e:
                 logger.warning(f"Error when downloading {url}, exception: {e.__class__.__name__}: {e}")
-                # console.print_exception()
+                console.print_exception()
 
         # 五次都没有下载成功
         raise RuntimeError(f"Cannot download {filename}")
@@ -115,47 +116,45 @@ class TaskManager:
 
 async def process_assets(objects, assets_directory: AssetsDirectory):
     total_size = 0
-    requires = []
+    requires = set()
 
     async def proc_asset(obj):
         nonlocal total_size
+        if obj['hash'] in requires:
+            return
 
         if not await assets_directory.check(obj['hash']):
-            requires.append(obj['hash'])
+            logger.info(f"Need {obj['hash']}")
+            requires.add(obj['hash'])
             total_size += obj['size']
-            # print('require', obj['hash']）
 
     await asyncio.gather(*map(proc_asset, objects.values()))
 
     return total_size, requires
 
 
-async def process_libraries(libraries, ld: LibrariesDirectory, matcher: RulesMatcher = None):
+async def process_libraries(libraries, ld: LibrariesDirectory, matcher: RulesMatcher):
     total_size = 0
-    requires = []
+    requires = set()
 
-    if matcher is None:
-        matcher = rules_matcher
-
-    async def proc_library(lib):
+    async def proc_library(lib: dict):
         nonlocal total_size
 
-        if natives := lib.get('natives'):  # 处理本地库
+        if natives := lib.get('natives'):  # 如果是一个本地库
+            # console.print("发现本地库", lib['name'], natives)
             classifier = natives[matcher.os_name]  # 从当前系统名称获取到分类名
             download_info = dotpath(  # 获取这个分类的下载信息
                 lib, f"downloads.classifiers.{classifier}"
             )
-            lib_name = lib['name'] + ':' + classifier  # 组合库名（完整）
+            lib_name = f"{lib['name']}:{classifier}"  # 组合库名（完整）
             if not await ld.check(lib_name, download_info['sha1']):  # 尝试检查这个库存不存在
-                requires.append(lib_name)  # 不存在，加入到处理列表中
+                requires.add(lib_name)  # 不存在，加入到处理列表中
                 total_size += download_info['size']  # 累计总大小
 
         try:  # 旧版的 Minecraft 的某些库没有提供通用的 artifact
-            download_info = dotpath(
-                lib, "downloads.artifact"
-            )
+            download_info = dotpath(lib, "downloads.artifact")
             if not await ld.check(lib['name'], download_info['sha1']):
-                requires.append(lib['name'])
+                requires.add(lib['name'])
                 total_size += download_info['size']
         except KeyError as e:
             if str(e.args[0]) != 'artifact':
@@ -181,7 +180,15 @@ async def process_main_file(client_info, filename):
         return size, client_info['url']
 
 
-def find_repo(repo, ask=True):
+@overload
+def find_repo(repo: Any, ask: bool = True, raise_for_unset: Literal[True] = True) -> Repository: ...
+
+
+@overload
+def find_repo(repo: Any, ask: bool = True, raise_for_unset: Literal[False] = False) -> Repository | None: ...
+
+
+def find_repo(repo, ask=True, raise_for_unset=False):
     if repo is None:
         repo = Path.cwd()
         if (repo / ".minecraft").is_dir():
@@ -191,14 +198,15 @@ def find_repo(repo, ask=True):
             repo = cfg['repo']
 
         elif ask:
-            typer.confirm(tr("未发现且没有指定 Minecraft 存储库位置, 在本地创建存储库? "), abort=True)
+            typer.confirm(tr("未发现且没有指定 Minecraft 储存库位置, 在本地创建存储库? "), abort=True)
             repo = repo / '.minecraft'
-            return repo
 
         else:
+            if raise_for_unset:
+                raise RuntimeError("未指定 Minecraft 储存库")
             return None
 
-    return repo
+    return Repository(repo)
 
 
 @typer_app.command()
@@ -206,26 +214,19 @@ def find_repo(repo, ask=True):
 async def install(
         name: str,
         version: str | None = typer.Option(None, '-v', "--version"),
-        modloader: str | None = typer.Option(None, '-l', "--modloader"),
         repo: Path | None = typer.Option(None, '-r', "--repo"),
-        max_threads: int = typer.Option((psutil.cpu_count() or 4) * 2, '-m', "--max-threads"),
+        max_threads: int = typer.Option((psutil.cpu_count() or 4), '-m', "--max-threads"),
+        yes: bool = typer.Option(False, '-y', "--yes"),
         max_connections: int = typer.Option(64, '-M', "--max-connections")
 ):
     """
     安装版本
     """
 
-    reset_max_threads(max_threads)
+    reset_max_processes(max_threads)
 
-    if modloader:
-        raise NotImplementedError("Mod loader support not implemented")  # TODO: Finish me
-        modloader = modloader.lower()
-        assert_(modloader in ["forge", "fabric", "neoforge"])
-
-    repo = find_repo(repo)
-
-    # 初始化储存库对象
-    minecraft = Repository(repo)
+    minecraft = find_repo(repo, raise_for_unset=True)
+    minecraft.ensure_exists()
 
     if version is None:
         version = name
@@ -236,12 +237,20 @@ async def install(
         typer.confirm((tr(
             "名为 `{name}` 的实例({version})已存在，是否覆盖？", name=name, version=target_instance.id)),
             abort=True
-        )
+        ) if not yes else None
     else:
         target_instance.ensure_exists()
 
     async with session:
-        manifest = await get_version_manifest()
+        with minecraft.launcher_data.cache.get('version-manifest') as cache_file:
+            cache_file.max_age = 300  # seconds
+            if cache_file.is_valid():
+                console.note(tr("使用缓存的版本清单"))
+                manifest = cache_file.read_json()
+            else:
+                manifest = await get_version_manifest()
+                write_json(cache_file, manifest)
+                cache_file.set()
 
         # 特殊版本号处理
         if version == 'latest':
@@ -251,47 +260,47 @@ async def install(
 
         # 查找关于这个版本的记录
         version_desc_url = None
-        for item in manifest['versions']:
-            if item['id'] == version:
-                version_desc_url = item['url']
+        for version_desc_record in manifest['versions']:
+            if version_desc_record['id'] == version:
+                version_desc_url = version_desc_record['url']
+                break
+
         if version_desc_url is None:
             raise RuntimeError(tr("无法找到版本 {name}", name=version))
 
         # 2. 下载版本描述文件
-        with console.status(tr("获取版本描述文件")):
-            version_desc = await session.call_file_based(version_desc_url, target_instance.desc_file)
+        with console.status(tr("获取版本描述文件")), minecraft.launcher_data.cache.get(
+                f'version-desc:{version}') as cache_file:
+            if cache_file.is_valid():
+                console.note("使用缓存的版本描述文件")
+                cache_file.linkto(target_instance.desc_file, force=True)
+                version_desc = read_json(cache_file)
+            else:
+                version_desc = await session.call_file_based(version_desc_url, cache_file.file)
+                cache_file.set(cache_file.file)
 
-        # 这里一部分逻辑不需要区分在线不在线
         asset_index_name = version_desc['assets']
-        asset_index_file = minecraft.assets.index_filename(asset_index_name)
+        asset_index_file = minecraft.assets.indexes.fullpath(asset_index_name)
 
-        if not (  # 如果资源索引不存在或者校验没通过
-                minecraft.assets.index_exists(asset_index_name) and
-                await check_hash(asset_index_file, version_desc['assetIndex']['sha1'])
-        ):
-            with console.status(tr("获取资源文件索引")):  # 重新下载
+        with console.status(tr("获取资源文件索引")):
+            if not (  # 如果资源索引不存在或者校验没通过
+                    asset_index_file.exists() and
+                    await check_hash(asset_index_file, version_desc['assetIndex']['sha1'])
+            ):
                 asset_index = await session.call_file_based(
                     url=version_desc['assetIndex']['url'],
                     filename=asset_index_file,
                 )
 
-        else:
-            asset_index = read_json(
-                file=asset_index_file,
-            )  # 这里无论在不在线都一样
+            else:
+                asset_index = read_json(asset_index_file)
 
         # 3. 分析游戏文件
-        with console.status(tr("分析游戏文件")):  # 这里不需要区分在线不在线，都是直接转递的数据
+        with console.status(tr("分析游戏文件")):
             (
-                (
-                    assets_total_size, required_assets
-                ),
-                (
-                    libraries_total_size, required_libraries
-                ),
-                (
-                    main_jar_size, main_jar_url
-                )
+                (assets_total_size, required_assets),
+                (libraries_total_size, required_libraries),
+                (main_jar_size, main_jar_url)
             ) = await asyncio.gather(
                 process_assets(asset_index['objects'], minecraft.assets),
                 process_libraries(version_desc['libraries'], minecraft.libraries, matcher=rules_matcher),
@@ -307,11 +316,15 @@ async def install(
             raise typer.Exit()  # 结束
 
         console.print(tr("需要下载的文件: {files}\t\t需要下载的大小: {size}", files=total_files, size=total_size))
-        typer.confirm(tr("确定? "), abort=True)
+        console.print(tr(
+            "资源文件：{assets_count}\t\t库文件：{libraries_count}\t\t主文件：{main_jars_count}",
+            assets_count=len(required_assets),
+            libraries_count=len(required_libraries),
+            main_jars_count=int(bool(main_jar_url)),
+        ))
+        typer.confirm(tr("确定? "), abort=True) if not yes else None
 
-        # 4. 下载文件，如果是离线安装，这里不会被执行
-
-        tm = TaskManager(max_connections, total=total_size)  # 创建任务管理器，它会自动处理下载进度的显示和更新
+        tm = TaskManager(total=total_size, max_tasks=max_connections)  # 创建任务管理器，它会自动处理下载进度的显示和更新
         async with tm:
             if main_jar_url:  # 如果需要下载 主文件 （如果不需要，那么 main_jar_url 将会为 None
                 tm.create_task(
@@ -323,7 +336,7 @@ async def install(
             for asset in required_assets:  # 添加资源文件的下载任务
                 tm.create_task(
                     url=f"https://resources.download.minecraft.net/{asset[:2]}/{asset}",
-                    filename=minecraft.assets.asset(asset),
+                    filename=minecraft.assets.objects.asset(asset),
                     description=tr("资源文件：{hash}", hash=asset)
                 )
 

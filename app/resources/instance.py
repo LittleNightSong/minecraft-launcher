@@ -2,8 +2,10 @@ from pathlib import Path
 
 import orjson
 
+from app.resources.base import BaseDirectory
 
-class InstanceDirectory:
+
+class InstanceDirectory(BaseDirectory):
     __slots__ = ['path', '_desc']
 
     def __init__(self, path):

@@ -1,5 +1,7 @@
+import os
 import platform
 import re
+from pathlib import Path
 
 
 class RulesMatcher:
@@ -62,3 +64,18 @@ rules_matcher = RulesMatcher(
 )
 
 del os_mapping, arch_mapping, system_arch
+
+
+class BaseDirectory:
+    path: Path
+
+    __slots__ = ['path']
+
+    def ensure_exists(self):
+        self.path.mkdir(parents=True, exist_ok=True)
+
+    def __fspath__(self):
+        return os.fspath(self.path)
+
+    def __divmod__(self, other) -> Path:
+        return self.path / other
