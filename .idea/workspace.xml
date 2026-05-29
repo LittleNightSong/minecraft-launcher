@@ -4,20 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="second add">
-      <change afterPath="$PROJECT_DIR$/app/resources/cache.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_cache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="third add">
+      <change afterPath="$PROJECT_DIR$/app/common/filesize.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/signal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/interfaces/command/tty_task_viewer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/common/concurrent_.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/concurrent_.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/hash_computer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/hash_computer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/common/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/tasks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/common.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/launcher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/network/download_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/network/download_task.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/resources/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/assets.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,6 +37,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;LittleNightSong&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/LittleNightSong/minecraft-launcher.git&quot;,
+    &quot;accountId&quot;: &quot;c74c50b1-2437-429b-b395-d763b566b8a2&quot;
+  }
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -52,37 +61,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.assign_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.cli.executor&quot;: &quot;Run&quot;,
-    &quot;Python.install_vanilla.executor&quot;: &quot;Run&quot;,
-    &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
-    &quot;Python.router.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.shell.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.something_bad.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sources_loader.executor&quot;: &quot;Run&quot;,
-    &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
-    &quot;Python.version_parser.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/app/router&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.assign_speed.executor": "Run",
+    "Python.cli.executor": "Run",
+    "Python.filesize.executor": "Run",
+    "Python.install_vanilla.executor": "Run",
+    "Python.rich_output.executor": "Run",
+    "Python.router.executor": "Run",
+    "Python.run.executor": "Run",
+    "Python.shell.executor": "Debug",
+    "Python.something_bad.executor": "Run",
+    "Python.sources_loader.executor": "Run",
+    "Python.typer_command.executor": "Run",
+    "Python.version_parser.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/.projects/minecraft-launcher/app/router",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="PyDebuggerOptionsProvider">
     <option name="myDebuggerBackend" value="DEBUGPY" />
   </component>
@@ -95,7 +106,7 @@
       <recent name="E:\.projects\minecraft-launcher" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.shell">
+  <component name="RunManager" selected="Python.filesize">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -141,6 +152,32 @@
       <option name="RUN_TOOL" value="true" />
       <option name="SCRIPT_NAME" value="cli.py" />
       <option name="PARAMETERS" value="list" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="filesize" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="minecraft-launcher" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/app/common" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/app/common/filesize.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
       <option name="MODULE_MODE" value="false" />
@@ -226,32 +263,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="typer_command" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="minecraft-launcher" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/typer_command.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="true" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="version_parser" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -280,11 +291,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.filesize" />
         <item itemvalue="Python.shell" />
         <item itemvalue="Python.version_parser" />
         <item itemvalue="Python.router" />
         <item itemvalue="Python.rich_output" />
-        <item itemvalue="Python.typer_command" />
       </list>
     </recent_temporary>
   </component>
@@ -342,7 +353,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777975688974</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="third add">
+      <option name="closed" value="true" />
+      <created>1778923779274</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778923779274</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -365,7 +384,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first add" />
     <MESSAGE value="second add" />
-    <option name="LAST_COMMIT_MESSAGE" value="second add" />
+    <MESSAGE value="third add" />
+    <option name="LAST_COMMIT_MESSAGE" value="third add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

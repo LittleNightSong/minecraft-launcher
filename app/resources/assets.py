@@ -1,4 +1,7 @@
+import asyncio
+from asyncio import TaskGroup
 from pathlib import Path
+from typing import Iterable
 
 from app.common import compute_hash
 from app.common.methods import read_json
@@ -12,6 +15,11 @@ class ObjectsDirectory(BaseDirectory):
     def asset(self, hash) -> Path:
         hash = str(hash)
         return self.path / hash[:2] / hash
+
+    def open(self, hash, mode='rb'):
+        path = self.asset(hash)
+        path.parent.mkdir(exist_ok=True)
+        return open(path, mode)
 
 class IndexesDirectory(BaseDirectory):
     def __init__(self, path):
@@ -50,3 +58,9 @@ class AssetsDirectory(BaseDirectory):
 
         computed_hash = await compute_hash(asset)
         return computed_hash == hash
+
+    async def multicheck(self, files: Iterable[tuple[str, int | None]]):
+        return await asyncio.gather(
+            *map(lambda x: self.check(x[0], x[1]), files),
+            return_exceptions=True
+        )

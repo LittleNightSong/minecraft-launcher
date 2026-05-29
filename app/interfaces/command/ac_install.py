@@ -1,117 +1,26 @@
 import asyncio
 import os.path
-import time
+from asyncio import Semaphore
 from pathlib import Path
 from typing import overload, Any, Literal
 
 import psutil
-import rich.progress
 import typer
 from loguru import logger
-from niquests import HTTPError
-from rich import markup
-from rich.console import RenderableType
-from rich.progress import TextColumn, BarColumn, ProgressColumn, Task
 
-from app.common import run_in_thread
 from app.common.concurrent_ import as_sync, reset_max_processes
 from app.common.config import cfg
 from app.common.hash_computer import check_hash
 from app.common.methods import dotpath, read_json, write_json
-from app.common.tasks import StatusColumn
 from app.i18n import tr
 from app.interfaces.command.common import typer_app, console
 from app.interfaces.command.methods import get_version_manifest
-from app.network import Session
+from app.network.download_task import DownloadTask
 from app.network.session import session
 from app.resources.assets import AssetsDirectory
 from app.resources.base import rules_matcher, RulesMatcher
 from app.resources.libraries import LibrariesDirectory
 from app.resources.repository import Repository
-
-
-
-
-class TaskManager:
-    def __init__(self, total=None, max_tasks: int = 1):
-        self.progress_bar = rich.progress.Progress(
-            StatusColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            refresh_per_second=2, transient=True
-        )
-        self.progress_total = self.progress_bar.add_task("Total", total=total)
-        self.session = Session()
-        self.sem = asyncio.Semaphore(max_tasks)
-        self.tg = asyncio.TaskGroup()
-
-    def set_total(self, total):
-        self.progress_bar.update(self.progress_total, total=total)
-
-    async def download(self, url: str, filename: str, description: str | None = None):
-        await run_in_thread(lambda: Path(filename).parent.mkdir(parents=True, exist_ok=True))
-
-        progress = 0  # 下载完成部分的大小
-        task_id = self.progress_bar.add_task(description or '', visible=False)  # 如果创建了进度条，它就是一个 TaskID 实例
-
-        for i in range(5):  # 一共尝试 5 次
-            try:
-                async with self.sem:
-                    with open(filename, 'ab') as f:  # 追加模式打开，防止意外清除下载进度
-                        f.seek(progress)  # 导航到完成的位置
-                        f.truncate()  # 截取掉后面的无效数据
-
-                        stream, resp = await self.session.stream_(
-                            url, 65536, headers={'Range': f'bytes={progress}-'},
-                            errorcheck=lambda x: x.status_code == 206
-                        )  # 发送下载请求，包含 Range 头部实现断点续传
-                        total_size = int(resp.headers.get('Content-Length', 0))
-                        start_time = time.time()  # 记录本次下载的起始时间
-                        async for chunk in stream:
-                            await run_in_thread(f.write, chunk)
-
-                            progress += len(chunk)
-
-                            # 计算剩余时间
-                            time_remaining = total_size / (progress / (time.time() - start_time))
-                            self.progress_bar.update(task_id, completed=progress, total=total_size)
-
-                            if time_remaining > 5:  # 如果没剩余时间大于 5s，显示进度条
-                                self.progress_bar.update(task_id, visible=True)
-                            # else:
-                            #     self.progress_bar.update(task_id, visible=False)
-
-                            self.progress_bar.advance(self.progress_total, len(chunk))
-
-                # Finished
-                if task_id is not None:
-                    self.progress_bar.remove_task(task_id)  # 完成后删除进度条
-
-                logger.info(f"Downloading finished {url}")
-                return
-
-            except HTTPError as e:
-                if 400 <= e.response.status_code < 500:
-                    raise e
-
-            except Exception as e:
-                logger.warning(f"Error when downloading {url}, exception: {e.__class__.__name__}: {e}")
-                console.print_exception()
-
-        # 五次都没有下载成功
-        raise RuntimeError(f"Cannot download {filename}")
-
-    def create_task(self, url: str, filename: str, description: str | None = None):
-        self.tg.create_task(self.download(url, filename, description))
-
-    async def __aenter__(self):
-        self.progress_bar.__enter__()
-        return await self.tg.__aenter__()
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.tg.__aexit__(exc_type, exc_val, exc_tb)
-        self.progress_bar.__exit__(exc_type, exc_val, exc_tb)
 
 
 async def process_assets(objects, assets_directory: AssetsDirectory):
@@ -324,29 +233,29 @@ async def install(
         ))
         typer.confirm(tr("确定? "), abort=True) if not yes else None
 
-        tm = TaskManager(total=total_size, max_tasks=max_connections)  # 创建任务管理器，它会自动处理下载进度的显示和更新
+        sem = Semaphore(max_connections)
         async with tm:
-            if main_jar_url:  # 如果需要下载 主文件 （如果不需要，那么 main_jar_url 将会为 None
-                tm.create_task(
+            if main_jar_url:
+                tm.add_task(DownloadTask(
                     url=main_jar_url,
-                    filename=target_instance.path / (name + '.jar'),
-                    description=tr("主文件：{name}", name=name + '.jar')
-                )
+                    filename=target_instance.main_file,
+                    sem=sem, description=tr("主文件 {name}", name=version + '.jar'), session=session
+                ))
 
-            for asset in required_assets:  # 添加资源文件的下载任务
-                tm.create_task(
+            for asset in required_assets:
+                tm.add_task(DownloadTask(
                     url=f"https://resources.download.minecraft.net/{asset[:2]}/{asset}",
                     filename=minecraft.assets.objects.asset(asset),
-                    description=tr("资源文件：{hash}", hash=asset)
-                )
+                    sem=sem, description=tr("资源文件 {name}", name=asset), session=session
+                ))
 
-            for lib_name in required_libraries:  # 添加依赖库的下载任务
-                lib_path = minecraft.libraries.library(lib_name).path.replace('\\', '/')
-                tm.create_task(
-                    url=f"https://libraries.minecraft.net/{lib_path}",
-                    filename=minecraft.libraries.path / lib_path,
-                    description=tr("依赖库：{name}", name=lib_name)
-                )
+            for library in required_libraries:
+                tm.add_task(DownloadTask(
+                    url=f"https://resources.download.minecraft.net/{library[:2]}/{library}",
+                    filename=minecraft.libraries.library(library).fullpath,
+                    sem=sem, description=tr("库文件 {name}", name=library), session=session
+                ))
+
 
         # 5. 完成!!!
         console.print(tr("Version {id} installed successfully", id=name))

@@ -21,6 +21,7 @@ dependencies = [
     "pybind11>=3.0.4",
     "pyyaml>=6.0.3",
     "rich>=15.0.0",
+    "threadedprocess>=0.0.5",
     "typeguard>=4.5.1",
     "typer~=0.25",
     "windows-curses>=2.4.2",

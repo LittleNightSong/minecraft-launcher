@@ -1,98 +1,79 @@
-import rich
-from rich import markup
-from rich.console import RenderableType
-from rich.progress import TaskID, Progress, ProgressColumn, TextColumn, BarColumn
+import asyncio
+import dataclasses
+from asyncio import TaskGroup
+from enum import Enum
+from typing import Any
 
 
-class ProgressTask:
-    def __init__(self, progress: Progress, task_id: TaskID):
-        self.progress = progress
-        self.task_id = task_id
+class ProgressKind(Enum):
+    nom = 'N of M'
+    size = 'size'
+    percent = 'percent'
 
-    def advance(self, value):
-        self.progress.advance(self.task_id, value)
 
-    def update(self, **kwargs):
-        self.progress.update(**kwargs)
+@dataclasses.dataclass(slots=True)
+class Context:
+    input: Any
+    output: Any = None
+
+    vars: dict[str, Any] = dataclasses.field(default_factory=dict)
+
+    def __getattr__(self, item):
+        try:
+            return self.vars[item]
+        except KeyError as e:
+            raise AttributeError(e)
 
 
 class BaseTask:
-    progress_task: ProgressTask = None
+    coro: asyncio.Task
 
-    def __init__(self):
-        self._total = None
-        self._progress = 0
-        self._description = None
-        self._status = None
-        self._visible = True
+    total: int | float | None = None
+    progress: int | float = 0
+    description: str | Any | None = None
+    extra_info: Any | None = None
+    progress_kind: ProgressKind = ProgressKind.percent
+    visible: bool = True
 
-    @property
-    def total(self):
-        return self._total
-
-    @total.setter
-    def total(self, value):
-        self._total = value
-        self.progress_task.update(total=value) if self.progress_task else None
-
-    @property
-    def progress(self):
-        return self._progress
-
-    @progress.setter
-    def progress(self, value):
-        self._progress = value
-        self.progress_task.update(progress=value) if self.progress_task else None
-
-    @property
-    def description(self):
-        return self._description
-
-    @description.setter
-    def description(self, value):
-        self._description = value
-        self.progress_task.update(description=value) if self.progress_task else None
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-        self.progress_task.update(visible=value) if self.progress_task else None
-
-    @property
-    def status(self):
-        return self._status
-
-    @status.setter
-    def status(self, value):
-        self._status = value
-        self.progress_task.update(status=value) if self.progress_task else None
-
-    async def run(self):
+    async def run(self, context: Context):
         ...
 
 
-class StatusColumn(ProgressColumn):
-    def render(self, task) -> RenderableType:
-        return markup.render(task.fields.get('status', ''))
+class SequenceTask(BaseTask):
+    def __init__(self, tasks: list[BaseTask]):
+        self.tasks = tasks
+        self.progress = 0
+
+    @property
+    def current_task(self):
+        return self.tasks[self.progress]
+
+    @property
+    def total(self):
+        return len(self.tasks)
+
+    async def run(self, context):
+        input = context.input
+        for task in self.tasks:
+            await task.run(cur := Context(input=input))
+            input = cur.output
+            self.progress += 1
 
 
-class TaskManager:
-    def __init__(self):
-        self.progress = rich.progress.Progress(
-            StatusColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            BarColumn(),
-            TextColumn("[progress.percentage]{task.percentage:>3.0f}%"),
-            refresh_per_second=2, transient=True
-        )
-        self.tasks = []
+class ParallelTask(BaseTask):
+    def __init__(self, tasks: list[BaseTask]):
+        self.tasks = tasks
+        self.progress = 0
 
-    def add_task(self, task: BaseTask):
-        self.tasks.append(task)
-        task.progress_task = ProgressTask(self.progress, self.progress.add_task(
-            task.description, total=task.total, completed=task.progress
-        ))
+    @property
+    def total(self):
+        return len(self.tasks)
+
+    async def run_wrapper(self, task, context: Context):
+        await task.run(context)
+        self.progress += 1
+
+    async def run(self, context):
+        async with TaskGroup() as tg:
+            for task in self.tasks:
+                tg.create_task(self.run_wrapper(task, Context(input=context.input)))
