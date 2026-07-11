@@ -1,9 +1,9 @@
 import typer
 
-from app.common.concurrent_ import as_sync
-from app.i18n import tr
+from app.core.common.concurrent_ import as_sync
+from app.core.i18n import tr
 from app.interfaces.command import typer_app
-from app.interfaces.command.ac_install import find_repo
+from app.interfaces.command.methods import find_repo
 from app.interfaces.command.common import console
 
 

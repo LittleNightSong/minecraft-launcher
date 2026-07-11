@@ -7,8 +7,8 @@ from prompt_toolkit.history import FileHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 from typer import Typer
 
-from app.common.config import USER_STATE_DIR
-from app.i18n import tr
+from app.core.common.config import USER_STATE_DIR
+from app.core.i18n import tr
 from app.interfaces.command import typer_app
 from app.interfaces.command.common import console
 

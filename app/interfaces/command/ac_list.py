@@ -3,14 +3,14 @@ from typing import Literal
 import typer
 from rich.panel import Panel
 
-from app.common.concurrent_ import as_sync
-from app.i18n.translator import tr
-from app.interfaces.command.ac_install import find_repo
+from app.core.i18n import tr
+from app.core.minecraft import VersionManifestModel
+from app.core.minecraft.version_parser import MinecraftVersion
+from app.core.resources.instance import InstanceDirectory
+from app.core.resources.repository import Repository
+from app.interfaces.command.command import Command
 from app.interfaces.command.common import typer_app, console
-from app.interfaces.command.methods import get_version_manifest
-from app.minecraft.version_parser import MinecraftVersion
-from app.resources.instance import InstanceDirectory
-from app.resources.repository import Repository
+from app.interfaces.command.methods import find_repo, call_and_cache
 
 
 # @trace
@@ -24,94 +24,95 @@ def get_version_without_patch(version: MinecraftVersion):
             return version.version
 
 
-@typer_app.command()
-@as_sync
-async def list(
-        version=None,
-        *,
-        online: bool = False,
-        repo: str | None = typer.Option(None, '-r', '--repo'),
-        type: Literal['release', 'snapshot', 'all'] = typer.Option('release', '-t', "--type"),
-        full: bool = typer.Option(False, '-f', '--full')
-):
-    repo = find_repo(repo, ask=False)
-    if repo is None:
-        console.print(f'[red]{tr("错误：无法找到且没有指定储存库")}[/red]')
-        raise typer.Abort()
+class ListCommand(Command, app=typer_app):
+    name = 'list'
 
-    minecraft = Repository(repo)
+    async def main(
+            self,
+            version=None,
+            *,
+            online: bool = False,
+            repo: str | None = typer.Option(None, '-r', '--repo'),
+            type: Literal['release', 'snapshot', 'all'] = typer.Option('release', '-t', "--type"),
+            full: bool = typer.Option(False, '-f', '--full')
+    ):
+        minecraft = find_repo(repo, ask=False)
 
-    if online:
-        manifest = await get_version_manifest()
-    else:
-        manifest = {'versions': minecraft.versions.instances(skip_broken=False)}
 
-    if version is None and online:
-        latest = manifest['latest']
-        console.print(Panel(
-            f" [green]*[/green] Release  [bold]{latest['release']}[/bold]\n"
-            f" [green]*[/green] Snapshot [bold]{latest['snapshot']}[/bold]",
-            title=tr("最新版"), title_align='left'
-        ))
-
-    record = set()
-    version_groups = {
-        'rc': [],
-        'pre': [],
-        'snapshot': [],
-        'release': [],
-        'april fool': [],
-        'broken': [],
-    }
-
-    for version in manifest['versions']:
+        online_manifest = None
         if online:
-            if type != 'all' and version['type'] != type:
+            online_manifest = await call_and_cache(
+                url="https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
+                type=VersionManifestModel,
+                name="版本清单",
+                cacher=minecraft.launcher_data.cache,
+                key='versionmeta:manifest'
+            )
+
+        if version is None and online_manifest:
+            latest = online_manifest.latest
+            console.print(Panel(
+                f" [green]*[/green] Release  [bold]{latest.release}[/bold]\n"
+                f" [green]*[/green] Snapshot [bold]{latest.snapshot}[/bold]",
+                title=tr("最新版"), title_align='left', border_style='green',
+            ))
+
+        record = set()
+        version_groups = {
+            'rc': [],
+            'pre': [],
+            'snapshot': [],
+            'release': [],
+            'april fool': [],
+            'broken': [],
+        }
+        if online:
+            for version in online_manifest.versions:
+                mc_version = MinecraftVersion(version.id)
+
+                if mc_version.type == 'old':  # 远古版本的版本号解析并不成熟，同时也没有计划支持远古版本，直接排除
+                    continue
+
+                if not full and online:
+                    if (key := get_version_without_patch(mc_version)) in record:
+                        continue
+                    record.add(key)
+
+                version_groups[mc_version.type.removesuffix('(legacy)')].append(mc_version)
+
+        else:
+            if minecraft is None:
+                console.error("无法列出本地版本")
+                console.tip(tr("你可以通过添加 [green]--online[/green] 标志在线获取版本列表，但这样你将无法看到本地版本"))
+
+        text_mapping = {
+            'release': (tr("正式版"), 'green'),
+            'april fool': (tr("愚人节版本"), 'yellow'),
+            'snapshot': (tr("快照版"), 'purple'),
+            'rc': (tr("预览版"), 'purple'),
+            'pre': (tr("预发布版"), 'purple'),
+        }
+
+        for type, (text, style) in text_mapping.items():
+            type = type.removesuffix("(legacy)")
+            group = version_groups[type]
+            if not group:
                 continue
 
-            if version['id'].startswith('b'):
-                continue
+            console.print(Panel(
+                '\n'.join([
+                    f" [green]*[/green] [bold]{v.version}[/bold]"
+                    for v in group]),
+                title=text, title_align='left', border_style=style
+            ))
 
-        elif isinstance(version, InstanceDirectory) and not version.check():
-            version_groups['broken'].append(version)
-            continue
+        if broken_versions := version_groups['broken']:
+            console.print(Panel(
+                '\n'.join([
+                    f" [red]*[/red] [bold]{v.name}[/bold]"
+                    for v in broken_versions
+                ]), title=tr("损坏的版本"), title_align='left'
+            ))
 
-        mc_version = MinecraftVersion(version['id'])
-        if not full and online:
-            if (key := get_version_without_patch(mc_version)) in record:
-                continue
-            record.add(key)
-
-        version_groups[mc_version.type.removesuffix('(legacy)')].append(mc_version)
-
-    text_mapping = {
-        'release': tr("正式版"),
-        'april fool': tr("愚人节版本"),
-        'snapshot': tr("快照版"),
-        'rc': tr("预览版"),
-        'pre': tr("预发布版"),
-    }
-
-    for type, text in text_mapping.items():
-        type = type.removesuffix("(legacy)")
-        group = version_groups[type]
-        if not group:
-            continue
-
-        console.print(Panel(
-            '\n'.join([
-                f" [green]*[/green] [bold]{v.version}[/bold]"
-                for v in group]),
-            title=text, title_align='left'
-        ))
-
-    if broken_versions := version_groups['broken']:
-        console.print(Panel(
-            '\n'.join([
-                f" [red]*[/red] [bold]{v.name}[/bold]"
-                for v in broken_versions
-            ]), title=tr("损坏的版本"), title_align='left'
-        ))
-
-    if not full:
-        console.print(f"\n\n[dim]{tr('仅显示每个主版本的最新子版本，如果想要完整的版本号列表，请使用 --full')}[/dim]")
+        if not full:
+            console.print(f"\n\n[dim]{tr('仅显示每个主版本的最新子版本，如果想要完整的版本号列表，请使用 --full')}[/dim]")

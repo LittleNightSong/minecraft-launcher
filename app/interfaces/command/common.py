@@ -2,25 +2,50 @@ import locale
 from typing import Callable
 
 import rich.console
+import rich.markup
 import typer
 
-from app.network import Session
+from app.core.network import Session
 
 locale.setlocale(locale.LC_ALL, '')
 
 
 class MyConsole(rich.console.Console):
-    def note(self, *values):
-        self.print(f"[green]NOTE:[/green]", *values)
+    level = 2
 
-    def error(self, *values):
+    def error(self, *values):  # level=3
+        if self.level > 3:
+            return
+
         self.print(f"[red bold]Error:[/red bold]", *values)
 
-    def warning(self, *values):
+    def warning(self, *values):  # level=2
+        if self.level > 2:
+            return
+
         self.print(f"[yellow bold]WARNING:[/yellow bold]", *values)
 
+    def note(self, *values):  # level=1
+        if self.level > 1:
+            return
 
-typer_app = typer.Typer(no_args_is_help=True)
+        self.print(f"[green]NOTE:[/green]", *values)
+
+    def debug(self, *values):  # level=0
+        if self.level > 0:
+            return
+
+        self.print(f"[blue]DEBUG:[/blue]", *values)
+
+    def tip(self, value):
+        self.print(f"[aim]{value}[/aim]")
+
+
+typer_app = typer.Typer(
+    no_args_is_help=True,
+    # async_runner=async_run
+)
+
 console = MyConsole()
 session = Session()
 

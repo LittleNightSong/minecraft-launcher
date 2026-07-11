@@ -4,30 +4,26 @@ version = "0.1.0"
 description = "A Minecraft Launcher Written in Python"
 requires-python = ">=3.14"
 dependencies = [
-    "flufl-i18n>=6.0.0",
+    "aiofiles>=25.1.0",
+    "click>=8.4.2",
     "furl>=2.1.4",
-    "hydrogenlib-core>=0.7.0",
-    "hydrogenlib-reimporter>=14",
-    "ijson>=3.5.0",
-    "jsonquerylang>=2.1.0",
+    "httpx>=0.28.1",
     "loguru>=0.7.3",
-    "maturin>=1.13.1",
     "msgspec>=0.20.0",
-    "niquests[http3]>=3.18.2",
-    "orjson>=3.11.7",
-    "platformdirs>=4.9.6",
-    "prompt-toolkit==3.0.52",
+    "niquests>=3.20.0",
+    "platformdirs>=4.10",
     "psutil>=7.2.2",
-    "pybind11>=3.0.4",
     "pyyaml>=6.0.3",
-    "rich>=15.0.0",
+    "rich~=15.0",
     "threadedprocess>=0.0.5",
+    "tqdm>=4.68.3",
+    "trogon[typer]>=0.6.0",
     "typeguard>=4.5.1",
-    "typer~=0.25",
-    "windows-curses>=2.4.2",
+    "typer~=0.26",
     "winloop>=0.5.0",
     "xxhash>=3.7.0",
-    "yarl>=1.23.0",
+    "yarl>=1.24.0",
+    "zstandard>=0.25.0",
 ]
 
 [[tool.uv.index]]
@@ -36,6 +32,7 @@ default = true
 
 [dependency-groups]
 dev = [
+    "aiomonitor>=0.7.1",
+    "memory-profiler>=0.61.0",
     "py-spy>=0.4.2",
-    "rich>=14.3.3",
 ]
