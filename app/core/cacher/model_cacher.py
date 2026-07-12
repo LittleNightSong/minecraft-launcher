@@ -10,7 +10,6 @@ import msgspec
 import xxhash
 
 from app.core.common import write_model, read_model
-from app.core.resources.base import BaseDirectory
 
 
 def safe_unlink(path):
@@ -54,6 +53,16 @@ class CacheFileMetadata(msgspec.Struct):
         with open(filename, 'rb') as f:
             return msgspec.msgpack.decode(f.read(), type=cls)
 
+    @classmethod
+    def safe_from_file(cls, filename, default=...):
+        try:
+            return cls.from_file(filename)
+        except FileNotFoundError:
+            if default is not ...:
+                return default
+            else:
+                return CacheFileMetadata()
+
     def save_to_file(self, filename):
         with open(filename, 'wb') as f:
             f.write(msgspec.msgpack.encode(self))
@@ -83,7 +92,7 @@ class CacheEntity:
         self.file_meta = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}.meta"
         self.file_data = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}.data"
 
-        self.meta = CacheFileMetadata.from_file(self.file_meta)
+        self.meta = CacheFileMetadata.safe_from_file(self.file_meta)
 
     def set_ttl(self, ttl: int | float):
         self.meta.ttl = ttl
@@ -121,6 +130,7 @@ class CacheEntity:
         return self
 
     def sync_metadata(self):
+        self.ensure_directory()
         write_model(
             file=self.file_meta,
             obj=self.meta,
@@ -134,7 +144,7 @@ class CacheEntity:
         self.sync_metadata()
 
 
-class CacheManager(BaseDirectory):
+class CacheManager:
     def __init__(self, root, xkey_algorithm='xxhash'):
         self.path = Path(root)
         self.xkey_algorithm = xkey_algorithm
@@ -156,3 +166,6 @@ class CacheManager(BaseDirectory):
                 return None
             else:
                 return read_model(entity.file_data, type)
+
+    def ensure_exists(self):
+        self.path.mkdir(parents=True, exist_ok=True)

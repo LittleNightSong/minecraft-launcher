@@ -10,7 +10,7 @@ from app.core.common import read_model, FileInfo
 from app.core.common.config import cfg
 from app.core.common.file_validator import FileValidator
 from app.core.i18n import tr
-from app.core.resources.cache import CacheManager
+from app.core.cacher.model_cacher import CacheManager
 from app.core.resources.repository import Repository
 from app.interfaces.command.common import console, session
 
@@ -105,6 +105,6 @@ async def check_or_call[T: Struct](
             return await session.call_into(url, local, type)
 
 
-async def status(f, *, content, console):
+async def status(task, *, content, console):
     with console.status(content):
-        return await f
+        return await task

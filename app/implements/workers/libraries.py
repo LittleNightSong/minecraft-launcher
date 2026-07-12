@@ -38,7 +38,8 @@ class LibrariesChecker(CommonFileChecker):
 
                 files.append(FileInfo.from_downloads_struct(
                     downloads=download_info,
-                    filename=self.libs_dir / download_info.path
+                    filename=self.libs_dir / download_info.path,
+                    meta=download_info.path
                 ))
 
             # 无论是不是本地库，artifact 这个通用的都要下载
@@ -46,7 +47,8 @@ class LibrariesChecker(CommonFileChecker):
             if artifact := lib.downloads.artifact:
                 files.append(FileInfo.from_downloads_struct(
                     downloads=artifact,
-                    filename=self.libs_dir / artifact.path
+                    filename=self.libs_dir / artifact.path,
+                    meta=artifact.path
                 ))
 
         await super().process_one(files)

@@ -17,7 +17,7 @@ class VersionsDirectory:
         return list(
             map(lambda x: InstanceDirectory(x),
                 filter(
-                    lambda x: x.is_dir() and (not skip_broken or InstanceDirectory(x).is_vaild()),
+                    lambda x: x.is_dir() and (not skip_broken or InstanceDirectory(x).is_valid()),
                     self.path.iterdir()
                 )))
 
@@ -25,7 +25,7 @@ class VersionsDirectory:
     def mapping(self) -> dict[str, list[InstanceDirectory]]:
         mapping = {}
         for ins in self:
-            if ins.is_vaild():
+            if ins.is_valid():
                 mapping.setdefault(ins.id, [])
                 mapping[ins.id].append(ins)
         return mapping

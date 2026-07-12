@@ -26,9 +26,9 @@ class RulesMatcher:
     def match_one(self, rule, features):
         if os := rule.os:
             if (
-                    (name := os.name) and self.os_name != name
-                    or (version := os.version) and (re.match(version, self.os_version) is None)
-                    or (arch := os.arch) and self.os_arch != arch
+                    (name := os.get('name')) and self.os_name != name
+                    or (version := os.get('version')) and (re.match(version, self.os_version) is None)
+                    or (arch := os.get('arch')) and self.os_arch != arch
             ):
                 return False
 
@@ -39,7 +39,7 @@ class RulesMatcher:
 
         return True
 
-    def match(self, rules, default=True, features=None):
+    def match(self, rules, features=None):
         features = features or {}
         last_result = None
         for rule in rules:

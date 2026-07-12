@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from app.core.resources.base import BaseDirectory
-from app.core.resources.cache import CacheManager
+from app.core.cacher.model_cacher import CacheManager
 
 
 class LauncherDataDirectory(BaseDirectory):

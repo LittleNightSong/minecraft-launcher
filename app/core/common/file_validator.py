@@ -103,7 +103,7 @@ def _validate[T](file: FileInfo[T], chunk_size: int = default_chunk_size) -> Val
                 file=file,
             )
 
-        # 再检查 fileszie
+        # 再检查 filesize
         filesize = file.size
         if filesize is not None and filesize != (real_size := os.stat(filename).st_size):
             return ValidateResult(

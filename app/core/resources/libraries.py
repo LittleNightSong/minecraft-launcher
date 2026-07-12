@@ -1,9 +1,15 @@
 import copy
 import os.path
+import typing
 from os import PathLike
 from pathlib import Path
+from typing import Iterable
 
-from app.core.resources.base import BaseDirectory
+from app.core.resources.base import BaseDirectory, RulesMatcher
+
+if typing.TYPE_CHECKING:
+    from app.core.minecraft.model_version_meta import LibraryStruct
+    from app.core.common import FileInfo
 
 
 class Library:
@@ -127,3 +133,21 @@ class LibrariesDirectory(BaseDirectory):
     # @trace
     async def check(self, name, hash, size=None):
         return self.library(name).check(hash, size)
+
+    def get_library_files(self, libraries: Iterable[LibraryStruct], matcher: RulesMatcher) -> list[FileInfo]:
+        """
+        获取当前平台所需的所有依赖库的文件, 包括 natives 库 (如果有的话)
+        :param libraries: 依赖库模型结构体
+        :param matcher: 规则匹配器对象
+        :return: 所需文件的 FileInfo 对象列表
+        """
+        from app.core.common import FileInfo
+        return [
+            FileInfo.from_downloads_struct(
+                downloads=dl,
+                filename=self / dl.path,
+                meta=dl.path
+            )
+            for lib in libraries
+            for dl in lib.collect_files(matcher)
+        ]

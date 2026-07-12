@@ -24,16 +24,17 @@ from app.core.common.timer import SimpleStopWatch
 from app.core.i18n import tr
 from app.core.minecraft import VersionManifestModel, VersionMetaModel, AssetIndexModel
 from app.core.minecraft.api import MinecraftAPI
+from app.core.minecraft.mc_version_lang import parse
 from app.core.network import Session
 from app.core.network.downloader import Downloader
 from app.core.resources.base import rules_matcher
-from app.core.resources.cache import CacheManager
+from app.core.cacher.model_cacher import CacheManager
+from app.core.resources.instance import InstanceDirectory
 from app.core.resources.repository import Repository
 from app.implements.workers import LibrariesChecker, AssetsChecker
 from app.implements.workers.common_files import CommonFileChecker
 from app.interfaces.command.command import Command
 from app.interfaces.command.common import typer_app, console
-from app.core.minecraft.mc_version_lang import parse
 from app.interfaces.command.methods import find_repo, call_and_cache, check_or_call
 from app.interfaces.command.tty_task_viewer import TTYTaskViewer
 
@@ -56,7 +57,7 @@ class InstallCommand(Command, app=typer_app):
 
     async def process_single_version(
             self,
-            url, version_id: str, localname: str
+            url, version_id: str, instance_dir: InstanceDirectory
     ):
 
         version_meta = await call_and_cache(
@@ -69,19 +70,16 @@ class InstallCommand(Command, app=typer_app):
 
         self.task_version_meta += 1  # 更新进度
 
-        insdir = self.repo.versions.instance(localname)
-        insdir.ensure_exists()
-
-        write_model(insdir.meta_file, version_meta)
+        write_model(instance_dir.meta_file, version_meta)
 
         # 提交依赖库文件列表
-        await self.libs_checker.submit(version_meta.libraries)
+        await self.libs_checker.submit(version_meta.get_required_libraries(matcher=rules_matcher))
 
         # 提交主文件
         await self.common_file_checker.submit(
             FileInfo.from_downloads_struct(
                 downloads=version_meta.downloads.client,
-                filename=insdir.main_file,
+                filename=instance_dir.main_file,
                 meta=version_meta.downloads.client.url
             )
         )
@@ -90,7 +88,7 @@ class InstallCommand(Command, app=typer_app):
         # await self.commonfilechecker.submit(
         #     FileInfo.from_downloads_struct(
         #         downloads=version_meta.logging.client.file,
-        #         filename=insdir
+        #         filename=ins.log_file
         #     )
         # )
 
@@ -160,7 +158,7 @@ class InstallCommand(Command, app=typer_app):
                 detail = selected['details']
                 tg.create_task(
                     self.process_single_version(
-                        detail.url, detail.id, localname=selected['name']
+                        detail.url, detail.id, instance_dir=self.repo.versions.instance(selected['name'])
                     )
                 )
 
@@ -239,7 +237,8 @@ class InstallCommand(Command, app=typer_app):
                     title=tr("发现下列无法解析的名称"),
                     style='red',
                     border_style='red'
-                )
+                ),
+                # highlight=False, markup=False
             )
             raise typer.Abort()
 
@@ -277,26 +276,26 @@ class InstallCommand(Command, app=typer_app):
             ))
             raise typer.Abort()
 
-        # 找到和本地文件冲突的版本  # TODO: 我们应该先准确匹配，看看已安装的版本和现在想要安装的版本的信息是否一致，不一致再抛出这个错误
-        if not yes and (conflics := [
-            f"[bold]{selected['name']}[/bold][dim]({selected['details'].id})[/dim]"
-
-            for selected in self.selected_versions
-            if self.repo.versions.instance(selected['name']).is_vaild()
-        ]):
-            logger.error(f"发现与本地冲突的安装需求 {conflics}, {self.selected_versions}")
-            console.print(make_multi_shower(
-                conflics,
-                title=tr("发现以下与本地名称冲突的安装需求"),
-                style='red',
-                border_style='red'
-            ))
-            console.print()
-            console.error(
-                f"{tr('也许这些实例并没有完整安装，如果想要覆盖和修复，请使用 [bold green]-y[/bold green] 参数')}")
-            raise typer.Abort()  # TODO: 这里理应询问用户是否覆盖，但我们多版本选择起来有些困难
-
-            # typer.confirm(tr("是否覆盖"))
+        # # 找到和本地文件冲突的版本  # TODO: 我们应该先准确匹配，看看已安装的版本和现在想要安装的版本的信息是否一致，不一致再抛出这个错误
+        # if not yes and (conflicts := [
+        #     f"[bold]{selected['name']}[/bold][dim]({selected['details'].id})[/dim]"
+        #
+        #     for selected in self.selected_versions
+        #     if self.repo.versions.instance(selected['name']).is_valid()
+        # ]):
+        #     logger.error(f"发现与本地冲突的安装需求 {conflicts}, {self.selected_versions}")
+        #     console.print(make_multi_shower(
+        #         conflicts,
+        #         title=tr("发现以下与本地名称冲突的安装需求"),
+        #         style='red',
+        #         border_style='red'
+        #     ))
+        #     console.print()
+        #     console.error(
+        #         f"{tr('也许这些实例并没有完整安装，如果想要覆盖和修复，请使用 [bold green]-y[/bold green] 参数')}")
+        #     raise typer.Abort()  # TODO: 这里理应询问用户是否覆盖，但我们多版本选择起来有些困难
+        #
+        #     # typer.confirm(tr("是否覆盖"))
 
         # 错误检查已经完成了
         # 可以开始真正的安装进程了
@@ -309,6 +308,7 @@ class InstallCommand(Command, app=typer_app):
         self.libs_checker = None  # 清理资源
 
         console.print(
+            '\n',
             tr(
                 "[dim]在 {ms} ms 内分析了 {count} 个文件[/dim]",
                 ms=sw.elapsed_time,
@@ -328,6 +328,8 @@ class InstallCommand(Command, app=typer_app):
         )
 
         del self.validated_libraries, self.validated_assets, self.validated_main_files  # 清理掉不在需要的数据
+
+        # console.print(required_libs)
 
         if not (required_libs or required_assets or required_main_files):  # 啥也不需要
             console.print(tr("版本已正确安装，无需更新"))
@@ -364,6 +366,9 @@ class InstallCommand(Command, app=typer_app):
             raise typer.Abort()
 
         del disk_free_size
+
+        if not yes:
+            typer.confirm(tr("是否继续?"), abort=True)
 
         self.downloader = Downloader(
             session=self.session,

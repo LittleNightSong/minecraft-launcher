@@ -5,6 +5,8 @@ import typer
 from typer import Typer
 
 from app.core.common.concurrent_ import async_run
+from app.core.common.errors import ExceptionForUser
+from app.interfaces.command.common import console
 
 
 def process_func_signature(signature):
@@ -44,8 +46,11 @@ class Command:
         async def main_wrapper(**kwargs):
             self = cls()
             async with self:
-                await self.init(**kwargs)
-                return await main(self, **kwargs)
+                try:
+                    await self.init(**kwargs)
+                    return await main(self, **kwargs)
+                except ExceptionForUser as rfu_exc:
+                    console.error(str(rfu_exc))
 
         def run_main(**kwargs):
             return async_run(main_wrapper(**kwargs))

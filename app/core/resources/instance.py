@@ -1,18 +1,8 @@
 from pathlib import Path
 
-import msgspec
-
 from app.core.common import read_model, write_model
 from app.core.minecraft import VersionMetaModel
 from app.core.resources.base import BaseDirectory
-
-
-class InstanceInfo(msgspec.Struct, kw_only=True):
-    name: str
-    mc_version: str
-
-    # loader: str  # TODO: Mod Loader Support
-    # loader_version: str
 
 
 class InstanceDirectory(BaseDirectory):
@@ -32,7 +22,7 @@ class InstanceDirectory(BaseDirectory):
 
         self._meta_file = self.path / (self.path.name + '.json')
         self._main_file = self.path / (self.path.name + '.jar')
-        self._info_file = self.path / (self.path.name + '.insmeta.json')
+        # self._info_file = self.path / '.minecraft-version'  # TODO
 
     @property
     def version_meta(self):
@@ -45,18 +35,6 @@ class InstanceDirectory(BaseDirectory):
     def version_meta(self, value):
         self._version_meta = value
         write_model(self.meta_file, value)
-
-    @property
-    def ins_info(self):
-        if self._ins_info is None:
-            self._ins_info = read_model(self.info_file, InstanceInfo)
-
-        return self._ins_info
-
-    @ins_info.setter
-    def ins_info(self, value):
-        self._ins_info = value
-        write_model(self.info_file, value)
 
     @property
     def name(self):
@@ -78,5 +56,49 @@ class InstanceDirectory(BaseDirectory):
     def natives_dir(self):
         return self.path / (self.name + '-natives')
 
-    def is_vaild(self):
+    @property
+    def screenshots_dir(self):
+        return self.path / 'screenshots'
+
+    @property
+    def logs_dir(self):
+        return self.path / 'logs'
+
+    @property
+    def resourcepacks_dir(self):
+        return self.path / 'resourcepacks'
+
+    @property
+    def shaderpacks_dir(self):
+        return self.path / 'shaderpacks'
+
+    @property
+    def saves_dir(self):
+        return self.path / 'saves'
+
+    @property
+    def mods_dir(self):
+        return self.path / 'mods'
+
+    def is_valid(self):
         return (self.path / (self.path.name + '.json')).exists()
+
+    @property
+    def screenshots(self):
+        return list(self.screenshots_dir.iterdir())
+
+    @property
+    def disabled_mods(self):
+        return [i for i in self.mods_dir.glob('*.jar.disabled') if i.is_file()]
+
+    @property
+    def enabled_mods(self):
+        return [i for i in self.mods_dir.glob('*.jar') if i.is_file()]
+
+    @property
+    def all_mods(self):
+        return self.enabled_mods + self.disabled_mods
+
+    @property
+    def saves(self):
+        return [i for i in self.saves_dir.iterdir() if i.is_dir()]

@@ -4,83 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="Forth Add">
-      <change afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/file_validator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/files/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/files/aio.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/files/os_extensions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/files/sio.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/flow.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/sync_utils.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/task.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/timer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/worker.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/common/zzipfile.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/java/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/java/process_builder.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/memory_allocator.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/api.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/base_models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/features.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/launch_context.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/mc_version_lang.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/model_asset_index.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_manifest.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_meta.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/network/downloader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/network/session.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/resources/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/router/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/implements/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/implements/workers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/implements/workers/assets.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/implements/workers/common_files.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/implements/workers/libraries.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/command/command.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/session_call.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_get_versionmeta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="Fifth Add">
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/cacher/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/cacher/obj_cacher.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/common/errors.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/core/minecraft/methods.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/concurrent_.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/concurrent_.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/filesize.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/filesize.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/hash_computer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/signal.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/signal.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/common/tasks.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/i18n/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/i18n/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/i18n/translator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/i18n/translator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/common/file_validator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/file_validator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/common/files/aio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/files/aio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/base_models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/base_models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/features.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/launch_context.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/launch_context.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/mc_version_lang.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/mc_version_lang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_asset_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_asset_index.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_version_manifest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_manifest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_version_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_meta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/minecraft/version_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/minecraft_version.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/network/downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/downloader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/network/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/cacher/model_cacher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/instance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/launcher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/libraries.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/resources/versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/versions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/implements/workers/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/implements/workers/libraries.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_launch.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/ac_list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/command/command.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/command.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/command/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/shell.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/shell.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/tty_task_viewer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/command/tty_task_viewer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/minecraft/version_parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/version_parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/network/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/network/download_task.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/download_task.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/network/session.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/cache.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/instance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/launcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/libraries.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/resources/versions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/router/router.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/router/router.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/cli.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/launch_vanilla.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/typer_command.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,61 +81,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0004916777916542" />
-      <entry key="MS500" value="1.2342580486218135" />
-      <entry key="S2" value="2.490802236904776" />
-      <entry key="S5" value="4.539642614112571" />
-      <entry key="S10" value="7.494679172600031" />
-      <entry key="S30" value="16.140583822622375" />
-      <entry key="S60" value="25.921472919579287" />
-      <entry key="M2" value="39.76997861257184" />
-      <entry key="M5" value="68.0511548020597" />
-      <entry key="M10" value="119.95131224362464" />
-      <entry key="M15" value="173.2197502803221" />
-      <entry key="M30" value="324.3222770259372" />
-      <entry key="H1" value="595.0846879670286" />
-      <entry key="H2" value="1094.6056741939997" />
-      <entry key="H4" value="1986.4281229160988" />
-      <entry key="D1" value="4480.252902551788" />
-      <entry key="W1" value="5334.940466736464" />
+      <entry key="MS100" value="1.0077403600936838" />
+      <entry key="MS500" value="1.7836381390244684" />
+      <entry key="S2" value="3.511125946901012" />
+      <entry key="S5" value="4.364305907306948" />
+      <entry key="S10" value="5.3345396855565514" />
+      <entry key="S30" value="11.401945514187705" />
+      <entry key="S60" value="21.640238838102796" />
+      <entry key="M2" value="41.15921657716287" />
+      <entry key="M5" value="85.59558443245143" />
+      <entry key="M10" value="141.59418008023286" />
+      <entry key="M15" value="196.5011900646002" />
+      <entry key="M30" value="347.22047940274456" />
+      <entry key="H1" value="617.0874794964702" />
+      <entry key="H2" value="1182.8088736394345" />
+      <entry key="H4" value="2249.532353337337" />
+      <entry key="D1" value="5888.977557867479" />
+      <entry key="W1" value="7365.173692442375" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="6.307172225591809E-14" />
-      <entry key="MS500" value="0.002290694010580996" />
-      <entry key="S2" value="0.227349157677292" />
-      <entry key="S5" value="0.7727233255324815" />
-      <entry key="S10" value="1.5380528047559763" />
-      <entry key="S30" value="4.752676957270148" />
-      <entry key="S60" value="8.78105871263074" />
-      <entry key="M2" value="13.389326523898069" />
-      <entry key="M5" value="20.69413736163704" />
-      <entry key="M10" value="33.3229257710041" />
-      <entry key="M15" value="45.83062130740194" />
-      <entry key="M30" value="79.43589882260252" />
-      <entry key="H1" value="136.58283526255843" />
-      <entry key="H2" value="244.5139300847834" />
-      <entry key="H4" value="450.4887027164455" />
-      <entry key="D1" value="1054.8007998235842" />
-      <entry key="W1" value="1265.647697003399" />
+      <entry key="MS100" value="1.5323561383631847E-143" />
+      <entry key="MS500" value="3.080393660167709E-29" />
+      <entry key="S2" value="1.545918848197083E-7" />
+      <entry key="S5" value="0.00459098873002033" />
+      <entry key="S10" value="0.15220124003135793" />
+      <entry key="S30" value="1.8479446318209052" />
+      <entry key="S60" value="3.998159664789901" />
+      <entry key="M2" value="7.3027147625524815" />
+      <entry key="M5" value="16.248716125831507" />
+      <entry key="M10" value="28.93552246057056" />
+      <entry key="M15" value="41.07935026365876" />
+      <entry key="M30" value="74.08344583526538" />
+      <entry key="H1" value="124.55864428690066" />
+      <entry key="H2" value="218.14717512895675" />
+      <entry key="H4" value="414.84371758096853" />
+      <entry key="D1" value="1200.7561848049472" />
+      <entry key="W1" value="1538.985055183425" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.0036955389670616443" />
-      <entry key="MS500" value="0.356002600562915" />
-      <entry key="S2" value="2.0637643146566527" />
-      <entry key="S5" value="4.889932665472837" />
-      <entry key="S10" value="8.72506472077435" />
-      <entry key="S30" value="20.643604160823" />
-      <entry key="S60" value="34.477048963436914" />
-      <entry key="M2" value="52.98239136624714" />
-      <entry key="M5" value="88.62632025346669" />
-      <entry key="M10" value="153.17275584401366" />
-      <entry key="M15" value="218.95583965437797" />
-      <entry key="M30" value="403.67634198882854" />
-      <entry key="H1" value="731.598870225423" />
-      <entry key="H2" value="1339.0600422002221" />
-      <entry key="H4" value="2436.8627628040026" />
-      <entry key="D1" value="5535.032614982724" />
-      <entry key="W1" value="6600.584545129548" />
+      <entry key="MS100" value="0.008069314522667478" />
+      <entry key="MS500" value="0.8215494691305877" />
+      <entry key="S2" value="2.925498641558816" />
+      <entry key="S5" value="4.067214898088833" />
+      <entry key="S10" value="5.299452305265107" />
+      <entry key="S30" value="13.0917942529445" />
+      <entry key="S60" value="25.489875342668398" />
+      <entry key="M2" value="48.33426781565608" />
+      <entry key="M5" value="101.7431629641751" />
+      <entry key="M10" value="170.44509953729548" />
+      <entry key="M15" value="237.50152384242733" />
+      <entry key="M30" value="421.2332590987072" />
+      <entry key="H1" value="741.586384833873" />
+      <entry key="H2" value="1400.90298374055" />
+      <entry key="H4" value="2664.325531734587" />
+      <entry key="D1" value="7089.709477322848" />
+      <entry key="W1" value="8904.154306750495" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -245,14 +203,14 @@
       <recent name="E:\.projects\minecraft-launcher\app\router" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\app\core\cacher" />
       <recent name="E:\.projects\minecraft-launcher\app\core\common\files" />
       <recent name="E:\.projects\minecraft-launcher\app\core\minecraft" />
       <recent name="E:\.projects\minecraft-launcher\app\core" />
       <recent name="E:\.projects\minecraft-launcher\app\router\descs" />
-      <recent name="E:\.projects\minecraft-launcher" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_get_versionmeta">
+  <component name="RunManager" selected="Python.mc_version_lang">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -437,10 +395,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.mc_version_lang" />
         <item itemvalue="Python.test_get_versionmeta" />
         <item itemvalue="Python.session_call" />
         <item itemvalue="Python.router" />
-        <item itemvalue="Python.mc_version_lang" />
         <item itemvalue="Python.test_flow" />
       </list>
     </recent_temporary>
@@ -515,7 +473,15 @@
       <option name="project" value="LOCAL" />
       <updated>1780061620016</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fifth Add">
+      <option name="closed" value="true" />
+      <created>1783756150056</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1783756150056</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -540,7 +506,8 @@
     <MESSAGE value="second add" />
     <MESSAGE value="third add" />
     <MESSAGE value="Forth Add" />
-    <option name="LAST_COMMIT_MESSAGE" value="Forth Add" />
+    <MESSAGE value="Fifth Add" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fifth Add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -29,22 +29,13 @@ class LaunchCommand(Command, app=typer_app):
 
     async def check_all_files(self, ins: InstanceDirectory, meta: VersionMetaModel):
         files = []
-        files.extend([
-            FileInfo(
-                filename=self.repo.assets / hash,
-                hash=hash,
-                size=size
-            )
-            for _, hash, size in self.repo.assets.indexes.read(meta.assets).iter_object()
-        ])
-        files.extend([
-            FileInfo.from_downloads_struct(
-                downloads=downloads,
-                filename=self.repo.libraries.path / downloads.path
-            )
-            for lib in meta.libraries
-            for downloads in lib.collect_files(rules_matcher)
-        ])
+        files.extend(
+            self.repo.assets.indexes.read(meta.assets).iter_fileinfo(assets_dir=self.repo.assets)
+        )
+        files.extend(self.repo.libraries.get_library_files(
+            matcher=rules_matcher,
+            libraries=meta.libraries
+        ))
         files.append(
             FileInfo.from_downloads_struct(
                 downloads=meta.downloads.client,
@@ -54,7 +45,7 @@ class LaunchCommand(Command, app=typer_app):
 
         return res_false_filter(
             await status(
-                asyncio.gather(*[
+                task=asyncio.gather(*[
                     self.file_validator.validate(file)
                     for file in files
                 ]),
@@ -95,7 +86,7 @@ class LaunchCommand(Command, app=typer_app):
             memmin: str | None = None,
     ):
         ins = self.repo.versions.instance(name)
-        if not ins.is_vaild():
+        if not ins.is_valid():
             console.error(tr("指定的版本不存在"))
             raise typer.Abort()
 
@@ -109,15 +100,17 @@ class LaunchCommand(Command, app=typer_app):
             raise typer.Abort()
 
         # 处理登录  # TODO: 支持正版登录和第三方登录
-        if usertype != 'offline':
-            console.error(f"不支持的用户类型 {usertype}")
-            raise typer.Abort()
+        match usertype:
+            case 'offline':
+                uuid = uuid4()
+                token = 'None Token'
+                xuid = 'none'
+                clientid = 'none'
+            case _:
+                console.error(f"不支持的用户类型 {usertype}")
+                raise typer.Abort()
 
-        else:
-            uuid = uuid4()
-            token = 'None Token'
-            xuid = 'none'
-            clientid = 'none'
+        console.print(f"登录成功, 您的用户名为 {username}, uuid={uuid}")
 
         # 拼接 classpath
         # # 首先找到所有的不是 natives 的 library 文件
@@ -154,7 +147,7 @@ class LaunchCommand(Command, app=typer_app):
         )
 
         jvm_ctx = BasicJVMContext(
-            memmin=memmin or '1024M', memmax=memmax or '2048M'
+            mem_min=memmin or '1024M', mem_max=memmax or '2048M'
         )
 
         env = ctx.to_dict()
