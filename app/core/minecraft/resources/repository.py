@@ -1,0 +1,24 @@
+from pathlib import Path
+
+from app.core.minecraft.resources import AssetsDirectory
+from app.core.minecraft.resources.base import BaseDirectory
+from app.core.minecraft.resources.launcher import LauncherDataDirectory
+from app.core.minecraft.resources import LibrariesDirectory
+from app.core.minecraft.resources.versions import VersionsDirectory
+
+
+class Repository(BaseDirectory):
+    __slots__ = ['versions', 'assets', 'libraries', 'launcher_data']
+    def __init__(self, path):
+        self.path = Path(path)
+        self.versions = VersionsDirectory(self.path / 'versions')
+        self.assets = AssetsDirectory(self.path / 'assets')
+        self.libraries = LibrariesDirectory(self.path / 'libraries')
+        self.launcher_data = LauncherDataDirectory(self.path / '.HCL')
+
+    def ensure_exists(self):
+        super().ensure_exists()
+        self.launcher_data.ensure_exists()
+        self.assets.ensure_exists()
+        self.libraries.ensure_exists()
+        self.versions.ensure_exists()

@@ -9,7 +9,7 @@ from msgspec import Struct
 
 if typing.TYPE_CHECKING:
     from app.core.common import FileInfo
-    from app.core.resources.assets import AssetsDirectory
+    from app.core.minecraft.resources import AssetsDirectory
 
 
 class _ObjectStruct(Struct):
@@ -46,7 +46,7 @@ class AssetIndexModel(Struct):
             yield k, v.hash, v.size
 
     def iter_fileinfo(self, assets_dir: AssetsDirectory):
-        from app.core.common import FileInfo
+        from app.core.models import FileInfo
 
         for k, h, s in self.iter_object():
             yield FileInfo(

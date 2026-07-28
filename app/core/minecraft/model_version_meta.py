@@ -4,17 +4,21 @@
 定义了 Minecraft 版本 JSON 文件的完整数据结构，包括版本信息、依赖库、
 启动参数、资源索引等。
 """
+import shlex
 import typing
 from datetime import datetime
 from string import Template
+from typing import Any
 
+import msgspec
 from msgspec import Struct, field
 
 from app.core.minecraft.base_models import Downloads, Rule
+from app.core.models import FileInfo
 
 if typing.TYPE_CHECKING:
-    from app.core.resources.base import RulesMatcher
-    from app.core.resources.libraries import Library
+    from app.core.minecraft.matcher import RulesMatcher
+    from app.core.models.library import Library
 
 
 class AssetIndexStruct(Downloads):
@@ -86,7 +90,7 @@ class LibraryMultiDownloadsStruct(Struct):
     classifiers: dict[str, LibraryDownloadsStruct] | None = None
 
 
-class LibraryStruct(Struct):
+class StandardLibraryStruct(Struct):
     """
     单个依赖库（Library）的完整结构定义。
 
@@ -123,29 +127,73 @@ class LibraryStruct(Struct):
         """
         return not self.rules or matcher.match(self.rules)
 
-    def collect_files(self, matcher: RulesMatcher):
+    def collect_files(self, matcher: RulesMatcher | None = None, env:dict[str, str] | None = None):
         """
         收集该库在当前平台上所有需要下载的文件。
 
         包括通用库文件和针对当前操作系统的原生库文件。
         如果该库在当前平台不被需要，则不会产生任何产出。
 
-        :param matcher: 规则匹配器实例
-        :yield: LibraryDownloadsStruct 对象，表示需要下载的库文件
+        :param matcher: 规则匹配器实例，为空表示不进行匹配
+        :param env: 环境信息，不提供则自动从 matcher 中提取
+
         """
         d = self.downloads
-        if self.rules and not matcher.match(self.rules):
+        if matcher and self.rules and not matcher.match(self.rules):
             return
 
+        env = env or matcher.env
+
+        if d.artifact:
+            yield d.artifact, self.name
+
+        if self.natives:
+            from app.core.common import template_fill
+            classifier = template_fill(self.natives[env['os']], env)
+            yield d.classifiers[classifier], f'{self.name}:{classifier}'
+
+
+class FabricLibraryStruct(Struct):
+    """
+    Fabric 专用的库结构
+
+    :ivar name: 库的 maven 坐标
+    :ivar url: maven 仓库的 base_url
+
+    :ivar md5: 文件的 MD5 校验值，可能不存在
+    :ivar sha1: 文件的 SHA-1 校验值，可能不存在
+    :ivar sha256: 文件的 SHA-256 校验值，可能不存在
+    :ivar sha512: 文件的 SHA-512 校验值，可能不存在
+    :ivar size: 文件的大小，可能不存在
+    """
+    name: str
+    url: str
+
+    md5: str | None = None
+    sha1: str | None = None
+    sha256: str | None = None
+    sha512: str | None = None
+
+    size: int | None = None
+
+    def match(self, arg):  # Fabric 的库没有 rules 这一说
+        return True
+
+    @property
+    def checksum(self) -> tuple[str, str] | None:
+        if self.sha1:  # sha1 优先，毕竟 Mojang 一致用的 sha1
+            return 'sha1', self.sha1
+        elif self.sha256:
+            return 'sha256', self.sha256
+        elif self.sha512:
+            return 'sha512', self.sha512
+        elif self.md5:
+            return 'md5', self.md5
         else:
-            if d.artifact:
-                yield d.artifact
-
-            if self.natives:
-                yield d.classifiers[matcher.os_name]
+            return None
 
 
-class LoggingFileStruct(Downloads):
+class LoggingFileStruct(Downloads):  # TODO
     """
     日志配置文件的下载信息。
 
@@ -200,7 +248,7 @@ class ArgumentsStruct(Struct):
     jvm: list[str | ArgumentsRuleStruct]
 
 
-class VersionMetaModel(Struct):
+class VersionMetaModel(Struct):  # TODO: 更宽松的 libraries 字段（支持 Fabric 的库格式）
     """
     游戏版本元数据模型。
     对应 Minecraft 官方 Launcher Meta 中的版本 JSON 文件结构。
@@ -225,7 +273,7 @@ class VersionMetaModel(Struct):
     downloads: VersionDownloadsStruct
     id: str
     java_version: JavaVersionStruct = field(name='javaVersion')
-    libraries: list[LibraryStruct]
+    raw_libraries: list[Any] = field(name='libraries')
     logging: LoggingStruct
     main_class: str = field(name='mainClass')
     minimum_launcher_version: int = field(name='minimumLauncherVersion')
@@ -236,7 +284,18 @@ class VersionMetaModel(Struct):
     _legacy_arguments: str | None = field(default=None, name='minecraftArguments')
     _modern_arguments: ArgumentsStruct | None = field(default=None, name='arguments')
 
-    def format_game_args(self, env: dict, matcher: RulesMatcher) -> list[str] | str:
+
+    @property
+    def libraries(self) -> list[StandardLibraryStruct | FabricLibraryStruct]:
+        return [
+            msgspec.convert(lib, type=StandardLibraryStruct)
+            if 'url' not in lib
+            else msgspec.convert(lib, type=FabricLibraryStruct)
+
+            for lib in self.raw_libraries
+        ]
+
+    def format_game_args(self, env: dict, matcher: RulesMatcher, features: dict[str, bool]) -> list[str] | str:
         """
         格式化游戏引擎启动参数。
 
@@ -248,32 +307,32 @@ class VersionMetaModel(Struct):
         :return: 格式化后的参数列表（现代格式）或单个字符串（旧版格式）
         :raises ValueError: 当版本数据中既没有现代参数也没有旧版参数时抛出
         """
-        if self._modern_arguments:
-            g = self._modern_arguments.game
-            args = []
-
-            for arg in g:
-                if isinstance(arg, str):
-                    args.append(Template(arg).substitute(env))
-                elif matcher.match(arg.rules):
-                    if isinstance(arg.value, str):
-                        args.append(Template(arg.value).substitute(env))
-
-                    else:
-                        args.extend([
-                            Template(sub_arg).substitute(env)
-                            for sub_arg in arg.value
-                        ])
-
-            return args
-
-        elif self._legacy_arguments:
-            return Template(self._legacy_arguments).substitute(env)
-
+        if not self._modern_arguments:
+            if self._legacy_arguments:
+                args_template = shlex.split(self._legacy_arguments)
+            else:
+                raise ValueError("Cannot find any arguments")
         else:
-            raise ValueError("Cannot find any arguments")
+            args_template = self._modern_arguments.game
 
-    def format_jvm_args(self, env: dict, matcher: RulesMatcher) -> list[str] | None:
+        args = []
+
+        for arg in args_template:
+            if isinstance(arg, str):
+                args.append(Template(arg).substitute(env))
+            elif matcher.match(arg.rules, features):
+                if isinstance(arg.value, str):
+                    args.append(Template(arg.value).substitute(env))
+
+                else:
+                    args.extend([
+                        Template(sub_arg).substitute(env)
+                        for sub_arg in arg.value
+                    ])
+
+        return args
+
+    def format_jvm_args(self, env: dict, matcher: RulesMatcher, features: dict[str, bool]) -> list[str] | None:
         """
         格式化 JVM 启动参数。
 
@@ -292,7 +351,7 @@ class VersionMetaModel(Struct):
             if isinstance(arg, str):
                 args.append(Template(arg).substitute(env))
 
-            elif matcher.match(arg.rules):
+            elif matcher.match(arg.rules, features):
                 if isinstance(arg.value, str):
                     args.append(Template(arg.value).substitute(env))
                 else:
@@ -303,7 +362,7 @@ class VersionMetaModel(Struct):
 
         return args
 
-    def get_required_libraries(self, matcher: RulesMatcher) -> list[LibraryStruct]:
+    def get_required_libraries(self, matcher: RulesMatcher) -> list[StandardLibraryStruct | FabricLibraryStruct]:
         """
         获取当前平台所需的所有依赖库。
 
@@ -316,7 +375,36 @@ class VersionMetaModel(Struct):
             if lib.match(matcher)
         ]
 
-    def get_unzip_required_libraries(self, matcher: RulesMatcher) -> list[LibraryStruct]:
+    def get_required_library_files(self, matcher: RulesMatcher) -> list[FileInfo[Library]]:
+        from app.core.minecraft.resources.libraries import Library
+        result = []
+        for lib in self.libraries:
+            if not lib.match(matcher):
+                continue
+
+            library = Library(lib.name)
+
+            if isinstance(lib, FabricLibraryStruct):
+                algorithm, hash = lib.checksum or (None, None)
+                result.append(FileInfo(
+                    filename=library.path,  # 这个只是相对路径
+                    size=lib.size,
+                    hash=hash,
+                    algorithm=algorithm,
+                    key=lib.name,
+                    meta=library
+                ))
+            elif isinstance(lib, StandardLibraryStruct):
+                result.extend([
+                    FileInfo.from_downloads_struct(downloads=dl, filename=Library(name).path, meta=Library(name).path)
+                    for dl, name in lib.collect_files(matcher=matcher)
+                ])
+            else:
+                raise TypeError(lib.__class__.__name__)
+
+        return result
+
+    def get_unzip_required_libraries(self, matcher: RulesMatcher) -> list[StandardLibraryStruct | FabricLibraryStruct]:
         """
         获取当前平台需要解压的依赖库。
 

@@ -1,29 +1,16 @@
 import base64
 import builtins
 import hashlib
-import os.path
 import time
 from collections.abc import Buffer
 from pathlib import Path
 
 import msgspec
 import xxhash
+from loguru import logger
 
 from app.core.common import write_model, read_model
-
-
-def safe_unlink(path):
-    try:
-        os.unlink(path)
-    except FileNotFoundError:
-        pass
-
-
-def safe_mkdir(path):
-    try:
-        os.mkdir(path)
-    except FileExistsError:
-        pass
+from app.core.osio import safe_unlink, safe_mkdir
 
 
 def compute_xkey(key: str, algorithm: str):
@@ -68,16 +55,6 @@ class CacheFileMetadata(msgspec.Struct):
             f.write(msgspec.msgpack.encode(self))
 
 
-# @disjoint_base
-# class BaseCacheType:
-#     def __cache_dump__(self) -> Iterable[Buffer]:
-#         ...
-#
-#     @classmethod
-#     def __cache_load__(cls, stream):
-#         ...
-
-
 class CacheEntity:
     def __init__(
             self,
@@ -89,26 +66,29 @@ class CacheEntity:
         self.key = key
         self.xkey = xkey
 
-        self.file_meta = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}.meta"
-        self.file_data = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}.data"
+        self.meta_file = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}-m"
+        self.data_file = self.cacher.path / xkey[:2] / f"{xkey}.{type_suffix}-d"
 
-        self.meta = CacheFileMetadata.safe_from_file(self.file_meta)
+        self.meta = CacheFileMetadata.safe_from_file(self.meta_file)
 
     def set_ttl(self, ttl: int | float):
         self.meta.ttl = ttl
+        logger.debug("设置 {xkey} 的 ttl={ttl}", xkey=self.xkey, ttl=ttl)
         return self
 
     def set_last_modified(self, last_modified: int | float):
+        logger.debug("设置 {xkey} 的 last_modified={last_modified}", xkey=self.xkey, last_modified=last_modified)
         self.meta.last_modified = last_modified
         return self
 
     def set_data(self, data: Buffer):
-        with open(self.file_data, 'wb') as f:
+        logger.debug("设置了 {xkey} 的 raw data", xkey=self.xkey)
+        with open(self.data_file, 'wb') as f:
             f.write(data)
 
     @property
     def files(self):
-        return self.file_meta, self.file_data
+        return self.meta_file, self.data_file
 
     def is_stale(self) -> bool:
         return self.meta.is_stale()
@@ -125,17 +105,18 @@ class CacheEntity:
         return self
 
     def cleanup(self):
-        safe_unlink(self.file_meta)
-        safe_unlink(self.file_data)
+        safe_unlink(self.meta_file)
+        safe_unlink(self.data_file)
         return self
 
     def sync_metadata(self):
         self.ensure_directory()
         write_model(
-            file=self.file_meta,
+            file=self.meta_file,
             obj=self.meta,
             encoder=msgspec.msgpack.encode
         )
+        return self
 
     def __enter__(self):
         return self
@@ -145,27 +126,38 @@ class CacheEntity:
 
 
 class CacheManager:
-    def __init__(self, root, xkey_algorithm='xxhash'):
+    def __init__(self, root, xkey_algorithm='xxhash', disabled: bool = False):
         self.path = Path(root)
         self.xkey_algorithm = xkey_algorithm
+        self.disabled = disabled
 
     def entity(self, key, suffix: str):
         xkey = compute_xkey(key, self.xkey_algorithm)
+        logger.debug("获取缓存体 {xkey}", xkey=xkey)
         return CacheEntity(self, key, xkey, suffix)
 
     def cache_files(self, key: str, type_suffix: str):
         return self.entity(key, type_suffix).files
 
-    def set(self, key, value: msgspec.Struct, ttl=-1):
-        self.entity(key, suffix='model').set_ttl(ttl).set_last_modified(time.time())
+    def set_model(self, key, value: msgspec.Struct, ttl=-1):
+        if self.disabled:
+            return None
+
+        with self.entity(key, suffix='model') as entity:
+            entity.set_ttl(ttl).set_last_modified(time.time()).set_data(
+                msgspec.msgpack.encode(value)
+            )
         return value
 
-    def get[T: 'msgspec.Struct'](self, key, type: builtins.type[T]) -> T:
+    def get_model[T](self, key, type: builtins.type[T]) -> T:
+        if self.disabled:
+            return None
+
         with self.entity(key, suffix='model') as entity:
             if entity.auto_cleanup():
                 return None
             else:
-                return read_model(entity.file_data, type)
+                return read_model(entity.data_file, type, decoder=msgspec.msgpack.decode)
 
     def ensure_exists(self):
         self.path.mkdir(parents=True, exist_ok=True)

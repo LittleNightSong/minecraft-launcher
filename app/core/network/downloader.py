@@ -8,7 +8,7 @@ from httpx import HTTPStatusError
 from loguru import logger
 
 from app.core.common.errors import ExceptionForUser, MaximumRetry
-from app.core.common.files.aio import AioFile
+from app.core.osio import AsyncOSFile
 from app.core.common.task import TaskProgress
 from app.core.network import Session
 from app.core.network.session import kb256
@@ -59,7 +59,7 @@ class Downloader:
             except FileExistsError:
                 pass
 
-            async with AioFile.open(
+            async with AsyncOSFile.open(
                     filename,
                     os.O_WRONLY | os.O_CREAT | os.O_BINARY,
                     executor=self.executor

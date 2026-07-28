@@ -5,7 +5,6 @@ Minecraft 版本解析器模块。
 支持正式版、快照版、预发布版、远古版本等多种版本格式。
 """
 
-import asyncio
 import re
 
 
@@ -51,6 +50,7 @@ class MinecraftVersion:
         # 先进行特殊版本匹配
         if v.startswith(('a', 'b', 'c', 'inf', 'rd')):
             self.type = 'old'
+            self.version = v
             return
 
         self.version = v
@@ -65,7 +65,7 @@ class MinecraftVersion:
         self.week = None
         self.suffix = None
 
-        self.type = None
+        self.type: str = None
 
         if res := self._mode_common.fullmatch(v):
             self.type = res[4] or 'release'
@@ -103,6 +103,10 @@ class MinecraftVersion:
         else:
             self.type = 'april fool'
 
+    @property
+    def simple_type(self):
+        return self.type.removesuffix('(legacy)')
+
     def __str__(self) -> str:
         """
         返回版本对象的详细字符串表示。
@@ -136,16 +140,8 @@ class MinecraftVersion:
         """
         return f'{self.__class__.__name__}({self.version})'
 
+    def __eq__(self, other):
+        return self.version == other.version
 
-if __name__ == '__main__':
-    from app.interfaces.command.methods import shell_get_version_manifest
-    from app.core.network.session import session
-
-    async def main():
-        async with session:
-            manifest = await shell_get_version_manifest()
-            for version in manifest['versions']:
-                print(f"{version['id']:20} ", end='')
-                print(MinecraftVersion(version['id']))
-
-    asyncio.run(main())
+    def __hash__(self):
+        return hash(self.version)

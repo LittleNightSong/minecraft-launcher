@@ -13,4 +13,10 @@ class MaximumRetry(Exception):
 class Conflict(Exception):
     ...
 
+class InvaildInstance(Exception):
+    ...
+
+class RepositoryNotFound(Exception):
+    ...
+
 

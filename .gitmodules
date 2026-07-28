@@ -1,0 +1,3 @@
+[submodule "app/python-codes/nbtlib"]
+	path = app/python-codes/nbtlib
+	url = https://github.com/LittleNightSong/nbtlib.git

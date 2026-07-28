@@ -1,0 +1,18 @@
+{
+  'vtype.release': 'green',
+  'vtype.april-fool': 'yellow',
+  'vtype.snapshot': 'tan',
+  'vtype.rc': 'medium_purple1',
+  'vtype.pre': 'sky_blue1',
+
+  'user-choice': 'bright_cyan',
+  'user-pre-choice': 'bright_cyan',
+  'prompt': 'bold',
+
+  'menu-item': 'bold',
+  'menu-item.selected': 'on bright_black',
+
+  'tty.option': 'bold bright_cyan',
+
+  'path': 'green'
+}

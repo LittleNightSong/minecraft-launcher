@@ -11,9 +11,10 @@ from uuid import UUID
 
 import niquests
 
-from app.core.minecraft import VersionManifestModel
 from app.core.network import Session
-from app.core.resources.libraries import Library
+from .model_version_manifest import VersionManifestModel
+from ..cacher.model_cacher import CacheManager
+from ..models.library import Library
 
 
 class MinecraftAPI:
@@ -27,13 +28,14 @@ class MinecraftAPI:
     - 玩家 UUID 查询（在线/离线）
     """
 
-    def __init__(self, session: Session):
+    def __init__(self, session: Session, cacher: CacheManager | None = None):
         """
         初始化 Minecraft API 客户端。
 
         :param session: 网络会话实例，用于发起 HTTP 请求
         """
         self.session = session
+        self.cacher = cacher
 
     async def get_version_manifest(self) -> VersionManifestModel:
         """
@@ -43,10 +45,25 @@ class MinecraftAPI:
 
         :return: 版本清单模型对象
         """
-        return await self.session.call(
-            url="https://piston-meta.mojang.com/mc/game/version_manifest_v2.json",
-            type=VersionManifestModel
-        )
+        if self.cacher is None:
+            manifest = await self.session.call(
+                url=self.version_manifest_url,
+                type=VersionManifestModel
+            )
+        else:
+            manifest = self.cacher.get_model(key='versionmeta:manifest', type=VersionManifestModel)
+            if manifest is None:
+                manifest =  await self.session.call(
+                    url=self.version_manifest_url,
+                    type=VersionManifestModel
+                )
+                self.cacher.set_model(key='versionmeta:manifest', value=manifest, ttl=300)
+
+        return manifest
+
+    @property
+    def version_manifest_url(self):
+        return "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json"
 
     def asset_url(self, hash: str) -> str:
         """
@@ -108,21 +125,20 @@ class MinecraftAPI:
         ))['id']
         return UUID(uuid_string)
 
-    async def get_uuid_by_name(self, name: str, fallback: bool = True) -> UUID:
+    async def get_uuid_by_name(self, name: str) -> UUID:
         """
         获取玩家 UUID，支持在线查询和离线回退。
 
         优先尝试在线查询，如果失败且允许回退，则生成离线 UUID。
 
         :param name: 玩家名称
-        :param fallback: 是否允许在在线查询失败时回退到离线模式，默认为 True
         :return: 玩家的 UUID
-        :raises niquests.HTTPError: 当在线查询失败且不允许回退时抛出
+        :raises niquests.HTTPError: 当在线查询失败且非无此用户的问题时抛出
         """
         try:
             return await self.get_uuid_by_name_online(name)
         except niquests.HTTPError as e:
-            if e.response.status_code == 404 and fallback:
+            if e.response.status_code == 404:
                 return self.get_uuid_by_name_offline(name)
             else:
                 raise e

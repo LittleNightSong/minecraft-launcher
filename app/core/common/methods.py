@@ -1,6 +1,8 @@
 import functools
 import os
 import shutil
+from string import Template
+from typing import Callable
 
 import msgspec
 
@@ -13,22 +15,35 @@ def as_async(func):
     return wrapper
 
 
-def read_json(file):
-    with open(file, 'rb') as f:
-        return msgspec.json.decode(f.read())
+def read_model[T](
+        file, type: type[T],
+        decoder=None,
+        default: T =...,
+        default_factory: Callable[[], T] = ...
+) -> T:
+    try:
+        with open(file, 'rb') as f:
+            return (decoder or msgspec.json.decode)(f.read(), type=type)
+    except (FileNotFoundError, PermissionError, msgspec.ValidationError) as e:
+        if default is not ...:
+            return default
+        elif default_factory is not ...:
+            return default_factory()
+        else:
+            raise e
 
 
-def write_json(file, obj):
+def write_model(file, obj, encoder=None):
     with open(file, 'wb') as f:
-        f.write(msgspec.json.encode(obj))
+        f.write((encoder or msgspec.json.encode)(obj))
 
 
-def read_model[T](file, model: type[T], decoder=None) -> T:
+def read_object(file, decoder=None):
     with open(file, 'rb') as f:
-        return (decoder or msgspec.json.decode)(f.read(), type=model)
+        return (decoder or msgspec.json.decode)(f.read())
 
 
-def write_model(file, obj: msgspec.Struct, encoder=None):
+def write_object(file, obj, encoder=None):
     with open(file, 'wb') as f:
         f.write((encoder or msgspec.json.encode)(obj))
 
@@ -106,3 +121,10 @@ def fastcopy(src: os.PathLike[str], dest: os.PathLike[str]):
 
     # 使用 copytree 的 dirs_exist_ok (Python 3.8+)
     shutil.copytree(src, dest, copy_function=copy_func, dirs_exist_ok=True)
+
+
+def template_fill(__tmpl, __mapping=None, **kwargs):
+    if __mapping is None:
+        __mapping = {}
+
+    return Template(__tmpl).substitute(__mapping, **kwargs)

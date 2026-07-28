@@ -1,31 +1,39 @@
-import os
 from datetime import datetime
 
 import rich.traceback
 from loguru import logger
 
-# DO NOT REMOVE THESE
-import app.interfaces.command.ac_install  # type: ignore
-import app.interfaces.command.ac_launch  # type: ignore
-import app.interfaces.command.ac_list  # type: ignore
-from app.interfaces.command import typer_app
+from app.core.common import app_dirs
+from app.core.configs import cfg
+from app.interfaces.commandline import typer_app
 
-# from app.interfaces.command.common import console
-
-# END
-
-# console.print("PID:", os.getpid())
+import app.core.async_backend as lp
 
 rich.traceback.install(show_locals=True, locals_max_depth=10000, locals_max_length=10000)
-logger.remove()
 
+logger.remove()
 logger.add(
     'logs/app.log',
-    rotation='1 day',
-    compression='zip',
+    rotation='8 MB',
+    retention='30 days',
+
+    compression='zip'
 )
 
+cfg.set_path(app_dirs.user_config_dir)
+cfg.load()
+
+lp.set_event_loop()  # 不设置, 默认创建高性能的 UVLoop
+
+import app.interfaces.commandline.commands  # type: ignore
+
 if __name__ == '__main__':
-    # logger.log('', '\n\n\n')
     logger.info(f"程序已启动 [{datetime.now()}]")
-    typer_app()
+    try:
+        typer_app()
+    except Exception as e:
+        logger.opt(exception=e)
+        raise e
+
+    finally:
+        cfg.save()

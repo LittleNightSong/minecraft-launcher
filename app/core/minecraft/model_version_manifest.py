@@ -5,9 +5,12 @@
 """
 
 from datetime import datetime
+from typing import Generator
 
 from msgspec import Struct, field
 from typing_extensions import Literal
+
+from .minecraft_version import MinecraftVersion
 
 
 class LatestStruct(Struct):
@@ -54,6 +57,21 @@ class VersionManifestModel(Struct):
     latest: LatestStruct
     versions: list[VersionItemStruct]
 
+    @property
+    def latest_items(self) -> Generator[VersionItemStruct, None, None]:
+        cnt = 0
+        for v in self.versions:
+            if cnt == 2:
+                return
+            if v.id == self.latest.release:
+                yield v
+                cnt += 1
+                continue
+            if v.id == self.latest.snapshot:
+                yield v
+                cnt += 1
+                continue
+
     def find(self, id: str, type: Literal['all', 'snapshot', 'release'] = 'all') -> VersionItemStruct | None:
         """
         在版本清单中查找指定 ID 的版本。
@@ -62,7 +80,7 @@ class VersionManifestModel(Struct):
         :param type: 版本类型过滤，'all' 表示不过滤
         :return: 找到的版本条目，未找到则返回 None
         """
-        for v in self.versions:
+        for v in self:
             if type != 'all' and v.type != type:
                 continue
 
@@ -77,4 +95,41 @@ class VersionManifestModel(Struct):
 
         :return: 字典，键为版本 ID，值为对应的版本条目
         """
-        return {v.id: v for v in self.versions}
+        return {v.id: v for v in self}
+
+    def separate(self, merge_snapshots=True) -> dict[str, list[MinecraftVersion]]:
+        """
+        分解清单文件
+        返回一个字典
+        包含一下字段:
+
+        - rc
+        - pre
+        - snapshot
+        - release
+        - april fool
+        - old
+        """
+        version_groups = {
+            'rc': [],
+            'pre': [],
+            'snapshot': [],
+            'snapshot(legacy)': [],
+            'release': [],
+            'april fool': [],
+            'old': [],
+        }
+
+        if not merge_snapshots:
+            for v in self:
+                mc_version = MinecraftVersion(v.id)
+                version_groups[mc_version.type].append(mc_version)
+        else:
+            for v in self:
+                mc_version = MinecraftVersion(v.id)
+                version_groups[mc_version.type.removesuffix('(legacy)')].append(mc_version)
+
+        return version_groups
+
+    def __iter__(self):
+        return iter(self.versions)
