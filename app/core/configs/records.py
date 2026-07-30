@@ -9,7 +9,7 @@ from app.core.java.detector import search_java
 
 class RepositoryRecord(msgspec.Struct):
     name: str
-    path: Path
+    path: str
 
 
 class UserIDRecord(msgspec.Struct):

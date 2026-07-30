@@ -1,7 +1,6 @@
 import asyncio
 import shutil
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
 
 import typer
 from tqdm.asyncio import tqdm
@@ -14,15 +13,17 @@ from app.interfaces.commandline.base.methods import find_repository, make_multi_
 
 # noinspection PyAttributeOutsideInit
 class RemoveCommand(Command):
-    async def init(self, repo_path, **kwargs):
-        self.minecraft = find_repository(repo_path, raise_for_unset=True)
+    name = 'remove'
+
+    async def init(self, repo_path):
+        self.minecraft = find_repository(repo_path, abort=True)
         self.loop = asyncio.get_event_loop()
 
     async def main(
             self,
             names: list[str],
             *,
-            repo_path: str | Path | None = typer.Option(None, '-r', '--repo'),
+            repo_path: str | None = typer.Option(None, '-r', '--repo'),
             max_threads: int = typer.Option(4, '-t', '--max-threads'),
             yes: bool = typer.Option(False, '-y', '--yes'),
     ):

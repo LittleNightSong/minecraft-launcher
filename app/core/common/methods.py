@@ -24,7 +24,7 @@ def read_model[T](
     try:
         with open(file, 'rb') as f:
             return (decoder or msgspec.json.decode)(f.read(), type=type)
-    except (FileNotFoundError, PermissionError, msgspec.ValidationError) as e:
+    except (FileNotFoundError, PermissionError, msgspec.ValidationError, msgspec.DecodeError) as e:
         if default is not ...:
             return default
         elif default_factory is not ...:

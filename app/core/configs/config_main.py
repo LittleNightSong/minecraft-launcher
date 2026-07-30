@@ -10,10 +10,10 @@ from .records import RepositoryRecord, UserIDRecord, JavaRecord, ServerRecord
 
 class RepositoriesModel(msgspec.Struct):
     latest: str | None = None
-    history: list[RepositoryRecord] = msgspec.field(default_factory=list)
+    repository_list: list[RepositoryRecord] = msgspec.field(default_factory=list)
 
     def search(self, name: str) -> tuple[RepositoryRecord, int] | None:
-        for i, record in enumerate(self.history):
+        for i, record in enumerate(self.repository_list):
             if record.name == name:
                 return record, i
         return None
@@ -25,23 +25,23 @@ class RepositoriesModel(msgspec.Struct):
         else:
             raise ValueError(f"Repository {name} not found")
 
-    def add(self, name: str, path: Path):
+    def add(self, name: str, path: str):
         result = self.search(name)
         if result is not None:
-            self.history.pop(result[1])
+            self.repository_list.pop(result[1])
 
-        self.history.append(RepositoryRecord(name, path))
+        self.repository_list.append(RepositoryRecord(name, path))
 
     def remove(self, name: str):
         result = self.search(name)
         if result is not None:
-            self.history.pop(result[1])
+            self.repository_list.pop(result[1])
             if self.latest == name:
-                self.latest = self.history[-1].name  # 重设 latest 字段
+                self.latest = self.repository_list[-1].name  # 重设 latest 字段
         else:
             raise ValueError(f"Repository {name} not found")
 
-    def set_latest(self, name: str, path: Path | None = None):
+    def set_current(self, name: str, path: str | None = None):
         if self.search(name) is None:
             if path:
                 self.add(name, path)
@@ -50,10 +50,10 @@ class RepositoriesModel(msgspec.Struct):
 
         self.latest = name
 
-    def get_latest(self) -> RepositoryRecord | None:
+    def get_current(self) -> RepositoryRecord | None:
         if self.latest is None:
-            if self.history:
-                record = self.history[-1]
+            if self.repository_list:
+                record = self.repository_list[-1]
                 self.latest = record.name
                 return record
             else:
@@ -128,16 +128,25 @@ class Config:
         )
 
     def get_selected_repository(self) -> RepositoryRecord | None:
-        return self._cfg.repositorys.get_latest()
+        return self._cfg.repositorys.get_current()
 
     def set_selected_repository(self, name, path: Path | None = None):
-        self._cfg.repositorys.set_latest(name, path)
+        self._cfg.repositorys.set_current(name, str(path))
 
     def add_repository(self, name: str, path: Path):
-        self._cfg.repositorys.add(name, path)
+        self._cfg.repositorys.add(name, str(path))
 
     def remove_repository(self, name: str):
         self._cfg.repositorys.remove(name)
+
+    def exists_repository(self, name: str):
+        return bool(self._cfg.repositorys.search(name))
+
+    def get_repository(self, name: str):
+        return self._cfg.repositorys.get(name)
+
+    def list_repositories(self):
+        return list(self._cfg.repositorys.repository_list)
 
     def add_java(self, path, type, major):
         self._cfg.javas.add(JavaRecord(path, type, major))

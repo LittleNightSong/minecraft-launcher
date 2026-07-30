@@ -1,5 +1,4 @@
 import asyncio
-from multiprocessing.managers import rebuild_as_list
 
 import typer
 from loguru import logger
@@ -12,7 +11,7 @@ from app.interfaces.commandline.base import find_repository
 from app.interfaces.commandline.base.command_base import CommandGroup
 from app.interfaces.commandline.base.console_extensions import console
 from app.interfaces.commandline.base.convert_text_component import convert as convert_text
-from app.server.pinger import ping_server
+from app.core.server import ping_server
 
 
 def safe_truediv(a, b):
@@ -183,7 +182,7 @@ class ServerCommandGroup(CommandGroup):
                 )
 
         # 然后直接调用 launch 命令
-        from app.interfaces.commandline.commands.launch import LaunchCommand
+        from app.interfaces.commandline.commands.instances_commands.launch import LaunchCommand
         await LaunchCommand.call(
             name=server.bind,  # 实例名称
             repo=minecraft.path,

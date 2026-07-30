@@ -198,8 +198,8 @@ class InstallCommand(Command):
         ]
 
     # ----------------------------------------------------------------------------------------------------
-    async def init(self, no_cache, repo_path, max_threads, timeout, **kwargs):
-        self.repo: Repository = find_repository(repo_path, raise_for_unset=True)
+    async def init(self, no_cache, repo_path, max_threads, timeout):
+        self.repo: Repository = find_repository(repo_path, abort=True)
         self.repo.ensure_exists()
 
         self.no_cache = no_cache

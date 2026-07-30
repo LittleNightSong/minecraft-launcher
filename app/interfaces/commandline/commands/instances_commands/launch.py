@@ -20,9 +20,9 @@ from app.core.java.size import parse
 from app.core.memory_allocator import MemoryAllocator
 from app.core.minecraft import VersionMetaModel, rules_matcher
 from app.core.minecraft.api import MinecraftAPI
-from app.core.models.launch_context import LaunchContext, BasicJVMContext
 from app.core.minecraft.resources import InstanceDirectory
 from app.core.models import FileInfo
+from app.core.models.launch_context import LaunchContext, BasicJVMContext
 from app.core.network import Session
 from app.core.process_builder import ProcessBuilder
 from app.interfaces.commandline import typer_app
@@ -81,7 +81,7 @@ class LaunchCommand(Command, app=typer_app):
         await asyncio.gather(*tasks)
 
     async def init(self, repo):
-        self.repo = find_repository(repo, raise_for_unset=True)
+        self.repo = find_repository(repo, abort=True)
         self.pool = ThreadPoolExecutor(max_workers=32)
         self.file_validator = FileValidator(executor=self.pool)
         self.session = Session()
@@ -97,7 +97,7 @@ class LaunchCommand(Command, app=typer_app):
             memmax: str | None = typer.Option(None, '-M', '--memmax'),
             memmin: str | None = typer.Option(None, '-m', '--memmin'),
 
-            quick_play: str | None = None,
+            quick_play: str | None = typer.Option(None, '-q', '--quick-play'),
 
             show_args: bool = False, show_uuid: bool = False
     ):
@@ -129,12 +129,7 @@ class LaunchCommand(Command, app=typer_app):
             raise typer.Abort()
 
         if username is None:
-            username = console.prompt("输入游玩时使用的用户名", suffix='：')
-
-            if not username:
-                console.error(tr("无效的用户名"))
-                raise typer.Abort()
-
+            username = console.prompt("输入游玩时使用的用户名：", abort=True)
 
         # 检查一下名字的长度
         if len(username) > 16:  # 1.20.3 起限制长度只能是 16 字符, 我们这里可能接触到快照版, 不好判断, 干脆不处理了...
@@ -208,7 +203,9 @@ class LaunchCommand(Command, app=typer_app):
                     ctx.quick_play_multi_player = value
                 case 'realm':
                     ctx.quick_play_realms = value
-
+                case _:
+                    console.error(tr("不支持的快速启动目标类型：{}", type_))
+                    raise typer.Abort()
 
         features = ctx.generate_features().to_dict()
         env = ctx.to_dict()

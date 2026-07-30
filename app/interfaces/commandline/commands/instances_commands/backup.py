@@ -38,14 +38,14 @@ def safe_rwrite(w: zipfile.ZipFile, dir):
 class BackupCommand(Command):
     name = 'backup'
 
-    async def init(self, repo, name, output, **kwargs):
-        self.repo = find_repository(repo, ask=False, raise_for_unset=True)
+    async def init(self, repo, name, output):
+        self.repo = find_repository(repo, abort=True)
         self.instance = self.repo.versions.instance(name)
         self.output = Path(output or f'{name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.zip')
 
     async def main(
             self,
-            name: str,*,
+            name: str, *,
             output: Path | None = typer.Option(None, '-o', '--output'),
             yes: bool = False,
 
@@ -86,7 +86,6 @@ class BackupCommand(Command):
 
             if srpacks:
                 safe_rwrite(z, self.instance.shaderpacks_dir)
-
 
             # 随后添加元数据
             version_meta = self.instance.version_meta

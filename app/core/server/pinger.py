@@ -4,7 +4,7 @@ import time
 import msgspec
 
 from app.core.models.server_meta import ServerMeta
-from app.server.protocol import encode_ping, encode_handshake, encode_status_request, decode_status_response, \
+from app.core.server.protocol import encode_ping, encode_handshake, encode_status_request, decode_status_response, \
     encode_varint
 
 

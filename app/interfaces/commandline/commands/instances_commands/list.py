@@ -40,7 +40,7 @@ class ListCommand(Command, app=typer_app):
             type: Literal['release', 'snapshot', 'all'] | None = typer.Option(None, '-t', "--type"),
             full: bool = typer.Option(False, '-f', '--full')
     ):
-        minecraft = find_repository(repo, ask=False)
+        minecraft = find_repository(repo)
 
         online_manifest = None
         if online:

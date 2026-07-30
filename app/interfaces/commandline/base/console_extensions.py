@@ -320,6 +320,7 @@ class MyConsole(rich.console.Console):
                     return None
 
             if not data:
+                move_up()
                 continue
 
             if validator is None:

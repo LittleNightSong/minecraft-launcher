@@ -1,2 +1,1 @@
-
-from . import install, launch, list, java, server
+from . import instances_commands, java, repo

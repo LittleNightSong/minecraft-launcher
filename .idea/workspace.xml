@@ -4,102 +4,33 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="sixth Add">
-      <change afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/configs/records.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/java/detector.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/java/size.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/matcher.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/resources/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/minecraft/resources/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/models/file.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/models/library.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/models/server_meta.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/models/text_component.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/core/osio/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/assets/themes/theme.json5" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/command_base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/console_extensions.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/convert_text_component.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/methods.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/backup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install_guide.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/java.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/remove.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/server.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/themes/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/themes/loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/python-codes/nbtlib" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/server/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/server/pinger.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/server/protocol.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="seventh Add">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/cacher/model_cacher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/cacher/model_cacher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/concurrent_.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/async_backend.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/errors.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/errors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/file_validator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/file_validator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/files/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/files/aio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/osio/aio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/files/os_extensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/osio/os_extensions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/files/sio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/osio/sio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/common/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/signal.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/sync_utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/worker.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/worker.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/java/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/java/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/java/process_builder.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/process_builder.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/features.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/features.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/launch_context.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/models/launch_context.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/mc_version_lang.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/mvl.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/methods.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/minecraft_version.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/minecraft_version.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_asset_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_asset_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_version_manifest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_manifest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/minecraft/model_version_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/model_version_meta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/network/downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/downloader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/base.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/instance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/launcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/libraries.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/resources/versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/resources/versions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/implements/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/config_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/implements/workers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/workers/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/implements/workers/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/workers/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/implements/workers/common_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/workers/common_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/implements/workers/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/workers/libraries.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_check.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/launch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/ac_list.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/command.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/common.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/methods.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/minecraft/color_code.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/shell.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/command/tty_task_viewer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/tty_task_viewer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/configs/config_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/config_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/configs/records.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/records.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/base/console_extensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/console_extensions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/base/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/methods.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/install.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install_guide.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/install_guide.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/java.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/java.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/launch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/list.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/remove.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/remove.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/nbtlib/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib/nbtlib/schema.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/poetry.lock" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/poetry.toml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib/pyproject.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/setup.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/server/pinger.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/pinger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/server/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/protocol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/cli.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,6 +51,7 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -213,83 +145,84 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.assign_speed.executor": "Run",
-    "Python.async_run_until_complete.executor": "Run",
-    "Python.cli.executor": "Run",
-    "Python.color_code.executor": "Run",
-    "Python.data_types.executor": "Run",
-    "Python.expand_speed.executor": "Run",
-    "Python.filesize.executor": "Run",
-    "Python.install_vanilla.executor": "Run",
-    "Python.mc_version_lang.executor": "Run",
-    "Python.mvl (1).executor": "Run",
-    "Python.nbt_types.executor": "Run",
-    "Python.pinger.executor": "Run",
-    "Python.read_nbt.executor": "Run",
-    "Python.rich_output.executor": "Run",
-    "Python.router.executor": "Run",
-    "Python.run.executor": "Run",
-    "Python.session_call.executor": "Run",
-    "Python.shell.executor": "Debug",
-    "Python.something_bad.executor": "Run",
-    "Python.sources_loader.executor": "Run",
-    "Python.test_auto_convert.executor": "Run",
-    "Python.test_command_group.executor": "Run",
-    "Python.test_console.executor": "Run",
-    "Python.test_console_menu.executor": "Run",
-    "Python.test_flow.executor": "Run",
-    "Python.test_get_versionmeta.executor": "Run",
-    "Python.test_multi_context.executor": "Run",
-    "Python.test_typer_call.executor": "Run",
-    "Python.test_zstd_support.executor": "Run",
-    "Python.typer_command.executor": "Run",
-    "Python.validate_float_speed.executor": "Run",
-    "Python.version_parser.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "E:/.projects/minecraft-launcher/app/core/minecraft/nbt",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.jshint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.jshint": "",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "python.external.tools.group.settings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.assign_speed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.async_run_until_complete.executor&quot;: &quot;Run&quot;,
+    &quot;Python.cli.executor&quot;: &quot;Run&quot;,
+    &quot;Python.color_code.executor&quot;: &quot;Run&quot;,
+    &quot;Python.data_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.expand_speed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.filesize.executor&quot;: &quot;Run&quot;,
+    &quot;Python.install_vanilla.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mc_version_lang.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mvl (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.nbt_types.executor&quot;: &quot;Run&quot;,
+    &quot;Python.pinger.executor&quot;: &quot;Run&quot;,
+    &quot;Python.read_nbt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
+    &quot;Python.router.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
+    &quot;Python.session_call.executor&quot;: &quot;Run&quot;,
+    &quot;Python.shell.executor&quot;: &quot;Debug&quot;,
+    &quot;Python.something_bad.executor&quot;: &quot;Run&quot;,
+    &quot;Python.sources_loader.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_auto_convert.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_command_group.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_console.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_console_menu.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_flow.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_get_versionmeta.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_multi_context.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_typer_call.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_zstd_support.executor&quot;: &quot;Run&quot;,
+    &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
+    &quot;Python.validate_float_speed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.version_parser.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/app/interfaces/commandline/commands/launch&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;python.external.tools.group.settings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件": [
-      "Python"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件&quot;: [
+      &quot;Python&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="PyDebuggerOptionsProvider">
     <option name="myDebuggerBackend" value="PYDEVD" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands\launch" />
+      <recent name="E:\.projects\minecraft-launcher" />
       <recent name="E:\.projects\minecraft-launcher\app\core\minecraft\nbt" />
       <recent name="E:\.projects\minecraft-launcher\tests\samples" />
       <recent name="E:\.projects\minecraft-launcher\tests" />
-      <recent name="E:\.projects\minecraft-launcher\app\router" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands" />
+      <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands\instances_commands" />
+      <recent name="E:\.projects\minecraft-launcher\app\core" />
       <recent name="E:\.projects\minecraft-launcher\app\core\models" />
       <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\base" />
-      <recent name="E:\.projects\minecraft-launcher\app\core" />
-      <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\assets\themes" />
-      <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline" />
     </key>
   </component>
   <component name="RunManager" selected="Python.test_console_menu">
@@ -597,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1783850652283</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="seventh Add">
+      <option name="closed" value="true" />
+      <created>1785242570944</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1785242570944</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -624,7 +565,8 @@
     <MESSAGE value="Forth Add" />
     <MESSAGE value="Fifth Add" />
     <MESSAGE value="sixth Add" />
-    <option name="LAST_COMMIT_MESSAGE" value="sixth Add" />
+    <MESSAGE value="seventh Add" />
+    <option name="LAST_COMMIT_MESSAGE" value="seventh Add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

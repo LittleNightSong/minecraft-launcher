@@ -33,7 +33,7 @@ def _show_javas(javas_list):
     console.print(table)
 
 
-class JavaCommandGroup(CommandGroup):
+class JavaCommands(CommandGroup):
     name = 'java'
     commands = ['scan', 'show']
 
