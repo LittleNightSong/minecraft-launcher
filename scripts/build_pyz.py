@@ -5,41 +5,44 @@ from pathlib import Path
 
 sys.path.append('.')
 
-
 bootstrap_code = """
 import sys
 import zipfile
-from tqdm import tqdm
 from pathlib import Path
 
-c_extensions = {}
-unzip_all = {}
+self = Path(__file__).parent
+
+def tqdm(data):
+    total = len(data)
+    for i, item in enumerate(data):
+        yield item
+        print(f"\\rFix Dependencies {i}/{total}", end='')
+    print('\\033[2K')
 
 def bootstrap():
-    sys.path.insert(0, 'site-packages')
     
     # print(sys.argv[0])
     # 自动解压
 
-    self = Path(sys.argv[0])
     runtime_dir = Path(self).parent / '.runtime' / self.stem
     (runtime_dir / 'site-packages').mkdir(parents=True, exist_ok=True)
     
-    if runtime_dir.is_dir():
-        return
-    
     try:
-        sys.path.insert(1, str(runtime_dir))
+        sys.path.insert(0, str(runtime_dir / 'site-packages'))
+        
+        # print(sys.path)
     
         with zipfile.ZipFile(self) as f:
-            for file in tqdm(c_extensions):
-                f.extract(file, runtime_dir)
+            # file_needed = [file for file in c_extensions if not (runtime_dir / file).is_file()]
             
-            if unzip_all:
-                for file in f.namelist():
-                    # print(file)
-                    if file.startswith('site-packages'):
-                        f.extract(file, runtime_dir)
+            file_needed = [
+                file for file in f.namelist() 
+                if file.startswith('site-packages') and not (runtime_dir / file).exists()
+            ]
+            
+            if file_needed:
+                for file in tqdm(file_needed):
+                    f.extract(file, runtime_dir)
     
     except:
         import shutil
@@ -55,6 +58,7 @@ def safe_rwrite(w: zipfile.ZipFile, dir, target):
             final_path = os.path.join(target, dirpath.relative_to(dir), f)
             w.write(os.path.join(dirpath, f), final_path)
 
+
 def main():
     src_dir = './app'
     launch_script = './cli.py'
@@ -67,7 +71,8 @@ def main():
         safe_rwrite(f, os.path.join(src_dir, 'core'), '/app/core')
         safe_rwrite(f, os.path.join(
             src_dir, 'interfaces', selected_interface), f'/app/interfaces/{selected_interface}')
-        with f.open('__init__.py', 'w'): ...
+        with f.open('__init__.py', 'w'):
+            ...
         with (
             f.open('__main__.py', 'w') as fw,
             open(launch_script, 'rb') as fr
@@ -98,15 +103,10 @@ def main():
                     str(relative_path / i)
                 )
 
-
         with f.open('_bootstrap.py', 'w') as f:
             f.write(
-                bootstrap_code.format(repr(c_extensions), unzip_all).encode()
+                bootstrap_code.encode()
             )
-
-
-
-
 
 
 if __name__ == '__main__':
