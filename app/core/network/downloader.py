@@ -1,17 +1,30 @@
 import asyncio
+import dataclasses
 import os
-from asyncio import Semaphore, AbstractEventLoop
+from asyncio import Semaphore
 from concurrent.futures import Executor
 from os import PathLike
+from typing import Iterable
 
-from httpx import HTTPStatusError
 from loguru import logger
+from niquests import HTTPError
 
 from app.core.common.errors import ExceptionForUser, MaximumRetry
-from app.core.osio import AsyncOSFile
 from app.core.common.task import TaskProgress
 from app.core.network import Session
 from app.core.network.session import kb256
+from app.core.osio import AsyncOSFile
+
+
+@dataclasses.dataclass()
+class DownloadPlan:
+    url: str
+
+    hash: tuple[str, str] | None = None  # 校验信息
+    size: int | None = None
+
+    targets: Iterable[str | PathLike] | None = None
+    tmp_file: str | None = None
 
 
 class Downloader:
@@ -74,7 +87,6 @@ class Downloader:
                     await f.write(chunk)
                     progress += len(chunk)
 
-
                 logger.debug(f"针对 {url!r} 的下载：流读取已完成，正在截断和同步磁盘写入")
 
                 await f.truncate(progress.progress)  # 砍掉后面的无用数据
@@ -98,7 +110,7 @@ class Downloader:
                     logger.info(f"针对 {url!r} 的下载已完成")
                 return
 
-            except HTTPStatusError as e:
+            except HTTPError as e:
                 if e.response.is_client_error:
                     logger.warning(f"针对 {url!r} 的下载：收到客户端错误，将在 {sleep_time} 后重试")
                     await asyncio.sleep(sleep_time)

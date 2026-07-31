@@ -2,10 +2,11 @@ import time
 
 import msgspec
 
-UNSET = object()
+_UNSET = object()
 
 
 class ObjCacher:
+    UNSET = _UNSET
     def __init__(self):
         self.cache = {}
 
@@ -25,9 +26,9 @@ class ObjCacher:
                 return entity['value']
             else:
                 del self.cache[key]  # 已经失效,自动清理
-                return UNSET
+                return _UNSET
         else:
-            return UNSET
+            return _UNSET
 
     def remove(self, key: str):
         if key in self.cache:

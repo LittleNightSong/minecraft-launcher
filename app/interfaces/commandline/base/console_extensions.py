@@ -296,7 +296,7 @@ class MyConsole(rich.console.Console):
         def show_success(data):
             move_up()
             clear_line()
-            self.print(f"✅ [bold]{prompt}[/bold]{suffix}[reset][user-choice]{rich.markup.escape(data)}[/][/reset]",
+            self.print(f"[green]✔[/] [bold]{prompt}[/bold]{suffix}[reset][user-choice]{rich.markup.escape(data)}[/][/reset]",
                        end='')
 
         def clear_line():

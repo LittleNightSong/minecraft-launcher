@@ -152,7 +152,7 @@ class LaunchCommand(Command, app=typer_app):
                 console.error(f"不支持的用户类型 {usertype}")
                 raise typer.Abort()
 
-        console.print(f"登录成功 (模式 {usertype}), 您的用户名为 {username}")
+        console.print(f"登录成功 (模式 [yellow bold]{usertype}[/]), 您的用户名为 {username}")
         if show_uuid:
             console.print(tr("[dim]UUID={}[/dim]", uuid))
 
@@ -274,8 +274,11 @@ class LaunchCommand(Command, app=typer_app):
 
         pb <<= chosen_java.javaw_path()  # 设置 java executable
 
-        console.print(tr("已选择位于 [path]\"{}\"[/] 的 java", chosen_java.path))
-        console.tip(tr("Java 主版本: {}", chosen_java.major))
+        console.print(tr(
+            "已选择位于 [path]\"{}\"[/] 的 [yellow]java {}[/]", chosen_java.path, chosen_java.major),
+            highlight=False
+        )
+        # console.tip(tr("Java 主版本: {}", chosen_java.major))
 
         jvm_arguments = meta.format_jvm_args(env, rules_matcher, features)  # 获取 jvm 参数
         # print(jvm_arguments)
@@ -307,7 +310,10 @@ class LaunchCommand(Command, app=typer_app):
         if show_args:
             console.print(pb.args)
 
+
         ps = await pb.run()
+        console.print(tr(r"进程 \[PID {}] 已启动，请等待", ps.pid))
+
         try:
             return_code = await ps.wait()
         except KeyboardInterrupt:

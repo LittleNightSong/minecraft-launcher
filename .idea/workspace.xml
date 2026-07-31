@@ -4,33 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="seventh Add">
+    <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="Eighth Add">
+      <change afterPath="$PROJECT_DIR$/app/core/osio/zipio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/minecraft-launcher.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/common/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/common/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/configs/config_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/config_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/configs/records.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/configs/records.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/cacher/obj_cacher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/cacher/obj_cacher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/network/downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/network/downloader.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/base/console_extensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/console_extensions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/base/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/base/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/backup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/install/install_guide.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/install/install_guide.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/java.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/java.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/launch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/list.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/list.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/remove.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/remove.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/nbtlib/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib/nbtlib/schema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/poetry.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/poetry.toml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/app/python-codes/nbtlib/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/server/pinger.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/pinger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/server/protocol.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/server/protocol.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/backup.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/backup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/commandline/commands/instances_commands/launch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/python-codes/nbtlib" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,61 +61,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.000001166000631" />
-      <entry key="MS500" value="1.0650638504098189" />
-      <entry key="S2" value="1.5152151056254106" />
-      <entry key="S5" value="2.1491449361875934" />
-      <entry key="S10" value="3.566701075316323" />
-      <entry key="S30" value="9.276792051462733" />
-      <entry key="S60" value="16.864065555612562" />
-      <entry key="M2" value="32.784515717606006" />
-      <entry key="M5" value="79.34111258140139" />
-      <entry key="M10" value="155.18995384538002" />
-      <entry key="M15" value="233.62079002942085" />
-      <entry key="M30" value="457.2178846549295" />
-      <entry key="H1" value="836.9830052749043" />
-      <entry key="H2" value="1497.2138631939354" />
-      <entry key="H4" value="2694.4098172951853" />
-      <entry key="D1" value="10830.278685449632" />
-      <entry key="W1" value="18878.579741837424" />
+      <entry key="MS100" value="3.9079303218327987E-50" />
+      <entry key="MS500" value="1.313384760652604E-10" />
+      <entry key="S2" value="0.0035702904386589163" />
+      <entry key="S5" value="0.1649641839104203" />
+      <entry key="S10" value="0.8889410751508247" />
+      <entry key="S30" value="3.3819434738373606" />
+      <entry key="S60" value="4.856080687391491" />
+      <entry key="M2" value="6.4455393784853685" />
+      <entry key="M5" value="15.749891250481543" />
+      <entry key="M10" value="40.24502911762284" />
+      <entry key="M15" value="73.22790786106557" />
+      <entry key="M30" value="212.86191148868022" />
+      <entry key="H1" value="557.3913178116894" />
+      <entry key="H2" value="1238.419133126514" />
+      <entry key="H4" value="2481.437104554544" />
+      <entry key="D1" value="10824.669034205595" />
+      <entry key="W1" value="19215.811713421263" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="3.161594484820132E-130" />
-      <entry key="MS500" value="1.2588935717546235E-26" />
-      <entry key="S2" value="3.5713540741518357E-7" />
-      <entry key="S5" value="0.0036044939517622552" />
-      <entry key="S10" value="0.09506049490996779" />
-      <entry key="S30" value="1.1403989911826622" />
-      <entry key="S60" value="2.755520279206174" />
-      <entry key="M2" value="5.750802314367014" />
-      <entry key="M5" value="13.782016789160249" />
-      <entry key="M10" value="27.8432471313301" />
-      <entry key="M15" value="41.72825026661737" />
-      <entry key="M30" value="79.88139270653683" />
-      <entry key="H1" value="151.22511959554114" />
-      <entry key="H2" value="289.385865368285" />
-      <entry key="H4" value="551.9165776693476" />
-      <entry key="D1" value="2367.101232377236" />
-      <entry key="W1" value="4148.228048512046" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0000453040640451" />
+      <entry key="S2" value="1.08204163194836" />
+      <entry key="S5" value="1.3678016864639346" />
+      <entry key="S10" value="1.6064665584052715" />
+      <entry key="S30" value="1.8464519036527256" />
+      <entry key="S60" value="1.9200312889309776" />
+      <entry key="M2" value="1.9617697417027382" />
+      <entry key="M5" value="2.1931733317253688" />
+      <entry key="M10" value="3.681214963353399" />
+      <entry key="M15" value="6.816950479949804" />
+      <entry key="M30" value="24.549767546239018" />
+      <entry key="H1" value="78.62683756490964" />
+      <entry key="H2" value="205.91998361717825" />
+      <entry key="H4" value="464.97417643459175" />
+      <entry key="D1" value="2310.553344661364" />
+      <entry key="W1" value="4165.224516222452" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.7169776246396317" />
-      <entry key="MS500" value="0.9500813800530538" />
-      <entry key="S2" value="1.340188597823971" />
-      <entry key="S5" value="2.0341469979067206" />
-      <entry key="S10" value="3.573427639666082" />
-      <entry key="S30" value="10.324432093619011" />
-      <entry key="S60" value="19.518302565107774" />
-      <entry key="M2" value="38.42987884277943" />
-      <entry key="M5" value="93.02650237436126" />
-      <entry key="M10" value="182.94312664896705" />
-      <entry key="M15" value="275.26199275073924" />
-      <entry key="M30" value="537.0178249594495" />
-      <entry key="H1" value="988.1307125388594" />
-      <entry key="H2" value="1786.5258266129495" />
-      <entry key="H4" value="3246.255818375198" />
-      <entry key="D1" value="13197.32911220956" />
-      <entry key="W1" value="23026.795182747883" />
+      <entry key="MS100" value="1.8121625618030366E-4" />
+      <entry key="MS500" value="0.17850347811788528" />
+      <entry key="S2" value="0.6950885446180866" />
+      <entry key="S5" value="1.2849014278226094" />
+      <entry key="S10" value="2.3252743658398582" />
+      <entry key="S30" value="5.144332559128356" />
+      <entry key="S60" value="6.727364705458279" />
+      <entry key="M2" value="8.38069101704805" />
+      <entry key="M5" value="17.93007827830654" />
+      <entry key="M10" value="43.91165105481989" />
+      <entry key="M15" value="80.02412006044008" />
+      <entry key="M30" value="237.37608904306478" />
+      <entry key="H1" value="635.9684657383586" />
+      <entry key="H2" value="1444.2801364757659" />
+      <entry key="H4" value="2946.3481061333246" />
+      <entry key="D1" value="13135.172089111335" />
+      <entry key="W1" value="23381.02346734273" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -145,77 +132,77 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.assign_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.async_run_until_complete.executor&quot;: &quot;Run&quot;,
-    &quot;Python.cli.executor&quot;: &quot;Run&quot;,
-    &quot;Python.color_code.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.expand_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filesize.executor&quot;: &quot;Run&quot;,
-    &quot;Python.install_vanilla.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mc_version_lang.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mvl (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.nbt_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pinger.executor&quot;: &quot;Run&quot;,
-    &quot;Python.read_nbt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
-    &quot;Python.router.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.session_call.executor&quot;: &quot;Run&quot;,
-    &quot;Python.shell.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.something_bad.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sources_loader.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_auto_convert.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_command_group.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_console.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_console_menu.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_flow.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_get_versionmeta.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_multi_context.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_typer_call.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_zstd_support.executor&quot;: &quot;Run&quot;,
-    &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
-    &quot;Python.validate_float_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.version_parser.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/app/interfaces/commandline/commands/launch&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;python.external.tools.group.settings&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.assign_speed.executor": "Run",
+    "Python.async_run_until_complete.executor": "Run",
+    "Python.cli.executor": "Run",
+    "Python.color_code.executor": "Run",
+    "Python.data_types.executor": "Run",
+    "Python.expand_speed.executor": "Run",
+    "Python.filesize.executor": "Run",
+    "Python.install_vanilla.executor": "Run",
+    "Python.mc_version_lang.executor": "Run",
+    "Python.mvl (1).executor": "Run",
+    "Python.nbt_types.executor": "Run",
+    "Python.pinger.executor": "Run",
+    "Python.read_nbt.executor": "Run",
+    "Python.rich_output.executor": "Run",
+    "Python.router.executor": "Run",
+    "Python.run.executor": "Run",
+    "Python.session_call.executor": "Run",
+    "Python.shell.executor": "Debug",
+    "Python.something_bad.executor": "Run",
+    "Python.sources_loader.executor": "Run",
+    "Python.test_auto_convert.executor": "Run",
+    "Python.test_command_group.executor": "Run",
+    "Python.test_console.executor": "Run",
+    "Python.test_console_menu.executor": "Run",
+    "Python.test_flow.executor": "Run",
+    "Python.test_get_versionmeta.executor": "Run",
+    "Python.test_multi_context.executor": "Run",
+    "Python.test_typer_call.executor": "Run",
+    "Python.test_zstd_support.executor": "Run",
+    "Python.typer_command.executor": "Run",
+    "Python.validate_float_speed.executor": "Run",
+    "Python.version_parser.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/.projects/minecraft-launcher/launchers",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件&quot;: [
-      &quot;Python&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件": [
+      "Python"
     ]
   }
-}</component>
+}]]></component>
   <component name="PyDebuggerOptionsProvider">
     <option name="myDebuggerBackend" value="PYDEVD" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\launchers" />
       <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands\launch" />
       <recent name="E:\.projects\minecraft-launcher" />
       <recent name="E:\.projects\minecraft-launcher\app\core\minecraft\nbt" />
       <recent name="E:\.projects\minecraft-launcher\tests\samples" />
-      <recent name="E:\.projects\minecraft-launcher\tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands" />
@@ -447,7 +434,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-c6d794e1806d-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.8665.309" />
+        <option value="bundled-python-sdk-6fa658e1df1a-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.8665.369" />
       </set>
     </attachedChunks>
   </component>
@@ -538,7 +525,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785242570944</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Eighth Add">
+      <option name="closed" value="true" />
+      <created>1785390367868</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1785390367868</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -566,7 +561,8 @@
     <MESSAGE value="Fifth Add" />
     <MESSAGE value="sixth Add" />
     <MESSAGE value="seventh Add" />
-    <option name="LAST_COMMIT_MESSAGE" value="seventh Add" />
+    <MESSAGE value="Eighth Add" />
+    <option name="LAST_COMMIT_MESSAGE" value="Eighth Add" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

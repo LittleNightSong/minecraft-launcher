@@ -4,12 +4,8 @@ version = "0.1.0"
 description = "A Minecraft Launcher Written in Python"
 requires-python = ">=3.14"
 dependencies = [
-    "aiofiles>=25.1.0",
     "athreading>=0.3.0",
     "docutils>=0.23",
-    "fastzip>=0.5.1",
-    "furl>=2.1.4",
-    "httpx>=0.28.1",
     "json5>=0.15.0",
     "loguru>=0.7.3",
     "msgspec>=0.20.0",
@@ -22,13 +18,13 @@ dependencies = [
     "readchar>=4.2.2",
     "rich~=15.0",
     "textual>=8.2.8",
-    "tqdm>=4.68.3",
+    "tqdm>=4.70.0",
     "typeguard>=4.5.1",
     "typer~=0.27",
-    "winloop>=0.5.0",
+    "winloop>=0.5.0; sys_platform == 'win32'",
+    "uvloop>=0.5.0; sys_platform != 'win32'",
     "xxhash>=3.7.0",
     "yarl>=1.24.0",
-    "zstandard>=0.25.0",
 ]
 
 [[tool.uv.index]]
