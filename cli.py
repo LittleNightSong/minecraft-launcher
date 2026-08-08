@@ -1,7 +1,10 @@
+import sys
 from datetime import datetime
 
 import rich.traceback
 from loguru import logger
+
+sys.path.append('./src')
 
 import app.core.async_backend as lp
 from app.core.common import app_dirs
@@ -34,13 +37,12 @@ def main():
     try:
         typer_app()
     except Exception as e:
-        logger.opt(exception=e)
-        logger.error("运行时发生错误")
+        logger.opt(exception=e).error("运行时发生错误")
         # raise e
-        console.print(rich.traceback.Traceback.from_exception(
-            type(e), e, e.__traceback__, show_locals=True
-        ))
-        console.error(tr("发生未知错误，程序已退出"))
+        # console.print(rich.traceback.Traceback.from_exception(
+        #     type(e), e, e.__traceback__, show_locals=True
+        # ))
+        console.error(tr("发生未知错误，程序已退出（{}：{}）", e.__class__.__name__, e))
 
     finally:
         cfg.save()

@@ -1,0 +1,6 @@
+from . import (
+    instances_commands,
+    java,
+    repo,
+    mojang
+)

@@ -59,13 +59,12 @@ def safe_rwrite(w: zipfile.ZipFile, dir, target):
             w.write(os.path.join(dirpath, f), final_path)
 
 
-def main():
+def main(output=None):
     src_dir = './app'
     launch_script = './cli.py'
-    output = './clcl.pyz'
+    output = output or './clcl.pyz'
     selected_interface = 'commandline'
     site_packages_dir = './.venv/Lib/site-packages'
-    unzip_all = False
 
     with zipfile.ZipFile(output, 'w') as f:
         safe_rwrite(f, os.path.join(src_dir, 'core'), '/app/core')
