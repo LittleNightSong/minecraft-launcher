@@ -14,10 +14,9 @@ from app.core.osio import safe_mkdir, safe_unlink
 
 
 class CacheManager:
-    def __init__(self, root, xkey_algorithm='xxhash', disabled: bool = False):
+    def __init__(self, root, xkey_algorithm='xxhash'):
         self.path = Path(root)
         self.xkey_algorithm = xkey_algorithm
-        self.disabled = disabled
         self.in_process = set()
 
     @contextmanager
@@ -28,7 +27,7 @@ class CacheManager:
             raise RuntimeError("该缓存正在使用中")
 
         self.in_process.add(xkey)
-        logger.debug("获取缓存体 {xkey}", xkey=xkey)
+        logger.debug("获取缓存体 {xkey} ({key})", xkey=xkey, key=key)
         try:
             with CacheEntity(self, key, xkey, suffix) as entity:
                 yield entity

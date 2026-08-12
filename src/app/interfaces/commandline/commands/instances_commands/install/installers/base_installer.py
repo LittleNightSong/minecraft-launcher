@@ -1,3 +1,4 @@
+import dataclasses
 import enum
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -6,11 +7,24 @@ from typing import Literal, Self, AsyncIterable
 import msgspec
 
 from app.core.fetcher import Fetcher
+from app.core.file_validator import FileValidator
+from app.core.minecraft import Repository
 from app.core.models import FileSpec, ValidateResult
 from app.core.models.env import Environment
 from app.core.models.version_spec import VersionSpec
 from app.core.network import Session
 from app.core.network.downloader import DownloadPlan
+
+
+@dataclasses.dataclass(slots=True, kw_only=True)
+class InstallContext:
+    spec: VersionSpec
+    repository: Repository
+    session: Session
+    fetcher: Fetcher
+    file_validator: FileValidator
+    env: Environment
+
 
 
 class ValidateRequest(msgspec.Struct, gc=False, kw_only=True):
@@ -34,26 +48,22 @@ class ValidateResponse[T: ValidateRequest](msgspec.Struct, gc=False, kw_only=Tru
 
 
 class ValidateResponseClassifiers(msgspec.Struct, gc=False, kw_only=True):
-    uncategorized: list[ValidateResponse]
-    categories: dict[str, list[ValidateResponse]]
-
-    def get_responses(self, category: str):
-        return self.categories.get(category, [])
-
-    def assert_category(self, category: str):
-        assert category in self.categories
+    groups: dict[str, list[ValidateResponse]]
+    ids: dict[str, ValidateResponse]
+    unnamed: list[ValidateResponse]
 
 
 class Reasons(Enum):
     DISK_SPACE_INSUFFICIENT = enum.auto()
     USER_INTERRUPT = enum.auto()
+    NETWORK_ERROR = enum.auto()
+    BAD_VALIDATE_REQUEST = enum.auto()
 
 
 class Installer(ABC):
     @classmethod
     @abstractmethod
-    async def get_installer(cls, spec: VersionSpec, session: Session, fetcher: Fetcher,
-                            env: Environment) -> Self | None:
+    async def get_installer(cls, context: InstallContext) -> Self | None:
         ...
 
     async def init(self):
@@ -65,7 +75,7 @@ class Installer(ABC):
     def collect(self) -> AsyncIterable[ValidateRequest]:
         ...
 
-    def analyze(self, result: list[ValidateResult]) -> AsyncIterable[DownloadPlan]:
+    def analyze(self, result: ValidateResponseClassifiers) -> AsyncIterable[DownloadPlan]:
         ...
 
     async def post_install(self):

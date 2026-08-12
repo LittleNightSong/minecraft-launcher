@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Iterable
 
 from app.core.minecraft.model_version_manifest import LatestStruct
-from app.core.minecraft.resources import InstanceDirectory
+from app.core.minecraft.directories import InstanceDirectory
 from .base import BaseDirectory
 from ..model_version_manifest import VersionManifestModel
 from ...common import InvaildInstance

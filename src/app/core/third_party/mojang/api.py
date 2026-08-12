@@ -55,7 +55,7 @@ class MinecraftAPI:
         :return: 版本清单模型对象
         """
 
-        return await self.session.call(
+        return await self.session.typed(
             url=self.url_version_manifest,
             type=VersionManifestModel
         )
@@ -115,7 +115,7 @@ class MinecraftAPI:
         :raises niquests.HTTPError: 当 API 请求失败时抛出
         """
         uuid_string = (
-            await self.session.call(
+            await self.session.typed(
                 "https://api.mojang.com/users/profiles/minecraft/{}", name,
                 type=dict
             )
@@ -155,7 +155,7 @@ class MinecraftAPI:
 
         result = {}
         for chunk in batched(names, 10):
-            resp = await self.session.call(
+            resp = await self.session.typed(
                 "https://api.mojang.com/profiles/minecraft",
                 method='POST',
                 data=msgspec.json.encode(chunk),
@@ -174,7 +174,7 @@ class MinecraftAPI:
         :return: 玩家的名称
         """
         uuid = uuid if isinstance(uuid, UUID) else UUID(uuid)
-        resp = await self.session.call(
+        resp = await self.session.typed(
             "https://api.minecraftservices.com/minecraft/profile/lookup/{}", uuid,
             type=dict
         )
@@ -187,7 +187,7 @@ class MinecraftAPI:
         :return: 玩家的个人资料对象 `PlayerProfile`
         """
         uuid = uuid if isinstance(uuid, UUID) else UUID(uuid)
-        return await self.session.call(
+        return await self.session.typed(
             "https://sessionserver.mojang.com/session/minecraft/profile/{}", uuid,
             type=PlayerProfile
         )
@@ -226,7 +226,7 @@ class MinecraftAPI:
         """
         url = await self.fetch_player_skin_url(uuid)
         if url:
-            data = await self.session.content(url)
+            data = await self.session.read(url)
             if data:
                 return data
             else:
@@ -242,7 +242,7 @@ class MinecraftAPI:
         """
         url = await self.fetch_player_cape_url(uuid)
         if url:
-            data = await self.session.content(url)
+            data = await self.session.read(url)
             if data:
                 return data
             else:
@@ -251,13 +251,13 @@ class MinecraftAPI:
             raise ValueError("No content")
 
     async def fetch_version_meta(self, url: str) -> VersionMetaModel:
-        return await self.session.call(
+        return await self.session.typed(
             url,
             type=VersionMetaModel
         )
 
     async def fetch_asset_index(self, url):
-        return await self.session.call(
+        return await self.session.typed(
             url,
             type=AssetIndexModel
         )

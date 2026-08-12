@@ -2,7 +2,7 @@ import asyncio
 import builtins
 from typing import Callable, Coroutine, Any
 
-from typer.models import AnyType
+from loguru import logger
 
 from app.core.cacher.file_cache import FileCacher
 from app.core.cacher.model_cacher import ModelCacher
@@ -24,27 +24,39 @@ class Fetcher:
         self._task_mapping = {}
 
     async def _fetch(self, key, type, fetcher, ttl, no_cache):
+        logger.info(
+            "Fetching {!r} ({!r}), fetcher={} (TTL {}), no_cache={}",
+            key, type, fetcher, ttl, no_cache
+        )
+
         if no_cache:
+            logger.info("已禁用缓存，直接调用 fetcher 方法")
             return await fetcher()
 
         assert key
 
         v = self.model_cacher.get(key, type)
+
         if v is None:
             v = await fetcher()
             self.model_cacher.set(key, v, ttl)
-
+            logger.info(
+                "Fetched from `Fetcher` method"
+            )
+        else:
+            logger.info(
+                "Fetched from Model-Cacher"
+            )
         return v
 
     async def fetch_model[T](
             self, *,
             fetcher: FetcherFunction[T],
-            type: type[T],
+            type: builtins.type[T],
             key: str | None = None,
             ttl: int | None = None,
             no_cache: bool = False
     ) -> T:
-
         if key not in self._task_mapping:
             self._task_mapping[key] = asyncio.create_task(
                 self._fetch(key, type, fetcher, ttl, no_cache)

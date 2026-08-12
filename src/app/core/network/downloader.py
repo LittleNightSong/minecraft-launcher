@@ -14,10 +14,10 @@ from niquests import HTTPError
 
 from app.core.cacher.file_cache import FileCacher
 from app.core.common.errors import MaximumRetry
-from app.core.task.task import TaskProgress
 from app.core.network import Session
 from app.core.network.session import kb256
-from app.core.osio import AsyncOSFile
+from app.core.osio import AsyncOSFile, safe_unlink
+from app.core.task.task import TaskProgress
 
 
 class DownloadPlan(msgspec.Struct, gc=False, frozen=True):
@@ -39,12 +39,13 @@ class DownloadPlan(msgspec.Struct, gc=False, frozen=True):
 def _link_file(src, dst, mode: Literal['hardlink', 'symlink', 'copy']):
     match mode:
         case 'hardlink':
+            safe_unlink(dst)
             os.link(src, dst)
         case 'symlink':
+            safe_unlink(dst)
             os.symlink(src, dst)
         case 'copy':
             shutil.copy2(src, dst)
-
 
 
 class Downloader:
@@ -150,21 +151,24 @@ class Downloader:
                     if plan.cache_name:
                         with self.file_cacher.open(plan.cache_name) as file:
                             await self._download_single(url, file, task, headers)
-                            # 下载完成，创建链接，将位于缓存中的文件链接到目标（软链接）
-                            mode = plan.link_mode
-                            logger.info(
-                                "来自 {!r} 的文件的链接方式：{}",
-                                url, mode
-                            )
-                            if single_target:
-                                _link_file(file, single_target, mode)
-
-                            if plan.targets:
-                                for target in plan.targets:
-                                    _link_file(file, target, mode)
-
                     else:
                         await self._download_single(url, single_target, task, headers)
+
+                if plan.cache_name:  # 下载完成，创建链接，将位于缓存中的文件链接到目标（软链接）
+                    mode = plan.link_mode
+                    logger.info(
+                        "来自 {!r} 的文件的链接方式：{}",
+                        url, mode
+                    )
+                    if single_target:
+                        logger.debug("链接目标 {} -> {}", file, single_target)
+                        _link_file(file, single_target, mode)
+
+                    if plan.targets:
+                        for target in plan.targets:
+                            logger.debug("链接目标 {} -> {}", file, target)
+                            _link_file(file, target, mode)
+
                 return
 
             except HTTPError as e:

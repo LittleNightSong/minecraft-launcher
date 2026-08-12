@@ -1,3 +1,4 @@
+import asyncio
 import locale
 from contextlib import contextmanager
 from typing import Callable, Any, Iterable, AsyncIterable, Generator, AsyncGenerator
@@ -13,6 +14,7 @@ import rich.traceback
 import typer
 import typer.rich_utils
 from loguru import logger
+from rich.columns import Columns
 from rich.control import Control
 from rich.progress_bar import ProgressBar
 from rich.segment import ControlType
@@ -26,13 +28,13 @@ from app.interfaces.commandline.themes.loader import get_theme
 locale.setlocale(locale.LC_ALL, '')
 
 
-class MultiHighlighter(Highlighter):
-    def __init__(self, *lighters: Highlighter):
-        self.lighters = list(lighters)
-
-    def highlight(self, text: Text) -> None:
-        for i in self.lighters:
-            i.highlight(text)
+# class MultiHighlighter(Highlighter):
+#     def __init__(self, *lighters: Highlighter):
+#         self.lighters = list(lighters)
+#
+#     def highlight(self, text: Text) -> None:
+#         for i in self.lighters:
+#             i.highlight(text)
 
 
 _original_getter = typer.rich_utils._get_rich_console
@@ -396,22 +398,28 @@ class MyConsole(rich.console.Console):
                 bar.completed += 1
                 live.update(bar)
 
-    def trace[T](self, iterable: Iterable[T], prompt='Progress: ') -> Generator[T, None, None]:
-        cnt = 0
-        with rich.live.Live(console=self, auto_refresh=False) as live:
-            for i in iterable:
-                yield i
-                cnt += 1
-                live.update(f'{prompt}{cnt}')
+    async def async_progress(
+            self,
+            iterable,
+            prompt='Progress ',
+            total=None,
+            bar_width: int | None = 100
+    ):
+        if total:
+            length = total
+        else:
+            try:
+                length = len(iterable)
+            except TypeError:
+                length = None
 
-    async def async_trace[T](self, aiterable: AsyncIterable[T], prompt='Progress: ', total: int | None = None) -> \
-    AsyncGenerator[T]:
-        cnt = 0
+        bar = ProgressBar(length, width=bar_width)
         with rich.live.Live(console=self, auto_refresh=False) as live:
-            async for i in aiterable:
+            async for i in iterable:
+                # await asyncio.sleep(0.1)
                 yield i
-                cnt += 1
-                live.update(f'{prompt}[repr.number]{cnt}[/] / [repr.number]{total}[/]')
+                bar.completed += 1
+                live.update(Columns([prompt, bar, f'{bar.completed}/{bar.total or "NaN"}']))
 
     def __repr__(self) -> str:
         return f'<my_console width={self.width} {self.color_system}>'
@@ -419,6 +427,8 @@ class MyConsole(rich.console.Console):
 
 console = MyConsole(theme=get_theme())
 session = Session()
+
+# console.print("- asdasf")
 
 rich._console = console
 

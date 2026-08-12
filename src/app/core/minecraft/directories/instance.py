@@ -8,8 +8,11 @@ from .base import BaseDirectory
 class InstanceDirectory(BaseDirectory):
     __slots__ = [
         'path',
-        '_version_meta', '_ins_info',
-        '_name', '_meta_file', '_main_file', '_info_file'
+        '_version_meta',
+        '_ins_info',
+        '_info_file',
+        '_name',
+        '_meta_file', '_main_file',
     ]
 
     def __init__(self, path):
@@ -84,21 +87,21 @@ class InstanceDirectory(BaseDirectory):
         return (self.path / (self.path.name + '.json')).exists()
 
     @property
-    def screenshots(self):
+    def screenshot_files(self):
         return list(self.screenshots_dir.iterdir())
 
     @property
-    def disabled_mods(self):
+    def disabled_mod_files(self):
         return [i for i in self.mods_dir.glob('*.jar.disabled') if i.is_file()]
 
     @property
-    def enabled_mods(self):
+    def enabled_mod_files(self):
         return [i for i in self.mods_dir.glob('*.jar') if i.is_file()]
 
     @property
-    def all_mods(self):
-        return self.enabled_mods + self.disabled_mods
+    def all_mod_files(self):
+        return self.enabled_mod_files + self.disabled_mod_files
 
     @property
-    def saves(self):
+    def saves_paths(self):
         return [i for i in self.saves_dir.iterdir() if i.is_dir()]

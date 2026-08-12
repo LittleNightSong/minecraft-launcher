@@ -35,7 +35,7 @@ async def main():
         while l < r:
             mid = (l + r) // 2
             print("检查", versions[mid].id)
-            meta = await session.call(
+            meta = await session.typed(
                 url=versions[mid].url,
                 type=VersionMetaModel
             )
@@ -48,7 +48,7 @@ async def main():
                 l = mid + 1
                 print(f"未通过；重新设置区间 [{l}, {r}]")
 
-        meta = await session.call(
+        meta = await session.typed(
             url=versions[r].url,
             type=VersionMetaModel
         )

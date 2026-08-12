@@ -5,15 +5,17 @@
   'vtype.rc': 'medium_purple1',
   'vtype.pre': 'sky_blue1',
 
-  'user-choice': 'bright_cyan',
-  'user-pre-choice': 'bright_cyan',
+  'user-choice': 'cyan',
+  'user-pre-choice': 'cyan',
 
   'prompt': 'bold',
 
   'menu-item': 'bold',
   'menu-item.selected': 'on bright_black',
 
-  'tty.option': 'bold bright_cyan',
+  'literal': 'yellow bold',
+
+  'tty.option': 'bold cyan',
   'path': 'green',
   'uuid': 'light_goldenrod2',
   'java': 'yellow bold',

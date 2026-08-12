@@ -2,14 +2,15 @@ import builtins
 import time
 
 import msgspec
+from loguru import logger
 
 from app.core.cacher.cache_manager import CacheManager
 from app.core.common import read_model
 
 
 class ModelCacher(CacheManager):
-    def __init__(self, root, xkey_algorithm='xxhash', disabled: bool = False):
-        super().__init__(root, xkey_algorithm, disabled)
+    def __init__(self, root, xkey_algorithm='xxhash'):
+        super().__init__(root, xkey_algorithm)
         self._default_ttl = {}
 
     @staticmethod
@@ -24,11 +25,10 @@ class ModelCacher(CacheManager):
         return self._default_ttl.get(self.split_key(key)[0])
 
     def set(self, key, value: msgspec.Struct, ttl: int | None = None):
-        if self.disabled:
-            return None
-
         if ttl is None:
             ttl = self.get_default_ttl(key) or -1
+
+        logger.debug("写入缓存 {} (TTL {})", key, ttl)
 
         with self.entity(key, suffix='model') as e:
             (
@@ -40,15 +40,14 @@ class ModelCacher(CacheManager):
         return value
 
     def get[T](self, key, type: builtins.type[T], allow_stale=False) -> T | None:
-        if self.disabled:
-            return None
-
         with self.entity(key, suffix='model') as entity:
-            if not allow_stale:
-                if entity.auto_cleanup():
-                    return None
-                else:
+            if not allow_stale:  # 如果不允许返回过期的数据
+                if entity.auto_cleanup():  # 尝试自动清理，清理成功返回 True
+                    logger.debug("正在访问的缓存 {!r} 已过期（自动清理）", key)
+                    return None  # 已过期，返回 None
+                else:  # 没过期，正常读取数据文件
+                    logger.debug("正在访问的缓存 {!r} 未过期（已返回）")
                     return read_model(entity.data_file, type, decoder=msgspec.msgpack.decode)
-            else:
+            else:  # 允许过期，那么直接返回，不做处理
+                logger.debug("正在访问的缓存 {!r} 未检查（已返回）")
                 return read_model(entity.data_file, type, decoder=msgspec.msgpack.decode)
-

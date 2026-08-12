@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from app.core.cacher.file_cache import FileCacher
-from app.core.minecraft.resources.base import BaseDirectory
+from app.core.minecraft.directories.base import BaseDirectory
 from app.core.cacher.model_cacher import ModelCacher
 
 

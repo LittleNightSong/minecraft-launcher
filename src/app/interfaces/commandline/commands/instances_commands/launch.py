@@ -19,7 +19,7 @@ from app.core.i18n import tr
 from app.core.java.size import parse
 from app.core.memory_allocator import MemoryAllocator
 from app.core.minecraft import VersionMetaModel, rules_matcher
-from app.core.minecraft.resources import InstanceDirectory
+from app.core.minecraft.directories import InstanceDirectory
 from app.core.models import FileSpec
 from app.core.models.launch_context import LaunchContext, JVMContext
 from app.core.network import Session
@@ -116,14 +116,14 @@ class LaunchCommand(Command, app=typer_app):
         :param memmax: 游戏运行最大内存
         :param memmin: 游戏运行最小内存
 
-        :param quick_play: 快速启动目标，格式为 type:value
+        :param quick_play: 快速启动目标，格式为 [yellow]type[/]:[yellow]value[/]
 
-        type 可选：save, server, realms，分别控制快速进入的目标（本地存档、服务器、领域服务器）
+        [yellow]type[/] 可选：[literal]save[/], [literal]server[/], [literal]realms[/]，分别控制快速进入的目标（本地存档、服务器、领域服务器）
 
-        value 在不同的 type 中有不同的语义
-            - save: value 表示本地存档的名称
-            - server: value 表示服务器的地址，格式为 host:port，port 可以省略，默认为 25565
-            - realms: （我不知道格式是啥）
+        [yellow]value[/] 在不同的 [yellow]type[/] 中有不同的语义
+            - [literal]save[/]: [yellow]value[/] 表示本地存档的名称
+            - [literal]server[/]: [yellow]value[/] 表示服务器的地址，格式为 [bold cyan]host:port[/]，[yellow]port[/] 可以省略，默认为 [repr.number]25565[/]
+            - [literal]realms[/]: （我不知道格式是啥）
 
         :param show_args: 是否输出游戏启动参数
         :param show_uuid: 是否显示用户的 UUID

@@ -9,16 +9,14 @@ import asyncstdlib
 import psutil
 import typer
 from loguru import logger
-from rich.progress import Progress, TextColumn, BarColumn, TimeRemainingColumn, TransferSpeedColumn, FileSizeColumn, \
-    TotalFileSizeColumn, DownloadColumn
+from rich.progress import Progress, TextColumn, BarColumn, TimeRemainingColumn, TransferSpeedColumn, DownloadColumn
 
 from app.core.common import format_filesize, FormattedExceptionBase, accept_errors
 from app.core.fetcher import Fetcher
 from app.core.file_validator import FileValidator
 from app.core.i18n import tr
 from app.core.minecraft import VersionManifestModel
-from app.core.minecraft.resources import Repository
-from app.core.models import FileSpec
+from app.core.minecraft.directories import Repository
 from app.core.models.env import Environment
 from app.core.models.version_spec import VersionSpec
 from app.core.network import Session
@@ -27,10 +25,10 @@ from app.core.third_party.mojang import MinecraftAPI
 from app.interfaces.commandline.base.command_base import Command
 from app.interfaces.commandline.base.console_extensions import console
 from app.interfaces.commandline.base.methods import find_repository, call_and_cache
-from app.interfaces.commandline.base.tty_task_viewer import TTYTaskViewer
 from .install_guide import VersionSelectorApp
 from .installers import BaseInstaller
-from .installers.base_installer import Reasons
+from .installers.base_installer import Reasons, InstallContext
+from .installers.runner import InstallerRunner
 from .installers.vanilla_installer import VanillaInstaller
 
 
@@ -61,41 +59,40 @@ class InstallCommand(Command):
         VanillaInstaller
     ]
 
-    async def start_install_guide(self):
-        """启动交互式安装向导"""
-        # 获取版本清单
-        manifest = await call_and_cache(
-            url=self.minecraft_api.url_version_manifest,
-            type=VersionManifestModel,
-            name=tr("版本清单"),
-            cacher=self.cacher,
-            key='versionmeta:manifest',
-            no_cache=self.no_cache,
-            echo=True
-        )
-
-        # 运行 Textual 应用
-        app = VersionSelectorApp(manifest)
-        selects = await app.run_async()
-
-        if not selects:
-            console.print(tr("未选择任何版本，安装取消"))
-            raise typer.Abort()
-
-        # 返回选中的版本 ID 列表（字符串列表）
-        return [
-            i.version
-            for i in selects
-        ]
+    # async def start_install_guide(self):
+    #     """启动交互式安装向导"""
+    #     # 获取版本清单
+    #     manifest = await call_and_cache(
+    #         url=self.minecraft_api.url_version_manifest,
+    #         type=VersionManifestModel,
+    #         name=tr("版本清单"),
+    #         cacher=self.cacher,
+    #         key='versionmeta:manifest',
+    #         no_cache=self.no_cache,
+    #         echo=True
+    #     )
+    #
+    #     # 运行 Textual 应用
+    #     app = VersionSelectorApp(manifest)
+    #     selects = await app.run_async()
+    #
+    #     if not selects:
+    #         console.print(tr("未选择任何版本，安装取消"))
+    #         raise typer.Abort()
+    #
+    #     # 返回选中的版本 ID 列表（字符串列表）
+    #     return [
+    #         i.version
+    #         for i in selects
+    #     ]
 
     # ----------------------------------------------------------------------------------------------------
     async def init(self, repository, max_threads, timeout):
-        self.repo: Repository = find_repository(repository, abort=True)
-        self.repo.ensure_exists()
+        self.repository: Repository = find_repository(repository, abort=True)
+        self.repository.ensure_exists()
 
-        self.cacher = self.repo.launcher_data.model_cacher
-        self.file_cacher = self.repo.launcher_data.file_cacher
-
+        self.cacher = self.repository.launcher_data.model_cacher
+        self.file_cacher = self.repository.launcher_data.file_cacher
 
         self.thread_executor = ThreadPoolExecutor(max_threads)
         self.file_validator = FileValidator(executor=self.thread_executor)
@@ -116,23 +113,6 @@ class InstallCommand(Command):
         with accept_errors(AttributeError):
             await self.session.close()
             self.thread_executor.shutdown()
-
-    # async def validate_file(self, filename_or_key, spec: FileSpec, in_file_cache=False):
-    #     if not in_file_cache:
-    #         return await self.file_validator.validate(
-    #             filename_or_key, spec
-    #         )
-    #     else:
-    #         with self.file_cacher.open(filename=filename_or_key) as f:
-    #             return await self.file_validator.validate(
-    #                 filename_or_key,
-    #                 FileSpec(
-    #                     checksum=spec.checksum,
-    #                     algorithm=spec.algorithm,
-    #                     last_modified=spec.last_modified,
-    #                     meta=spec
-    #                 )
-    #             )
 
     async def main(
             self,
@@ -158,16 +138,22 @@ class InstallCommand(Command):
             version=version,
             loader=loader,
             loader_version=loader_version,
-            repository=self.repo
         )
 
         # 尝试发现 installer
 
         installer = None
+        install_context = InstallContext(
+            spec=spec,
+            repository=self.repository,
+            session=self.session,
+            file_validator=self.file_validator,
+            fetcher=self.fetcher,
+            env=Environment.new(),
+        )
+
         for candidate in self.installers:
-            installer = await candidate.get_installer(
-                spec, self.session, self.fetcher, Environment.new()
-            )
+            installer = await candidate.get_installer(install_context)
 
             if installer is not None:
                 break
@@ -176,47 +162,50 @@ class InstallCommand(Command):
             console.error(tr("无法为请求安装的版本匹配安装器，请检查您的配置信息"))
             return
 
-        with console.status(tr("获取元数据...")) as s, TTYTaskViewer(console) as viewer:
-            await installer.fetch()
+        runner = InstallerRunner(
+            installer,
+            install_context
+        )
+
+        with console.status(tr("获取元数据...")) as s:
+            await runner.fetch()
 
             s.update(tr("分析元数据文件..."))
-            required_files = [item async for item in installer.collect()]
+            await runner.collect()
 
             s.update(tr("校验本地文件[yellow]...[/]"))
 
-            tasks = [
-                self.file_validator.validate(filename, fspec)
-                for filename, fspec in required_files
-            ]
+            sync_generator, n_tasks = runner.validate()  # 获取校验任务的即时生成器和数量
+            async for _ in console.async_progress(  # 手动驱动校验任务，同时显示进度
+                sync_generator,
+                tr("正在校验"),
+                total=n_tasks
+            ):...
 
-            results = [await i async for i in console.async_trace(
-                asyncio.as_completed(tasks),
-                tr("正在校验："),
-                total=len(tasks)
-            )]
             # print(results)
 
-            downloads = [i async for i in installer.analyze(results)]
+            await runner.analyze()
+
+            downloads = runner.download_plans
 
             if downloads:
                 # 开始下载
                 s.update(tr("正在准备资源..."))
 
-                downloader = Downloader(max_connections, self.thread_executor, self.file_cacher, self.session)
 
-                total_size = 0
+                total_size = 0  # 这里估算下载的总大小
                 for i in downloads:
                     if i.estimated_size and i.estimated_size > 0:  # 这里不去判定是否是 None，因为 0 和 None 没有区别，都可以舍弃
                         total_size += i.estimated_size
 
-                # 检查磁盘
-                available = shutil.disk_usage(spec.repository).free
+                # 检查磁盘剩余空间
+                available = shutil.disk_usage(install_context.repository).free
 
                 console.print(tr(
                     "将要下载 {} 个文件\n"
                     "磁盘剩余空间：{}\n"
                     "安装预计需要：{}\n",
-                    len(tasks),
+                    len(downloads),
                     format_filesize(available),
                     format_filesize(total_size)
                 ))
@@ -224,12 +213,19 @@ class InstallCommand(Command):
                 if available < total_size:
                     logger.error("磁盘空间不足，安装取消")
                     console.error(tr("磁盘空间不足，安装取消"))
-                    await installer.on_interrupt('analyze', Reasons.DISK_SPACE_INSUFFICIENT)
+                    await runner.interrupt(Reasons.DISK_SPACE_INSUFFICIENT)
                     return
 
                 console.confirm(tr("安装？"), skip=yes, abort=True)
 
-                tasks = [downloader.create_task(i) for i in downloads]
+                downloader = Downloader(
+                    max_connections,
+                    self.thread_executor,
+                    self.file_cacher,
+                    self.session
+                )
+
+                tasks = runner.start_download(downloader)
 
                 s.update(tr("[bold]正在下载资源[/][yellow]...[/]"))
                 with Progress(
@@ -243,11 +239,13 @@ class InstallCommand(Command):
                         # auto_refresh=False,
                 ) as pr:
                     main_task = pr.add_task(tr("下载"), total=total_size)
-                    update_task = asyncio.create_task(update_progress_bar(pr, main_task, tasks))
+                    update_task = asyncio.create_task(update_progress_bar(pr, main_task, tasks, total_size))
 
-                    async_tasks = [i.task for i in tasks]
+                    async_tasks = [i.task for i in tasks if i.task]
+
                     async for cnt, i in asyncstdlib.enumerate(asyncio.as_completed(async_tasks)):
                         if i.exception() is not None:
+                            s.stop()
                             logger.opt(exception=i.exception()).error("下载过程中的异常")
                             console.error(tr("下载过程中发生异常：{}", i.exception()))
                             # 清理资源
@@ -257,7 +255,9 @@ class InstallCommand(Command):
                                         logger.opt(exception=a.exception())
                                 else:
                                     a.cancel()
-                            break
+
+                            await runner.interrupt(Reasons.NETWORK_ERROR)
+                            return
 
                         s.update(tr("[bold]正在准备资源[/][yellow]...[/] ({} / {})", cnt, len(async_tasks)))
 

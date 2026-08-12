@@ -11,4 +11,4 @@ from .model_version_manifest import VersionManifestModel
 from .model_version_meta import VersionMetaModel
 from .features import generate_features
 from .matcher import rules_matcher
-from .resources import *
+from .directories import *

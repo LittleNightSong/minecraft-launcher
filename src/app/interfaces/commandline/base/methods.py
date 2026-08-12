@@ -13,7 +13,7 @@ from app.core.common import read_model
 from app.core.configs import cfg
 from app.core.file_validator import FileValidator
 from app.core.i18n import tr
-from app.core.minecraft.resources.repository import Repository
+from app.core.minecraft.directories.repository import Repository
 from app.core.models import FileSpec
 from app.interfaces.commandline.base.console_extensions import console, session
 
@@ -118,14 +118,14 @@ async def call_and_cache[T: Struct](
     logger.info(f"缓存无效或已被禁用，已开始下载")
     if echo:
         with console.status(tr("获取{}", name)):
-            value = await session.call(url, type=type)
+            value = await session.typed(url, type=type)
 
             if not no_cache:
                 cacher.set(key, value)
 
             return value
     else:
-        value = await session.call(url, type=type)
+        value = await session.typed(url, type=type)
 
         if not no_cache:
             cacher.set(key, value)
@@ -160,9 +160,9 @@ async def check_or_call[T: Struct](
     else:
         if echo:
             with console.status(tr("获取{}", name)):
-                return await session.call_into(url, local, type)
+                return await session.typed_download(url, local, type)
         else:
-            return await session.call_into(url, local, type)
+            return await session.typed_download(url, local, type)
 
 
 async def status(task, *, content, console):

@@ -8,7 +8,7 @@ from app.core.models.mod import ModMeta
 # def parse_
 
 
-def  get_fabric_info(file):
+def get_fabric_info(file):
     with zipfile.ZipFile(file, 'r') as zf:
         manifest = msgspec.json.decode(zf.read('fabric.mod.json'))
         ModMeta(

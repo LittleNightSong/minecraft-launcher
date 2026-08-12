@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Iterable
 
 from app.core.minecraft.matcher import RulesMatcher
-from app.core.minecraft.resources.base import BaseDirectory
+from app.core.minecraft.directories.base import BaseDirectory
 from app.core.models import Library, FileSpec
 
 if typing.TYPE_CHECKING:

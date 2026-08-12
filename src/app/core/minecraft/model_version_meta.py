@@ -376,7 +376,7 @@ class VersionMetaModel(Struct):  # TODO: 更宽松的 libraries 字段（支持 
         ]
 
     def get_required_library_files(self, matcher: RulesMatcher) -> list[FileSpec[Library]]:
-        from app.core.minecraft.resources.libraries import Library
+        from app.core.minecraft.directories.libraries import Library
         result = []
         for lib in self.libraries:
             if not lib.match(matcher):

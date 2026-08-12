@@ -11,7 +11,7 @@ import app.core.models.assets_index
 
 if typing.TYPE_CHECKING:
     from app.core.common import FileInfo
-    from app.core.minecraft.resources import AssetsDirectory
+    from app.core.minecraft.directories import AssetsDirectory
 
 
 class _ObjectStruct(Struct):

@@ -3,16 +3,14 @@ import inspect
 from inspect import Traceback
 from typing import ClassVar, Callable, Iterable, Coroutine
 
-import docutils.parsers
 import typer
-from docutils.core import publish_doctree
-from docutils.nodes import paragraph
 from loguru import logger
 from typer import Typer
 
 import app.core.async_backend as lp
 from app.core.common.errors import ExceptionForUser
 from .console_extensions import console
+from .doc_parser import process_func_doc
 
 typer_app = typer.Typer(
     no_args_is_help=True,
@@ -23,9 +21,8 @@ def rewrite_func_signature(signature: inspect.Signature, field_docs: dict[str, s
     raw_params = tuple(signature.parameters.values())[1:]  # 记得删除 self 参数
     params = []
     for p in raw_params:
-        key = f'param {p.name}'
-        if key in field_docs:
-            doc = field_docs[key]
+        if p.name in field_docs:
+            doc = field_docs[p.name]
             default_value = p.default
             if isinstance(default_value, typer.models.ArgumentInfo | typer.models.OptionInfo):
                 if default_value.help is not None:
@@ -56,50 +53,6 @@ def rewrite_func_signature(signature: inspect.Signature, field_docs: dict[str, s
     return signature.replace(parameters=params)
 
 
-def process_func_doc(docstring):
-    """
-    处理函数文档
-    分析函数文档，分离和整合自然段和 REST 标记部分，并返回
-
-    :param docstring:
-    :return: 一个三元组 (<自然段落字符串（已整理>, <参数文档字典>)
-    """
-    if not docstring:
-        return "", {}
-
-    try:
-        tree = publish_doctree(docstring)
-    except Exception as exc:
-        # logger.opt(exception=exc).error(str(exc))
-        return "", {}
-
-    paragraphs = []
-    fields = {}
-
-    for node in tree.children:
-        # print(node)
-        if isinstance(node, docutils.nodes.paragraph):
-            text = node.astext()
-            if t := text.strip():
-                paragraphs.append(t)
-
-        elif isinstance(node, docutils.nodes.field_list):
-            for node in node.children:
-                name_nodes = list(node.findall(condition=docutils.nodes.field_name))
-
-                if name_nodes:
-                    filed_name = name_nodes[0].astext().strip()
-                    body_nodes = list(node.findall(condition=docutils.nodes.field_body))
-
-                    if body_nodes:
-                        field_value = body_nodes[0].astext().strip()
-                        fields[filed_name] = field_value
-
-    natural_text = '\n\n'.join(paragraphs)
-
-    return natural_text, fields
-
-
 def get_init_args(cls, fn_name='init'):
     fn = getattr(cls, fn_name, None)
     if fn is not None:
@@ -122,8 +75,8 @@ class Command:
     name: ClassVar[str]
     __typer_run__: ClassVar[Callable]
 
-    init: ClassVar[Callable]
-    main: ClassVar[Callable]
+    # init: ClassVar[Callable]
+    # main: ClassVar[Callable]
 
     async def cleanup[T](self, exc_type: type[T], exc_val: T, exc_tb: Traceback):
         ...
@@ -131,6 +84,7 @@ class Command:
     def __init_subclass__(cls, app=typer_app, **kwargs):
         super().__init_subclass__(**kwargs)
 
+        # pyrefly: ignore [missing-attribute]
         main = cls.main
 
         # 提取 init 函数的参数
@@ -139,6 +93,7 @@ class Command:
         @functools.wraps(main)
         async def main_wrapper(**kwargs):
             self = cls()
+            # pyrefly: ignore [bad-assignment]
             self.context = typer.main.get_current_context()
             async with self:
                 try:
@@ -154,13 +109,13 @@ class Command:
 
         cls.__main_wrapper__ = main_wrapper
 
+        # pyrefly: ignore [missing-attribute]
         run_main.__signature__ = rewrite_func_signature(inspect.signature(main), fields)
-        run_main.__name__ = cls.name
         run_main.__doc__ = natural_doc
 
         cls.__typer_run__ = run_main
         cls.__typer__ = Typer(no_args_is_help=True)
-        cls.__typer__.command()(cls.__typer_run__)
+        cls.__typer__.command(name=cls.name)(cls.__typer_run__)
 
         app.add_typer(cls.__typer__)
 
@@ -231,12 +186,12 @@ def command(*, name):
 class CommandGroup:
     # UNSET = UNSET
 
-    name: ClassVar[str] = None
+    name: ClassVar[str | None] = None
     commands: ClassVar[list[str]] = []
 
     invoked_subcommand: str | None
 
-    init: ClassVar[Callable]
+    # init: ClassVar[Callable]
 
     async def cleanup(self, exc_type, exc_val, exc_tb):
         ...
@@ -273,6 +228,7 @@ class CommandGroup:
             natural_doc, fields = process_func_doc(fn.__doc__)
             # print(name, natural_doc, fields)
 
+            # pyrefly: ignore [missing-attribute]
             run_wrapper.__signature__ = rewrite_func_signature(inspect.signature(fn), fields)
             run_wrapper.__doc__ = natural_doc
 
