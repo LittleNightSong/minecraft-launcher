@@ -33,10 +33,12 @@ class AsyncOSFile:  # 一个非常简单的 async file I/O wrapper
         )
 
     async def close(self):
-        if self._fd:
-            await self._flush()
-            os.close(self._fd)
+        if (fd := self._fd) is not None:
             self._fd = None
+            data = self._buffer[:self._buffer_pos]
+            self._buffer_pos = 0
+            await self._run(os.write, fd, data)
+            os.close(fd)
 
     async def __aenter__(self):
         return self
@@ -54,12 +56,12 @@ class AsyncOSFile:  # 一个非常简单的 async file I/O wrapper
 
     async def _flush(self):
         # print('[--] Flush Buffer', self._buffer_pos)
-        data= self._buffer[:self._buffer_pos].copy()
+        data = self._buffer[:self._buffer_pos].copy()
         self._buffer_pos = 0
         await self._write(data)
 
     async def _write(self, data):
-        nbytes = await self._run(os.write, self._fd, data)
+        await self._run(os.write, self._fd, data)
         # print("Real Write {nbytes} bytes".format(nbytes=nbytes))
 
     async def write(self, data: Buffer):
@@ -159,9 +161,6 @@ class AsyncOSFile:  # 一个非常简单的 async file I/O wrapper
         :return: 累计的数据
         """
         return await self._run(os_extensions.read_all, self._fd, buffer_size)
-
-    async def join(self):
-        await self._queue.join()
 
     @classmethod
     def open(

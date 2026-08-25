@@ -23,7 +23,7 @@ class FormattedExceptionBase(Exception):
         self._kwargs = kwargs
 
     def get_final_message(self):
-        return tr(self.type) + tr(self._message, *self._args, **self._kwargs)
+        return tr(self.type) + ': ' + tr(self._message, *self._args, **self._kwargs)
 
     def __str__(self):
         return self.get_final_message()
@@ -47,6 +47,9 @@ class RepositoryNotFound(FormattedExceptionBase):
 
 class VersionNotFound(FormattedExceptionBase):
     type = '版本未找到'
+
+class VersionNotSupported(FormattedExceptionBase):
+    type = '版本不支持'
 
 
 class NetworkError(FormattedExceptionBase):

@@ -9,6 +9,7 @@ class ClientMeta(msgspec.Struct, kw_only=True, gc=False):
     world_version: int
     series_id: str
     protocol_version: int
+
     pack_version: PackVersionStruct
 
     class PackVersionStruct(msgspec.Struct):
@@ -36,14 +37,14 @@ class ClientMeta(msgspec.Struct, kw_only=True, gc=False):
             if self.resource:
                 return self.resource
             else:
-                return (self.resource_major, self.resource_minor)
+                return self.resource_major, self.resource_minor
 
         @property
         def data_version(self):
             if self.data:
                 return self.data
             else:
-                return (self.data_major, self.data_minor)
+                return self.data_major, self.data_minor
 
     build_time: datetime
     java_component: str

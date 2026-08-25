@@ -5,57 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="Commit for recent work">
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/minecraft/client_meta.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/mods/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/pack/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/pack/oop.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/pack/pack_meta.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/shaderpacks/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/addon/shaderpacks/methods.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/third_party/fabric_meta/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/third_party/fabric_meta/api/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/third_party/fabric_meta/api/v2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/third_party/fabric_meta/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/core/third_party/fabric_meta/models/v2.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/base/doc_parser.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/general_installer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/runner.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/addon/mods/fabric_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/mods/fabric_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/addon/version/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/cacher/cache_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/cacher/cache_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/cacher/model_cacher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/cacher/model_cacher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/model_asset_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/model_asset_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/model_version_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/model_version_meta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/assets.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/assets.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/instance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/launcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/libraries.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/libraries.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/repository.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/repository.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/resources/versions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/versions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/models/version_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/models/version_spec.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/network/downloader.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/network/downloader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/network/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/network/session.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/router/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/minecraft/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/router/router.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/third_party/mojang/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/third_party/mojang/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/third_party/mojang/models/asset_index.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/third_party/mojang/models/asset_index.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/assets/themes/theme.json5" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/assets/themes/theme.json5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/base/command_base.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/base/command_base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/base/console_extensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/base/console_extensions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/base/methods.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/base/methods.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/base/tty_task_viewer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/install.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/base_installer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/base_installer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/vanilla_installer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/vanilla_installer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/launch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_get_versionmeta.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_get_versionmeta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/core/addon/minecraft/client_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/minecraft/client_meta.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/core/addon/pack/oop.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/pack/pack_file.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/directories/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/instance.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,61 +52,61 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.7526237441354238" />
-      <entry key="MS500" value="2.0346076072621213" />
-      <entry key="S2" value="2.9110337663047297" />
-      <entry key="S5" value="3.786844773633759" />
-      <entry key="S10" value="5.298211428683558" />
-      <entry key="S30" value="9.934686097680176" />
-      <entry key="S60" value="14.687911350062507" />
-      <entry key="M2" value="22.650433646482195" />
-      <entry key="M5" value="48.240355664730664" />
-      <entry key="M10" value="100.53462577745275" />
-      <entry key="M15" value="154.83646227106522" />
-      <entry key="M30" value="295.4110675098928" />
-      <entry key="H1" value="510.94357801124426" />
-      <entry key="H2" value="907.2996482211933" />
-      <entry key="H4" value="1792.68749982628" />
-      <entry key="D1" value="11658.840072283918" />
-      <entry key="W1" value="30217.330906281157" />
+      <entry key="MS100" value="1.000002284115754" />
+      <entry key="MS500" value="1.084553320505806" />
+      <entry key="S2" value="1.8800761805180422" />
+      <entry key="S5" value="3.056401614450647" />
+      <entry key="S10" value="4.721089745031822" />
+      <entry key="S30" value="8.102888863300178" />
+      <entry key="S60" value="9.993621387039694" />
+      <entry key="M2" value="12.30226268802909" />
+      <entry key="M5" value="21.754219200041664" />
+      <entry key="M10" value="37.1817266987162" />
+      <entry key="M15" value="56.746835012022714" />
+      <entry key="M30" value="144.07884386576072" />
+      <entry key="H1" value="372.59294251504303" />
+      <entry key="H2" value="834.6693073357634" />
+      <entry key="H4" value="1746.080302073293" />
+      <entry key="D1" value="11555.656336528262" />
+      <entry key="W1" value="30794.100384874688" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="2.5328311905712024E-73" />
-      <entry key="MS500" value="3.0249712343850724E-15" />
-      <entry key="S2" value="2.345202304659031E-4" />
-      <entry key="S5" value="0.03532653798003772" />
-      <entry key="S10" value="0.18948271166769526" />
-      <entry key="S30" value="0.6987862576052541" />
-      <entry key="S60" value="1.2493377146379985" />
-      <entry key="M2" value="2.194424485616382" />
-      <entry key="M5" value="5.147653289403125" />
-      <entry key="M10" value="11.885699616459513" />
-      <entry key="M15" value="19.450564855689112" />
-      <entry key="M30" value="40.18498741466424" />
-      <entry key="H1" value="75.12533132841756" />
-      <entry key="H2" value="145.7963651055291" />
-      <entry key="H4" value="311.85916179060564" />
-      <entry key="D1" value="2268.840476134935" />
-      <entry key="W1" value="6101.276836648833" />
+      <entry key="MS100" value="0.004581386520437027" />
+      <entry key="MS500" value="0.3405645112741118" />
+      <entry key="S2" value="0.7747344205846227" />
+      <entry key="S5" value="1.1477510971891478" />
+      <entry key="S10" value="1.715225722063199" />
+      <entry key="S30" value="2.8000259557979685" />
+      <entry key="S60" value="3.321933031253122" />
+      <entry key="M2" value="4.093560929337643" />
+      <entry key="M5" value="8.11334189210291" />
+      <entry key="M10" value="13.937616515818384" />
+      <entry key="M15" value="19.714543735654985" />
+      <entry key="M30" value="41.93535605477702" />
+      <entry key="H1" value="93.22894994610203" />
+      <entry key="H2" value="185.3248665103904" />
+      <entry key="H4" value="358.5496599734606" />
+      <entry key="D1" value="2295.8700452610847" />
+      <entry key="W1" value="6259.076735126904" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.8233883466495129" />
-      <entry key="MS500" value="1.3762469580752776" />
-      <entry key="S2" value="2.5915494743620093" />
-      <entry key="S5" value="3.6520376756528514" />
-      <entry key="S10" value="5.373693893810715" />
-      <entry key="S30" value="10.564986958825232" />
-      <entry key="S60" value="15.882231286388096" />
-      <entry key="M2" value="24.79576546904275" />
-      <entry key="M5" value="53.33888139637741" />
-      <entry key="M10" value="112.36581652110836" />
-      <entry key="M15" value="174.23005435101845" />
-      <entry key="M30" value="335.54038069415424" />
-      <entry key="H1" value="586.0189463378971" />
-      <entry key="H2" value="1053.0487956087222" />
-      <entry key="H4" value="2104.4967008895896" />
-      <entry key="D1" value="13927.623691526545" />
-      <entry key="W1" value="36318.58718211284" />
+      <entry key="MS100" value="0.1868612774807132" />
+      <entry key="MS500" value="0.8464144815247993" />
+      <entry key="S2" value="2.2219202395379107" />
+      <entry key="S5" value="3.9109915712461945" />
+      <entry key="S10" value="6.20814946579412" />
+      <entry key="S30" value="10.761146837296387" />
+      <entry key="S60" value="13.220974220721901" />
+      <entry key="M2" value="16.33620459742804" />
+      <entry key="M5" value="29.830086838272255" />
+      <entry key="M10" value="51.09004617883644" />
+      <entry key="M15" value="76.4327111229544" />
+      <entry key="M30" value="185.9785904518001" />
+      <entry key="H1" value="465.7761265945687" />
+      <entry key="H2" value="1019.9438500868805" />
+      <entry key="H4" value="2104.5777517315323" />
+      <entry key="D1" value="13851.469427738719" />
+      <entry key="W1" value="37053.156059791385" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -173,6 +126,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.askdfjaldsf.executor&quot;: &quot;Run&quot;,
     &quot;Python.assign_speed.executor&quot;: &quot;Run&quot;,
     &quot;Python.async_run_until_complete.executor&quot;: &quot;Run&quot;,
     &quot;Python.build_dist.executor&quot;: &quot;Run&quot;,
@@ -186,6 +140,7 @@
     &quot;Python.filesize.executor&quot;: &quot;Run&quot;,
     &quot;Python.filter_all_rules.executor&quot;: &quot;Run&quot;,
     &quot;Python.install_vanilla.executor&quot;: &quot;Run&quot;,
+    &quot;Python.maven_metadata.executor&quot;: &quot;Run&quot;,
     &quot;Python.mc_version_lang.executor&quot;: &quot;Run&quot;,
     &quot;Python.mvl (1).executor&quot;: &quot;Run&quot;,
     &quot;Python.mvl.executor&quot;: &quot;Run&quot;,
@@ -194,6 +149,7 @@
     &quot;Python.pinger.executor&quot;: &quot;Run&quot;,
     &quot;Python.pull_all_client_json.executor&quot;: &quot;Run&quot;,
     &quot;Python.read_nbt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.remotezip.executor&quot;: &quot;Run&quot;,
     &quot;Python.remove_invaild_files.executor&quot;: &quot;Run&quot;,
     &quot;Python.rename_pkg.executor&quot;: &quot;Run&quot;,
     &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
@@ -217,10 +173,12 @@
     &quot;Python.test_multi_context.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_or_if.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_packaging.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_pattern_match.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_typer_call.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_zstd_support.executor&quot;: &quot;Run&quot;,
     &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
     &quot;Python.validate_float_speed.executor&quot;: &quot;Run&quot;,
+    &quot;Python.version.executor&quot;: &quot;Run&quot;,
     &quot;Python.version_parser.executor&quot;: &quot;Run&quot;,
     &quot;Python.version_range.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
@@ -231,7 +189,7 @@
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/src/app/core/third_party/mojang/models&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/tests/samples/neoforged&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -240,7 +198,7 @@
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -254,21 +212,21 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\tests\samples\neoforged" />
       <recent name="E:\.projects\minecraft-launcher\src\app\core\third_party\mojang\models" />
       <recent name="E:\.projects\minecraft-launcher\launchers" />
       <recent name="E:\.projects\minecraft-launcher\app\interfaces\commandline\commands\launch" />
       <recent name="E:\.projects\minecraft-launcher" />
-      <recent name="E:\.projects\minecraft-launcher\app\core\minecraft\nbt" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\.projects\minecraft-launcher\src\app\third_party\mojang\models" />
+      <recent name="E:\.projects\minecraft-launcher\src\app" />
+      <recent name="E:\.projects\minecraft-launcher\src\app\impls" />
       <recent name="E:\.projects\minecraft-launcher\src\app\core\addon\pack" />
       <recent name="E:\.projects\minecraft-launcher\src\app\core\addon\resourcepack" />
-      <recent name="E:\.projects\minecraft-launcher\src\app\core\task" />
-      <recent name="E:\.projects\minecraft-launcher\src\app\interfaces\commandline\commands\instances_commands\install" />
-      <recent name="E:\.projects\minecraft-launcher\src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_or_if">
+  <component name="RunManager" selected="Python.askdfjaldsf">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -287,6 +245,32 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="true" />
       <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="askdfjaldsf" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="minecraft-launcher" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/askdfjaldsf.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -321,7 +305,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="convert_struct" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="maven_metadata" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -330,15 +314,24 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
       <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/convert_struct.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app/third_party/neoforge_maven/models/maven_metadata.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -347,7 +340,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_doc" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="remotezip" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -356,15 +349,24 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/app/core" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_doc.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="RUN_TOOL" value="false" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app/core/remotezip.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -373,7 +375,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_download" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="test_pattern_match" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -390,7 +392,7 @@
       <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_download.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pattern_match.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -399,7 +401,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_fabric_meta_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="version" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -409,40 +411,14 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/app/core/minecraft" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_fabric_meta_v2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="true" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="test_or_if" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="minecraft-launcher" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_or_if.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/app/core/minecraft/version.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -453,26 +429,26 @@
     </configuration>
     <list>
       <item itemvalue="Python.cli" />
-      <item itemvalue="Python.convert_struct" />
-      <item itemvalue="Python.test_doc" />
-      <item itemvalue="Python.test_download" />
-      <item itemvalue="Python.test_fabric_meta_v2" />
-      <item itemvalue="Python.test_or_if" />
+      <item itemvalue="Python.askdfjaldsf" />
+      <item itemvalue="Python.maven_metadata" />
+      <item itemvalue="Python.remotezip" />
+      <item itemvalue="Python.test_pattern_match" />
+      <item itemvalue="Python.version" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test_or_if" />
-        <item itemvalue="Python.test_fabric_meta_v2" />
-        <item itemvalue="Python.test_doc" />
-        <item itemvalue="Python.test_download" />
-        <item itemvalue="Python.convert_struct" />
+        <item itemvalue="Python.askdfjaldsf" />
+        <item itemvalue="Python.maven_metadata" />
+        <item itemvalue="Python.version" />
+        <item itemvalue="Python.remotezip" />
+        <item itemvalue="Python.test_pattern_match" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-6fa658e1df1a-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.8665.369" />
+        <option value="bundled-python-sdk-821f704e66d9-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.9437.214" />
       </set>
     </attachedChunks>
   </component>
@@ -595,7 +571,15 @@
       <option name="project" value="LOCAL" />
       <updated>1786178241474</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Commit for recent work">
+      <option name="closed" value="true" />
+      <created>1786518154817</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1786518154817</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

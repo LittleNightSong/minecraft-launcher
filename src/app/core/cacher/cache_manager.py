@@ -170,6 +170,6 @@ class CacheEntity:
 
 def compute_xkey(key: str, algorithm: str):
     if algorithm == 'xxhash':
-        return base64.urlsafe_b64encode(xxhash.xxh3_128(key).digest()).decode()
+        return base64.urlsafe_b64encode(xxhash.xxh3_128(key.encode()).digest()).decode()
     else:
         return base64.urlsafe_b64encode(hashlib.new(algorithm, key.encode()).digest()).decode()

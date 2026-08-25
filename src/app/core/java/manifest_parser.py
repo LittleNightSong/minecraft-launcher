@@ -8,7 +8,7 @@ def parse(data: str):
         if not line.strip():
             continue
 
-        print(line, line.split(': ', 1))
+        # print(line, line.split(': ', 1))
         strips = line.split(': ', 1)
         if len(strips) == 2:
             last_name = strips[0]

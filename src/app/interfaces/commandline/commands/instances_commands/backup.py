@@ -67,7 +67,7 @@ class BackupCommand(Command):
                 safe_rwrite(z, self.instance.shaderpacks_dir)
 
             # 随后添加元数据
-            version_meta = self.instance.version_meta
+            version_meta = self.instance.mojang_version_meta
             with z.open('metadata.json', 'w') as f:
                 f.write(msgspec.json.encode())
 

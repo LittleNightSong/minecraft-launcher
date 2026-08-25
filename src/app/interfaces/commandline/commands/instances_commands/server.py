@@ -46,9 +46,10 @@ class ServerCommandGroup(CommandGroup):
 
                     *([tr("实例 [bold]{}[/bold] 被用于进入此服务器", bind)] if bind else []),
 
-                    fit=False
+                    # fit=False
                 ),
-                border_style='yellow'
+                border_style='yellow',
+                expand=False
             )
         )
 
@@ -130,7 +131,8 @@ class ServerCommandGroup(CommandGroup):
                         title=f'[bold]{s.name}[/]',
                         renderable=Group(
                             tr("启动使用的版本：{}", s.bind)
-                        )
+                        ),
+                        expand=False
                     )
                 )
             else:

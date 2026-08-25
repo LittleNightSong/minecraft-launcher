@@ -398,7 +398,7 @@ class MyConsole(rich.console.Console):
                 bar.completed += 1
                 live.update(bar)
 
-    async def async_progress(
+    async def aprogress(
             self,
             iterable,
             prompt='Progress ',

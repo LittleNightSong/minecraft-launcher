@@ -7,7 +7,7 @@ from rich.console import Group
 from rich.panel import Panel
 from app.core.i18n import tr
 from app.core.minecraft import MinecraftVersion
-from app.core.third_party.mojang import MinecraftAPI
+from app.third_party.mojang import MinecraftAPI
 from app.core.network import Session
 from app.interfaces.commandline import typer_app
 from app.interfaces.commandline.base.command_base import Command
@@ -44,7 +44,7 @@ class ListCommand(Command, app=typer_app):
 
         online_manifest = None
         if online:
-            api = MinecraftAPI(Session(), cacher=minecraft.launcher_data.model_cacher)
+            api = MinecraftAPI(Session())
             online_manifest = await api.fetch_version_manifest()
 
         if type is None and version is None and online_manifest is not None:
@@ -94,7 +94,7 @@ class ListCommand(Command, app=typer_app):
 
             for instance in minecraft.versions:
                 try:
-                    mc_version = MinecraftVersion(instance.version_meta.id)
+                    mc_version = MinecraftVersion(instance.mojang_version_meta.id)
                 except msgspec.ValidationError:
                     version_groups['broken'].append(instance.name)
                     continue
@@ -113,7 +113,7 @@ class ListCommand(Command, app=typer_app):
                     continue
 
                 version_groups[mc_version.simple_type].append(
-                    f'{instance.name} ({instance.version_meta.id})')
+                    f'{instance.name} ({instance.mojang_version_meta.id})')
 
         text_mapping = {
             'release': tr("正式版"),

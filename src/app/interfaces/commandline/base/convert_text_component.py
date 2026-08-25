@@ -2,8 +2,8 @@ from rich.color import Color
 from rich.style import Style
 from rich.text import Text
 
-from app.core.minecraft.color_code import blocks_from_text, spans_from_blocks, ColorStyles, FormatStyles
-from app.core.minecraft.text_component import TextComponent, TypeText, BaseTextComponent
+from app.third_party.mojang.models.color_code import blocks_from_text, spans_from_blocks, ColorStyles, FormatStyles
+from app.third_party.mojang.models.text_component import TextComponent, TypeText, BaseTextComponent
 
 
 def get_raw_styles(styles: list[ColorStyles | FormatStyles], raw_styles: dict | None = None):
@@ -29,7 +29,10 @@ def get_raw_styles(styles: list[ColorStyles | FormatStyles], raw_styles: dict | 
     return raw_styles
 
 
-def _flatten(component: TextComponent, parent_styles: dict = None):
+def _flatten(component: TextComponent | str, parent_styles: dict = None):
+    if isinstance(component, str):
+        yield parent_styles, component
+
     parent_styles = parent_styles or {}
     if isinstance(component, TypeText):
         cur_styles = parent_styles.copy()

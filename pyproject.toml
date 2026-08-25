@@ -2,43 +2,43 @@
 name = "minecraft-launcher"
 version = "0.1.2"
 description = "A Minecraft Launcher Written in Python"
-requires-python = ">=3.14"
+requires-python = "~=3.14.0"
 dependencies = [
-    "athreading>=0.3.0",
-    "docutils>=0.23",
-    "json5>=0.15.0",
-    "loguru>=0.7.3",
-    "msgspec>=0.20.0",
-    "niquests~=3.20",
-    "platformdirs>=4.10",
-    "prompt-toolkit>=3.0.52",
-    "psutil>=7.2.2",
-    "pyyaml>=6.0.3",
-    "readchar>=4.2.2",
-    "rich~=15.0",
-    "textual>=8.2.8",
-    "tqdm>=4.70.0",
-    "typeguard>=4.5.1",
-    "typer~=0.27",
-    "winloop>=0.5.0; sys_platform == 'win32'",
-    "uvloop>=0.5.0; sys_platform != 'win32'",
-    "xxhash>=3.7.0",
-    "yarl>=1.24.0",
-    "semver>=3.0.4",
-    "unified-range>=0.1.1",
-    "asyncstdlib>=3.14.0",
-    "pyrefly>=0.60.0",
+    "athreading~=0.3.0",
+    "docutils~=0.23.0",
+    "json5~=0.15.0",
+    "loguru~=0.7.0",
+    "msgspec~=0.21.0",
+    "niquests~=3.21.0",
+    "platformdirs~=4.11.0",
+    "prompt-toolkit~=3.0.0",
+    "psutil~=7.2.0",
+    "pyyaml~=6.0.0",
+    "readchar~=4.2.0",
+    "rich~=15.0.0",
+    "textual~=8.2.0",
+    "tqdm~=4.70.0",
+    "typeguard~=4.6.0",
+    "typer~=0.27.0",
+    "winloop~=0.5.0; sys_platform == 'win32'",
+    "uvloop~=0.5.0; sys_platform != 'win32'",
+    "xxhash~=4.0.0",
+    "yarl~=1.24.0",
+    "semver~=3.0.0",
+    "unified-range~=0.1.0",
+    "asyncstdlib~=3.14.0",
+    "rtzip==0.2.2",
 ]
 
-[[tool.uv.index]]
-url = "https://mirrors.aliyun.com/pypi/simple/"
-default = true
+#[[tool.uv.index]]
+#url = "https://mirrors.aliyun.com/pypi/simple/"
+#default = true
 
 [dependency-groups]
 dev = [
-    "aiomonitor>=0.7.1",
-    "memory-profiler>=0.61.0",
-    "puremagic>=2.2.0",
-    "py-spy>=0.4.2",
+    "memory-profiler~=0.61.0",
+    "puremagic~=2.2.0",
+    "py-spy~=0.4.2",
+    "rangehttpserver~=1.4.0",
     "setuptools<75.0",
 ]

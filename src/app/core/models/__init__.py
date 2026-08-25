@@ -13,4 +13,5 @@ Minecraft 核心模块。
 """
 
 from .file import *
-from .library import Library
+from .maven_coordinate import MavenCoordinate
+from .maven_coordinate import MavenCoordinate as Library

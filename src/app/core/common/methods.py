@@ -15,19 +15,53 @@ def as_async(func):
     return wrapper
 
 
+decoder_mapping = {
+    'json': msgspec.json.decode,
+    'msgpack': msgspec.msgpack.decode,
+    'yaml': msgspec.yaml.decode
+}
+
+encoder_mapping = {
+    'json': msgspec.json.encode,
+    'msgpack': msgspec.msgpack.encode,
+    'yaml': msgspec.yaml.encode
+}
+
+
+def get_decoder(maybe_format: str | Callable):
+    if isinstance(maybe_format, str):
+        return decoder_mapping[maybe_format]
+    return maybe_format
+
+
+def get_encoder(maybe_format: str | Callable):
+    if isinstance(maybe_format, str):
+        return encoder_mapping[maybe_format]
+
+    return maybe_format
+
+
+def auto_decode(buffer, decoder, type=...):
+    decoder = get_decoder(decoder)
+
+    if type is not ...:
+        return decoder(buffer, type=type)
+    else:
+        return decoder(buffer)
+
+
 def read_model[T](
-        file, type: type[T],
-        decoder=msgspec.json.decode,
-        default: T =...,
-        default_factory: Callable[[], T] = ...
+        file,
+        type: type[T] | Ellipsis = ...,
+        decoder: Callable[..., T] | str = msgspec.json.decode,
+        default: T | Ellipsis = ...,
+        default_factory: Callable[[], T] | Ellipsis = ...
 ) -> T:
     try:
         with open(file, 'rb') as f:
-            if type is not ...:
-                return decoder(f.read(), type=type)
-            else:
-                return decoder(f.read())
-    except (FileNotFoundError, PermissionError, msgspec.ValidationError, msgspec.DecodeError) as e:
+            return auto_decode(f.read(), decoder, type)
+
+    except FileNotFoundError as e:
         if default is not ...:
             return default
         elif default_factory is not ...:
@@ -37,13 +71,12 @@ def read_model[T](
 
 
 def write_model(file, obj, encoder=msgspec.json.encode):
+    encoder = get_encoder(encoder)
     with open(file, 'wb') as f:
         f.write(encoder(obj))
 
 
-
-
-def format_args(args, kwargs):
+def format_function_call(args, kwargs):
     parts = [*map(repr, args), *[f"{k}={v!r}" for k, v in kwargs.items()]]
     return '(' + ', '.join(parts) + ')'
 
@@ -55,7 +88,7 @@ def trace(maybe_func=None, *, hide_return=False, hide_args=False):
             try:
                 value = func(*args, **kwargs)
             finally:
-                args_ = format_args(args, kwargs) if not hide_args else '...'
+                args_ = format_function_call(args, kwargs) if not hide_args else '...'
                 return_value = repr(value if 'value' in locals() else '<Error>') if not hide_return else '<Not Trace>'
 
                 print(f"TRACE {func.__name__}{args_} -> {return_value}")
@@ -96,3 +129,8 @@ def template_fill(__tmpl, __mapping=None, **kwargs):
         __mapping = {}
 
     return Template(__tmpl).substitute(__mapping, **kwargs)
+
+
+def update_attrs(obj, **kwargs):
+    for k, v in kwargs.items():
+        setattr(obj, k, v)

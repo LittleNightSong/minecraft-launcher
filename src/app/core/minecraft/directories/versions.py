@@ -1,11 +1,9 @@
 from pathlib import Path
 from typing import Iterable
 
-from app.core.minecraft.model_version_manifest import LatestStruct
 from app.core.minecraft.directories import InstanceDirectory
 from .base import BaseDirectory
-from ..model_version_manifest import VersionManifestModel
-from ...common import InvaildInstance
+from app.core.common import InvaildInstance
 
 
 class VersionsDirectory(BaseDirectory):
@@ -48,16 +46,6 @@ class VersionsDirectory(BaseDirectory):
                 mapping[ins.id].append(ins)
         return mapping
 
-    def separate(self, merge_snapshots=True):
-        return VersionManifestModel(
-            latest=LatestStruct(
-                release='', snapshot=''
-            ),
-            versions=[
-                v.version_meta
-                for v in self
-            ]
-        ).separate(merge_snapshots=merge_snapshots)  # 直接复用已有的逻辑
 
     def __iter__(self):
         return iter(self.instances())

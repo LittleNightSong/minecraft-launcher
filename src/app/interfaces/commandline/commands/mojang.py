@@ -5,7 +5,7 @@ from niquests import HTTPError
 
 from app.core.i18n import tr
 from app.core.network import Session
-from app.core.third_party.mojang import MinecraftAPI
+from app.third_party.mojang import MinecraftAPI
 from app.interfaces.commandline.base import CommandGroup, console
 from app.interfaces.commandline.base.command_base import command
 

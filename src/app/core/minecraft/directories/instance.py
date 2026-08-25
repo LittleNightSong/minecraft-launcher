@@ -1,7 +1,9 @@
 from pathlib import Path
 
-from app.core.common import read_model, write_model
-from ..model_version_meta import VersionMetaModel
+from app.core.addon.pack.pack_file import PackFile
+from app.core.common import read_model
+from app.core.models.version_meta import VersionMeta
+from app.third_party.mojang.models import VersionMetaModel as MojangVersionMetaModel
 from .base import BaseDirectory
 
 
@@ -12,7 +14,7 @@ class InstanceDirectory(BaseDirectory):
         '_ins_info',
         '_info_file',
         '_name',
-        '_meta_file', '_main_file',
+        '_mojang_meta_file', '_main_file', '_meta_file'
     ]
 
     def __init__(self, path):
@@ -23,21 +25,21 @@ class InstanceDirectory(BaseDirectory):
 
         self._name = self.path.name
 
-        self._meta_file = self.path / (self.path.name + '.json')
+        self._mojang_meta_file = self.path / (self.path.name + '.json')
+        self._meta_file = self.path / (self.path.name + '.mpk')
         self._main_file = self.path / (self.path.name + '.jar')
         # self._info_file = self.path / '.minecraft-version'  # TODO
 
     @property
-    def version_meta(self) -> VersionMetaModel:
+    def mojang_version_meta(self) -> MojangVersionMetaModel:
+        return read_model(self._mojang_meta_file, MojangVersionMetaModel)
+
+    @property
+    def version_meta(self) -> VersionMeta:
         if self._version_meta is None:
-            self._version_meta = read_model(self.meta_file, VersionMetaModel)
+            self._version_meta = read_model(self.meta_file, VersionMeta, 'msgpack')
 
         return self._version_meta
-
-    @version_meta.setter
-    def version_meta(self, value):
-        self._version_meta = value
-        write_model(self.meta_file, value)
 
     @property
     def name(self):
@@ -46,6 +48,10 @@ class InstanceDirectory(BaseDirectory):
     @property
     def meta_file(self):
         return self._meta_file
+
+    @property
+    def mojang_meta_file(self):
+        return self._mojang_meta_file
 
     @property
     def main_file(self):
@@ -72,6 +78,10 @@ class InstanceDirectory(BaseDirectory):
         return self.path / 'resourcepacks'
 
     @property
+    def datapacks_dir(self):
+        return self.path / 'datapacks'
+
+    @property
     def shaderpacks_dir(self):
         return self.path / 'shaderpacks'
 
@@ -84,7 +94,7 @@ class InstanceDirectory(BaseDirectory):
         return self.path / 'mods'
 
     def is_valid(self):
-        return (self.path / (self.path.name + '.json')).exists()
+        return self.meta_file.exists()
 
     @property
     def screenshot_files(self):
@@ -105,3 +115,19 @@ class InstanceDirectory(BaseDirectory):
     @property
     def saves_paths(self):
         return [i for i in self.saves_dir.iterdir() if i.is_dir()]
+
+    def _iter_packs(self, dir):
+        return (
+            PackFile.open(filename)
+            for filename in dir.iterdir()
+            if filename.is_file()
+        )
+
+    def iter_resourcepacks(self):
+        return self._iter_packs(self.resourcepacks_dir)
+
+    def iter_shaderpacks(self):
+        return self._iter_packs(self.shaderpacks_dir)
+
+    def iter_datapacks(self):
+        return self._iter_packs(self.datapacks_dir)

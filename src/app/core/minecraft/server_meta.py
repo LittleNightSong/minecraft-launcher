@@ -4,7 +4,7 @@ from uuid import UUID
 
 import msgspec
 
-from app.core.minecraft.text_component import TextComponent
+from app.third_party.mojang.models.text_component import TextComponent
 
 
 class SinglePlayerStruct(msgspec.Struct):

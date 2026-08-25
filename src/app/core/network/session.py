@@ -18,7 +18,7 @@ class Session(niquests.AsyncSession):
 
         content = await self.read(
             str(url).format(
-                [urllib.parse.quote(str(x)) for x in args]
+                *[urllib.parse.quote(str(x)) for x in args]
             ),
             method,
             data=data,

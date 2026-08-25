@@ -23,7 +23,7 @@ def _compute_hash(filename, algorithm='sha1', chunk_size=default_chunk_size):
         while n := fp.readinto(buffer):
             hasher.update(buffer[:n])
 
-    return hasher.hexdigest()
+    return hasher
 
 
 async def compute_hash(
@@ -38,6 +38,7 @@ async def compute_hash(
 def _validate[T](filename, spec: FileSpec[T], chunk_size: int = default_chunk_size) -> ValidateResult[T]:
     real_size = None
     real_hash = None
+    hex_checksum = None
 
     try:
         # 最先确保文件的存在性
@@ -75,29 +76,31 @@ def _validate[T](filename, spec: FileSpec[T], chunk_size: int = default_chunk_si
         algorithm = spec.algorithm
 
         if (
-                checksum is not None and
-                (
-                        real_hash := _compute_hash(
-                            filename,
-                            algorithm=algorithm,
-                            chunk_size=chunk_size
-                        )
-                ) != checksum
+                checksum is not None
+
         ):
-            return ValidateResult(
-                result=False,
-                file=filename,
-                spec=spec,
-                size=real_size,
-                checksum=real_hash
+            real_hash = _compute_hash(
+                filename,
+                algorithm=algorithm,
+                chunk_size=chunk_size
             )
+            if real_hash.digest() != bytes.fromhex(checksum):
+                return ValidateResult(
+                    result=False,
+                    file=filename,
+                    spec=spec,
+                    size=real_size,
+                    checksum=real_hash.hexdigest()
+                )
+
+            hex_checksum = real_hash.hexdigest()
 
         return ValidateResult(
             result=True,
             file=filename,
             spec=spec,
             size=filesize,
-            checksum=real_hash
+            checksum=hex_checksum
         )
     except Exception as e:  # 发生任何异常都应该返回一个带错误信息的 Result 类型
         return ValidateResult(
@@ -105,19 +108,30 @@ def _validate[T](filename, spec: FileSpec[T], chunk_size: int = default_chunk_si
             file=filename,
             spec=spec,
             size=real_size,
-            checksum=real_hash,
+            checksum=hex_checksum,
             error=e
         )
-
+def _spec_from_filename(filename, algorithm: str = 'sha1'):
+    stat = os.stat(filename)
+    size, mtime = stat[ST_SIZE], stat[ST_MTIME]
+    # 计算 hash
+    hash = _compute_hash(filename, algorithm)
+    return FileSpec(
+        size=size,
+        checksum=hash.hexdigest(),
+        algorithm=algorithm,
+        last_modified=mtime
+    )
 
 class FileValidator:
-    def __init__(self, executor=None, loop=None):
+    def __init__(self, executor=None, loop=None, max_workers=4):
         self.loop = loop or asyncio.get_event_loop()
-        self.executor = executor or ThreadPoolExecutor()
+        self.executor = executor or ThreadPoolExecutor(max_workers=max_workers)
 
     async def validate[T](self, filename, spec: FileSpec[T], chunk_size: int = default_chunk_size) -> ValidateResult[T]:
         return await self.loop.run_in_executor(self.executor, _validate, filename, spec, chunk_size)
-
+    async def spec_from_file(self, filename, algorithm: str = 'sha1'):
+        return await self.loop.run_in_executor(self.executor, _spec_from_filename, filename, algorithm)
 
 def res_false_filter[T](results: Iterable[ValidateResult[T]]) -> list[ValidateResult[T]]:
     return [r for r in results if not r.result]

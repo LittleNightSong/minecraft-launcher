@@ -1,12 +1,10 @@
 import asyncio
 import functools
 import os
-import shutil
-import time
 from asyncio import Semaphore
 from concurrent.futures import Executor
 from os import PathLike
-from typing import Iterable, Literal
+from typing import Any
 
 import msgspec
 from loguru import logger
@@ -16,36 +14,21 @@ from app.core.cacher.file_cache import FileCacher
 from app.core.common.errors import MaximumRetry
 from app.core.network import Session
 from app.core.network.session import kb256
-from app.core.osio import AsyncOSFile, safe_unlink
+from app.core.osio import AsyncOSFile
 from app.core.task.task import TaskProgress
 
 
-class DownloadPlan(msgspec.Struct, gc=False, frozen=True):
+class HTTPDownloadPlan(msgspec.Struct, gc=False, frozen=True):
     url: str
+    target: str | PathLike
+
     max_retry: int = 5
     headers: dict | None = None
 
     estimated_size: int | None = None
+    is_cache: bool = False
 
-    target: str | PathLike | None = None
-    targets: Iterable[str | PathLike] | None = None
-
-    cache_name: str | None = None
-    id: str | None = None
-
-    link_mode: Literal['hardlink', 'symlink', 'copy'] = 'symlink'
-
-
-def _link_file(src, dst, mode: Literal['hardlink', 'symlink', 'copy']):
-    match mode:
-        case 'hardlink':
-            safe_unlink(dst)
-            os.link(src, dst)
-        case 'symlink':
-            safe_unlink(dst)
-            os.symlink(src, dst)
-        case 'copy':
-            shutil.copy2(src, dst)
+    extra: Any | None = None
 
 
 class Downloader:
@@ -64,14 +47,14 @@ class Downloader:
         # self.loop = asyncio.new_event_loop() # TODO 在线程从独立运行事件循环和处理下载，优先级：低
         self.loop = asyncio.get_event_loop()
 
-    async def _download_single(
+    async def _download_main(
             self,
             url: str,
             filename: str | PathLike,
             progress: TaskProgress,
             headers: dict[str, str] | None = None,
     ):
-        headers = headers or {}
+        headers = headers.copy() if headers else {}
 
         if progress.progress != 0:  # 仅在已有进度的时候才设置 range 头
             headers['Range'] = f'bytes={progress.progress}-'  # 一般来说，这个代码总会被执行一次
@@ -79,7 +62,6 @@ class Downloader:
         logger.info(f"针对 {url!r} 的下载：即将发送请求, headers={headers!r}")
 
         response = await self.session.request('GET', url, headers=headers, stream=True)
-        resp_time = time.monotonic()
 
         try:
             logger.info(f"针对 {url!r} 的下载：已收到响应 {response}")
@@ -98,7 +80,7 @@ class Downloader:
             async with AsyncOSFile.open(
                     filename,
                     os.O_WRONLY | os.O_CREAT | os.O_BINARY,
-                    buffer_size=114514,
+                    buffer_size=114514 + 1919810,
                     executor=self.executor
             ) as f:
                 if response.status_code != 206:  # 如果不是分片传输
@@ -107,28 +89,26 @@ class Downloader:
                 else:
                     await f.seek(progress.progress)
 
-                stream_time = time.monotonic()
                 async for chunk in await response.iter_content(kb256):
                     await f.write(chunk)
                     progress += len(chunk)
-                    cnt += 1
 
+                    cnt += 1
                     if cnt % 16 == 0:
-                        t = time.monotonic()
                         logger.debug(
-                            "针对 {!r} 的下载（流报告）：收到的第 {} 个 chunk，当前进度：{} 距收到请求的时间：{} 距开始读取流的时间：{}",
-                            url, cnt, progress.progress, t - resp_time, t - stream_time
+                            "针对 {!r} 的下载（流报告）：收到的第 {} 个 chunk，当前进度：{}",
+                            url, cnt, progress.progress
                         )
 
                 logger.debug("针对 {!r} 的下载：流读取已完成，正在截断和同步磁盘写入", url)
 
                 await f.truncate(progress.progress)  # 砍掉后面的无用数据
-                await f.sync()
+                await f.sync()  # 同步磁盘，确保数据落盘
         finally:
             await response.close()
 
-    async def _download_wrapper(self, task, plan: DownloadPlan):
-        sleep_time = 3
+    async def _download_wrapper(self, task: TaskProgress, plan: HTTPDownloadPlan):
+        sleep_time = 1
 
         url = plan.url
         headers = plan.headers
@@ -136,9 +116,7 @@ class Downloader:
 
         logger.debug("已创建下载任务：{}", plan)
 
-        single_target = plan.target
-        if not plan.cache_name:
-            assert single_target
+        target = plan.target
 
         for i in range(max_retry + 1):
             try:
@@ -148,38 +126,29 @@ class Downloader:
                     url=url, i=i, max_retry=max_retry
                 )
                 async with self.semaphore:
-                    if plan.cache_name:
-                        with self.file_cacher.open(plan.cache_name) as file:
-                            await self._download_single(url, file, task, headers)
+                    if plan.is_cache:
+                        with self.file_cacher.open(plan.target) as file:
+                            await self._download_main(url, file, task, headers)
                     else:
-                        await self._download_single(url, single_target, task, headers)
+                        await self._download_main(url, target, task, headers)
 
-                if plan.cache_name:  # 下载完成，创建链接，将位于缓存中的文件链接到目标（软链接）
-                    mode = plan.link_mode
-                    logger.info(
-                        "来自 {!r} 的文件的链接方式：{}",
-                        url, mode
-                    )
-                    if single_target:
-                        logger.debug("链接目标 {} -> {}", file, single_target)
-                        _link_file(file, single_target, mode)
-
-                    if plan.targets:
-                        for target in plan.targets:
-                            logger.debug("链接目标 {} -> {}", file, target)
-                            _link_file(file, target, mode)
-
+                logger.info("针对 {!r} 的下载已完成", url)
                 return
 
             except HTTPError as e:
-                if 500 > e.response.status_code >= 400:
-                    logger.info("针对 {!r} 的下载：收到客户端错误，将在 {} 后重试", url, sleep_time)
-                    await asyncio.sleep(sleep_time)
-                    sleep_time *= 2
-                else:
-                    logger.warning(
-                        f"针对 {url!r} 的下载：收到错误 {e}"
-                    )
+                resp = e.response
+                match resp.status_code:
+                    case i if i in {429, 500, 502, 503, 504}:
+                        retry_after = resp.headers.get('retry-after')
+                        if retry_after:
+                            sleep_time = int(retry_after)
+                        else:
+                            sleep_time *= 2
+                    case _:
+                        sleep_time *= 2
+
+                logger.info("发生 HTTP 错误（错误码；{}），将在 {} 秒后自动重试", resp.status_code, sleep_time)
+                await asyncio.sleep(sleep_time)
 
             except Exception as e:
                 logger.opt(exception=e).warning(
@@ -197,8 +166,9 @@ class Downloader:
 
         raise MaximumRetry(f"无法下载 {url!r}, 已达到最大重试次数 {max_retry}")
 
-    def create_task(self, plan: DownloadPlan):
+    def create_task(self, plan: HTTPDownloadPlan):
         progress = TaskProgress()
         progress.task = asyncio.create_task(  # type: ignore
-            self._download_wrapper(progress, plan))
+            self._download_wrapper(progress, plan)
+        )
         return progress

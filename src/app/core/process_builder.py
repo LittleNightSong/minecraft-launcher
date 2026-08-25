@@ -2,16 +2,17 @@ import asyncio
 import dataclasses
 import pathlib
 import subprocess
+from pathlib import Path
 
 
 @dataclasses.dataclass(slots=True)
 class ProcessBuilder:
     args: list[str] = dataclasses.field(default_factory=list)
-    executable: str = ''
+    executable: str | Path = ''
 
-    stdin: int = subprocess.PIPE
-    stdout: int = subprocess.PIPE
-    stderr: int = subprocess.PIPE
+    stdin: int | None = subprocess.PIPE
+    stdout: int | None = subprocess.PIPE
+    stderr: int | None = subprocess.PIPE
 
     env: dict[str, str] = dataclasses.field(default_factory=dict)
 
@@ -30,7 +31,7 @@ class ProcessBuilder:
         self.args.append(other)
         return self
 
-    def __lshift__(self, other):
+    def __lshift__(self, other: Path | str):
         self.executable = other
         return self
 

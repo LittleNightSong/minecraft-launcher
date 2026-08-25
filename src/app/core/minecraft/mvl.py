@@ -9,8 +9,7 @@ from dataclasses import dataclass
 
 from app.core.common.errors import ExceptionForUser, ConflictInstall
 from app.core.i18n import tr
-# from .minecraft_version import MinecraftVersion
-from app.core.minecraft.minecraft_version import MinecraftVersion
+from app.core.minecraft.version import MinecraftVersion
 
 # 版本表达式正则表达式
 # 格式: 版本名称@版本号,(Flags), 或者直接的 版本号

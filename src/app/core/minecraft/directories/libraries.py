@@ -2,12 +2,12 @@ import typing
 from pathlib import Path
 from typing import Iterable
 
-from app.core.minecraft.matcher import RulesMatcher
 from app.core.minecraft.directories.base import BaseDirectory
 from app.core.models import Library, FileSpec
+from app.core.models.env import Environment
 
 if typing.TYPE_CHECKING:
-    from app.core.minecraft.model_version_meta import StandardLibraryStruct
+    from app.core.models.version_meta import CommonLibraryStruct, NativeLibraryStruct
 
 
 class LibrariesDirectory(BaseDirectory):
@@ -20,11 +20,11 @@ class LibrariesDirectory(BaseDirectory):
     def library_path(self, name: str):
         return self.library(name).fullpath
 
-    def get_library_files(self, libraries: Iterable[StandardLibraryStruct], matcher: RulesMatcher) -> list[tuple[Path, FileSpec]]:
+    def get_library_files(self, libraries: Iterable[CommonLibraryStruct | NativeLibraryStruct], env: Environment) -> list[tuple[Path, FileSpec]]:
         """
         获取当前平台所需的所有依赖库的文件, 包括 natives 库 (如果有的话)
         :param libraries: 依赖库模型结构体
-        :param matcher: 规则匹配器对象
+        :param env: 环境信息
         :return: 所需文件的 FileInfo 对象列表
         """
         return [
@@ -37,5 +37,5 @@ class LibrariesDirectory(BaseDirectory):
                 )
             )
             for lib in libraries
-            for dl, name in lib.collect_files(matcher)
+            for dl in lib.collect(env)
         ]

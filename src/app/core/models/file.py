@@ -73,4 +73,4 @@ class ValidateResult[T](msgspec.Struct, kw_only=True, frozen=True, gc=False):
 
     def __fspath__(self):
         """返回被验证文件的路径，支持 os.fspath() 操作。"""
-        return self.file.filename
+        return self.file

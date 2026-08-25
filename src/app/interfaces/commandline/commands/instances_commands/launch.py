@@ -1,6 +1,7 @@
 import asyncio
 import os
 import re
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from string import Template
@@ -18,13 +19,14 @@ from app.core.file_validator import res_false_filter, FileValidator
 from app.core.i18n import tr
 from app.core.java.size import parse
 from app.core.memory_allocator import MemoryAllocator
-from app.core.minecraft import VersionMetaModel, rules_matcher
 from app.core.minecraft.directories import InstanceDirectory
-from app.core.models import FileSpec
+from app.core.models import FileSpec, Library
+from app.core.models.env import Environment
 from app.core.models.launch_context import LaunchContext, JVMContext
+from app.core.models.version_meta import VersionMeta, NativeLibraryStruct
 from app.core.network import Session
 from app.core.process_builder import ProcessBuilder
-from app.core.third_party.mojang import MinecraftAPI
+from app.third_party.mojang import MinecraftAPI
 from app.interfaces.commandline import typer_app
 from app.interfaces.commandline.base.command_base import Command
 from app.interfaces.commandline.base.console_extensions import console
@@ -35,23 +37,27 @@ from app.interfaces.commandline.base.methods import find_repository, status
 class LaunchCommand(Command, app=typer_app):
     name = 'launch'
 
-    async def check_all_files(self, ins: InstanceDirectory, meta: VersionMetaModel):
+    async def check_all_files(self, ins: InstanceDirectory, meta: VersionMeta):
+
         files: list[tuple[str, FileSpec]] = []
         files.extend(
-            self.repo.assets.indexes.read(meta.assets).iter_fileinfo(assets_dir=self.repo.assets)
+            self.repo.assets
+            .read_index(meta.dependencies.assets_index.id)
+            .iter_files(self.repo.assets.path)
         )
         files.extend(
             self.repo.libraries.get_library_files(
-                matcher=rules_matcher,
-                libraries=meta.libraries
+                libraries=meta.dependencies.libraries,
+                env=self.env
             )
         )
-        dl = meta.downloads.client
+
+        client = meta.downloads.client
         files.append((
             ins.main_file,
             FileSpec(
-                size=dl.size,
-                checksum=dl.sha1,
+                size=client.size,
+                checksum=client.sha1,
                 algorithm='sha1',
             )
         ))
@@ -60,25 +66,29 @@ class LaunchCommand(Command, app=typer_app):
             await status(
                 task=asyncio.gather(*[
                     self.file_validator.validate(*file)
-                    for file in files
+                    for file in reversed(files)
                 ]),
                 content="校验文件中",
                 console=console
             )
         )
 
-    async def unzip_native_libraries(self, ins: InstanceDirectory, meta: VersionMetaModel):
+    async def unzip_native_libraries(self, ins: InstanceDirectory, meta: VersionMeta):
         loop = asyncio.get_event_loop()
-        required_natives = meta.get_unzip_required_libraries(rules_matcher)
+        env = self.env
+        required_natives = [
+            i for i in meta.dependencies.libraries
+            if isinstance(i, NativeLibraryStruct)
+            if i.pass_rules(env)
+            if i.get_native_safe(env)
+        ]
         # console.print(required_natives)
         tasks = [
             loop.run_in_executor(
                 self.pool,
 
                 extract_to,
-                self.repo.libraries.path / i.downloads.classifiers[
-                    Template(i.natives[rules_matcher.os_name]).substitute(rules_matcher.env)
-                ].path,
+                self.repo.libraries.path / i.get_native(env).path,
                 ins.natives_dir
             )
             for i in required_natives
@@ -91,6 +101,7 @@ class LaunchCommand(Command, app=typer_app):
         self.file_validator = FileValidator(executor=self.pool)
         self.session = Session()
         self.api = MinecraftAPI(self.session)
+        self.env = Environment.new()
 
     async def main(
             self,
@@ -129,6 +140,7 @@ class LaunchCommand(Command, app=typer_app):
         :param show_uuid: 是否显示用户的 UUID
         :return:
         """
+        env = self.env
         ins: InstanceDirectory = self.repo.versions.instance(name)
         if not ins.is_valid():
             console.error(tr("指定的版本不存在"))
@@ -139,6 +151,7 @@ class LaunchCommand(Command, app=typer_app):
         # 校验所有资源
         result = await self.check_all_files(ins, meta)
         if result:
+            console.print(result)
             console.error(tr("版本文件存在问题，请使用 [green]install[/green] 修复后再启动"))
             raise typer.Abort()
 
@@ -171,27 +184,27 @@ class LaunchCommand(Command, app=typer_app):
             console.print(tr("[dim]UUID {}[/dim]", uuid))
 
         # 拼接 classpath
-        # # 首先找到所有的不是 natives 的 library 文件  # TODO: 我们现在已经有统一化的模型了，此时不应继续使用官方的数据模型
-        non_native_libraries = [i for i in ins.version_meta.libraries if not i.natives]
+        libraries = ins.version_meta.dependencies.libraries
+        # console.print(libraries)
         classpath_list = {
-            str(self.repo.libraries.path / lib.downloads.artifact.path)
-            for lib in non_native_libraries
-            if lib.downloads.artifact  # 这个比较迷惑，旧版有些 library 不提供 artifact
+            Library(file.name).deduplication_key: str(self.repo.libraries.path / file.path)
+            for lib in libraries
+            for file in lib.collect(env)
         }
 
         # 记得加上 Minecraft 主 jar
-        classpath_list.add(str(ins.main_file))
+        classpath_list['main'] = (str(ins.main_file))
 
         classpath_sep = ';' if os.name == 'nt' else ':'  # 不同的系统使用不同的分隔符
-        classpath = classpath_sep.join(classpath_list)
+        classpath = classpath_sep.join(classpath_list.values())
 
         ctx = LaunchContext(  # 构建启动上下文
             username=username,
-            version_name=ins.version_meta.id,
+            version_name=ins.mojang_version_meta.id,
             version_type='',
             game_dir=ins.path,
             assets_dir=self.repo.assets.path,
-            assets_index_name=ins.version_meta.assets,
+            assets_index_name=ins.mojang_version_meta.assets,
 
             uuid=uuid,
             token=token,
@@ -222,7 +235,7 @@ class LaunchCommand(Command, app=typer_app):
                     raise typer.Abort()
 
         features = ctx.generate_features().to_dict()
-        env = ctx.to_dict()
+        context_dict = ctx.to_dict()
 
         memory_info = psutil.virtual_memory()  # 获取和计算内存信息
         available_memory = memory_info.available
@@ -264,14 +277,14 @@ class LaunchCommand(Command, app=typer_app):
             mem_min=memmin or '16M', mem_max=memmax
         )
 
-        pb = ProcessBuilder()
-        pb |= ins.path  # 设置工作目录在版本文件夹中
+        builder = ProcessBuilder()
+        builder |= ins.path  # 设置工作目录在版本文件夹中
 
         # 设置 java executable 位置
         # 需要找到一个最接近要求的 java
 
         # 首先获取所有适合的 Java (所有 major 版本大于版本要求的)
-        suitable_javas: list[JavaRecord] = list(cfg.get_javas_forward(ins.version_meta.java_version.major_version))
+        suitable_javas: list[JavaRecord] = list(cfg.get_javas_forward(ins.mojang_version_meta.java_version.major_version))
 
         if not suitable_javas:  # 没有符合要求的 java
             console.error(tr("找不到适合的 Java 版本"))
@@ -291,7 +304,7 @@ class LaunchCommand(Command, app=typer_app):
             console.error("本地无有效 Java")
             raise typer.Abort()
 
-        pb <<= chosen_java.javaw_path()  # 设置 java executable
+        builder <<= chosen_java.javaw_path()  # 设置 java executable
 
         console.print(tr(
             "已选择位于 [path]\"{}\"[/] 的 [java]java {}[/]", chosen_java.path, chosen_java.major),  # 跟用户喊一声
@@ -299,37 +312,30 @@ class LaunchCommand(Command, app=typer_app):
         )
         # console.tip(tr("Java 主版本: {}", chosen_java.major))
 
-        jvm_arguments = meta.format_jvm_args(env, rules_matcher, features)  # 从官方的规则中获取 jvm 参数
-        # print(jvm_arguments)
-        if not jvm_arguments:  # 如果没有返回 jvm 参数（游戏版本太低(1.13-)不支持）
-            jvm_arguments = [  # 手动生成一些 jvm 参数，可能无法兼顾所有的系统（Windows 可用）
-                f"-Dorg.lwjgl.librarypath={ins.natives_dir}",
-                f"-Djava.library.path={ins.natives_dir}",
-                '-cp', classpath,
-            ]
+        with console.status('解压本地库文件'):
+            await self.unzip_native_libraries(ins, meta)
 
-            # if chosen_java.major >= 17:  # 谁会用 java 17 启动 1.12.2 ???
-            #     jvm_arguments.append('--enable-native-access=ALL-UNNAMED')
-
-            with console.status('解压本地库文件'):
-                await self.unzip_native_libraries(ins, meta)
-
-        # 获取 game 参数
-        game_arguments = meta.format_game_args(env, rules_matcher, features)
+        jvm_arguments = meta.arguments.format_jvm_args(context_dict, env, features)  # 从官方的规则中获取 jvm 参数
+        game_arguments = meta.arguments.format_game_args(context_dict, env, features)
 
         jvm_extension_arguments = [  # 暂无  # 由启动器自己自动添加的参数
         ]
 
-        pb += jvm_extension_arguments  # 启动器给的参数优先级最小
-        pb += jvm_arguments  # 随后是游戏给出的(虽然老版本中他也是启动器生成的，无伤大雅)
-        pb += jvm_ctx.to_args()  # 接下来是配置参数, 这个参数和其它参数基本不冲突
-        pb += meta.main_class  # 放主类, 主类之后就是游戏参数
-        pb += game_arguments  # 拼接游戏参数
+        builder += jvm_extension_arguments  # 启动器给的参数优先级最小
+        builder += jvm_arguments  # 随后是游戏给出的(虽然老版本中他也是启动器生成的，无伤大雅)
+        builder += jvm_ctx.to_args()  # 接下来是配置参数, 这个参数和其它参数基本不冲突
+        builder += meta.main_class  # 放主类, 主类之后就是游戏参数
+        builder += game_arguments  # 拼接游戏参数
+
+        builder.stdout = asyncio.subprocess.DEVNULL
+        builder.stderr = asyncio.subprocess.DEVNULL
+
+        builder.stdin = asyncio.subprocess.DEVNULL
 
         if show_args:  # 可选的展示启动参数列表（注意，是列表，不是 shell 参数）
-            console.print(pb.args)
+            console.print(builder.args)
 
-        ps = await pb.run()
+        ps = await builder.run()
         console.print(tr(r"进程 [dim]\[PID {}][/] 已启动，请等待", ps.pid))
 
         try:
@@ -343,8 +349,8 @@ class LaunchCommand(Command, app=typer_app):
             raise typer.Abort()
 
         if return_code:
-            print((await ps.stdout.read()).decode())
-            print((await ps.stderr.read()).decode())
+            # print((await ps.stdout.read()).decode())
+            # print((await ps.stderr.read()).decode())
 
             console.print(tr("游戏发生错误 (退出代码 {})", return_code))
             console.print(Panel(

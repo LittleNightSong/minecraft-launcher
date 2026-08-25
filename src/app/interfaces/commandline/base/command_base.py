@@ -96,8 +96,8 @@ class Command:
             # pyrefly: ignore [bad-assignment]
             self.context = typer.main.get_current_context()
             async with self:
+                await call_init(cls, self, kwargs, init_vars)
                 try:
-                    await call_init(cls, self, kwargs, init_vars)
                     return await main(self, **kwargs)
                 except ExceptionForUser as rfu_exc:
                     console.error(str(rfu_exc))

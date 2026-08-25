@@ -192,7 +192,7 @@ class Config:
             if i.major == major:
                 yield i
 
-    def get_javas_forward(self, major: int) -> Generator[JavaRecord] | None:
+    def get_javas_forward(self, major: int) -> Generator[JavaRecord]:
         for i in self._cfg.javas:
             if i.major >= major:
                 yield i

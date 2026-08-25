@@ -4,7 +4,8 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Header, Footer, ListView, ListItem, Label, Collapsible
 
 from app.core.i18n import tr
-from app.core.minecraft import VersionManifestModel, MinecraftVersion
+from app.core.minecraft import MinecraftVersion
+from app.third_party.mojang.models import VersionManifestModel
 
 
 class VersionListItem(ListItem):

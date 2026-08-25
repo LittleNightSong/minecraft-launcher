@@ -15,13 +15,21 @@ type FetcherFunction[T] = Callable[[], Coroutine[Any, Any, T]]
 
 
 class Fetcher:
-    def __init__(self, session: Session, model_cacher: ModelCacher, file_cacher: FileCacher,
-                 file_validator: FileValidator):
+    def __init__(
+            self,
+            session: Session,
+            model_cacher: ModelCacher,
+            file_cacher: FileCacher,
+            file_validator: FileValidator | None = None
+    ):
         self.session = session
         self.model_cacher = model_cacher
         self.file_cacher = file_cacher
         self.validator = file_validator
         self._task_mapping = {}
+
+    def _assert_validator(self):
+        assert self.validator is not None
 
     async def _fetch(self, key, type, fetcher, ttl, no_cache):
         logger.info(
@@ -72,6 +80,8 @@ class Fetcher:
             filespec: FileSpec | None = None,
             reuse: bool = True
     ):
+        self._assert_validator()
+
         if reuse:
             if filespec:
                 if (await self.validator.validate(filename, filespec)).ok:
@@ -98,19 +108,24 @@ class Fetcher:
             filespec: FileSpec | None = None,
             reuse: bool = True
     ):
+        self._assert_validator()
+
         with self.file_cacher.open(key) as filename:
             if reuse:
                 if filespec:
                     if (await self.validator.validate(filename, filespec)).ok:
                         return read_model(
                             filename,
-                            type=type
+                            type=type or ...
                         )
                 else:
-                    return read_model(
-                        filename,
-                        type=type
-                    )
+                    try:
+                        return read_model(
+                            filename,
+                            type=type or ...
+                        )
+                    except FileNotFoundError:
+                        pass
 
             data = await fetcher()
             write_model(filename, data)

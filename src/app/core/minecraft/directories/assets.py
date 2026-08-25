@@ -1,11 +1,12 @@
 import dataclasses
 import os
 from os import PathLike
-from pathlib import Path, PurePosixPath
+from pathlib import Path
 
 from app.core.common import read_model
-from ..model_asset_index import AssetIndexModel
+from app.third_party.mojang.models import AssetIndexModel as MojangAssetIndexModel
 from .base import BaseDirectory
+from ...models.assets_index import AssetsIndex
 
 
 class AssetIndexType:
@@ -16,8 +17,8 @@ class AssetIndexType:
         return self.fullpath
 
     @property
-    def content(self) -> AssetIndexModel:
-        return read_model(self.fullpath, AssetIndexModel)
+    def content(self) -> MojangAssetIndexModel:
+        return read_model(self.fullpath, MojangAssetIndexModel)
 
     def open(self, mode='rb'):
         return open(self.fullpath, mode)
@@ -26,15 +27,10 @@ class AssetIndexType:
 @dataclasses.dataclass(slots=True)
 class AssetObjectType:
     path: str | bytes | PathLike
-    vpath: PurePosixPath | None = None
     hash: str | None = None
-    size: int | None = None
 
     def __fspath__(self):
         return os.fspath(self.path)
-
-    def open(self, mode='rb'):
-        return open(self.path, mode)
 
 
 class ObjectsDirectory(BaseDirectory):
@@ -43,7 +39,10 @@ class ObjectsDirectory(BaseDirectory):
 
     def object(self, hash) -> AssetObjectType:
         hash = str(hash)
-        return AssetObjectType(self.path / hash[:2] / hash)
+        return AssetObjectType(
+            self.path / hash[:2] / hash,
+            hash=hash
+        )
 
     def __getitem__(self, item):
         return self.object(item)
@@ -57,10 +56,10 @@ class IndexesDirectory(BaseDirectory):
         return self.fullpath(index_id).exists()
 
     def read(self, index_id):
-        return read_model(self.fullpath(index_id), AssetIndexModel)
+        return read_model(self.fullpath(index_id), MojangAssetIndexModel)
 
-    def fullpath(self, index_id):
-        return self.path / (str(index_id) + '.json')
+    def fullpath(self, index_id, ext='.json'):
+        return self.path / (str(index_id) + ext)
 
 
 class AssetsDirectory(BaseDirectory):
@@ -79,8 +78,18 @@ class AssetsDirectory(BaseDirectory):
     def object(self, hash):
         return self.objects.object(hash)
 
-    def index(self, id):
-        return self.indexes.fullpath(id)
+    def index(self, id, ext='.json'):
+        return self.indexes.fullpath(id, ext)
+
+    def read_mojang_index(self, id):
+        return self.indexes.read(id)
+
+    def read_index(self, id):
+        return read_model(
+            self.index(id, ext='.mpk'),
+            type=AssetsIndex,
+            decoder='msgpack'
+        )
 
     def __getitem__(self, item):
         return self.object(item)
