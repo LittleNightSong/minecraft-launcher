@@ -1,10 +1,8 @@
 import asyncio
 import os
 import re
-import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from string import Template
 from typing import Literal
 
 import psutil
@@ -26,7 +24,6 @@ from app.core.models.launch_context import LaunchContext, JVMContext
 from app.core.models.version_meta import VersionMeta, NativeLibraryStruct
 from app.core.network import Session
 from app.core.process_builder import ProcessBuilder
-from app.third_party.mojang import MinecraftAPI
 from app.interfaces.commandline import typer_app
 from app.interfaces.commandline.base.command_base import Command
 from app.interfaces.commandline.base.console_extensions import console
@@ -96,6 +93,8 @@ class LaunchCommand(Command, app=typer_app):
         await asyncio.gather(*tasks)
 
     async def init(self, repo):
+        from app.third_party.mojang import MinecraftAPI
+
         self.repo = find_repository(repo, abort=True)
         self.pool = ThreadPoolExecutor(max_workers=32)
         self.file_validator = FileValidator(executor=self.pool)
@@ -227,7 +226,7 @@ class LaunchCommand(Command, app=typer_app):
                 case 'save':
                     ctx.quick_play_single_player = value  # 自动进入本地存档
                 case 'server':
-                    ctx.quick_play_multi_player = value # 自动进入远程服务器
+                    ctx.quick_play_multi_player = value  # 自动进入远程服务器
                 case 'realm':
                     ctx.quick_play_realms = value  # 自动进入微软的 Realms 服务器 # TODO：检查是否是正版登录
                 case _:
@@ -284,7 +283,8 @@ class LaunchCommand(Command, app=typer_app):
         # 需要找到一个最接近要求的 java
 
         # 首先获取所有适合的 Java (所有 major 版本大于版本要求的)
-        suitable_javas: list[JavaRecord] = list(cfg.get_javas_forward(ins.mojang_version_meta.java_version.major_version))
+        suitable_javas: list[JavaRecord] = list(
+            cfg.get_javas_forward(ins.mojang_version_meta.java_version.major_version))
 
         if not suitable_javas:  # 没有符合要求的 java
             console.error(tr("找不到适合的 Java 版本"))

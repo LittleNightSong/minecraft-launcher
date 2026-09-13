@@ -1,17 +1,17 @@
-import rich.box
-import rich.markup
-import rich.table
-from rich.text import Text
-
 from app.core.configs import JavaRecord, cfg
 from app.core.i18n.translator import tr, trs
-from app.core.java.detector import detect_java_from_java_home, detect_java_from_path_env, detect_java_from_programs, \
-    get_simple_type
 from app.interfaces.commandline.base.command_base import CommandGroup
 from app.interfaces.commandline.base.console_extensions import console
 
 
 def _show_javas(javas_list):
+    import rich.box
+    import rich.markup
+    import rich.table
+    from rich.text import Text
+
+    from app.core.java.detector import get_simple_type
+
     table = rich.table.Table(
         *trs("主版本", "类型", "路径"),
         expand=True,
@@ -41,6 +41,12 @@ class JavaCommands(CommandGroup):
         ...
 
     async def scan(self, paths: list[str] | None = None):
+        from app.core.java.detector import (
+            detect_java_from_java_home,
+            detect_java_from_path_env,
+            detect_java_from_programs
+        )
+
         if paths is None:
             java1 = await detect_java_from_java_home()
             java2 = [i async for i in detect_java_from_path_env()]

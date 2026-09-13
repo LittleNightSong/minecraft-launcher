@@ -1,11 +1,13 @@
 from typing import Self
 
-from .base_installer import InstallContext
-from .general_installer import GeneralInstaller
+import msgspec
+
 from app.core.common import VersionNotFound
 from app.core.models import FileSpec
 from app.core.models.assets_index import AssetsIndex
 from app.core.models.methods import unify
+from .base_installer import InstallContext
+from .general_installer import GeneralInstaller
 
 
 class VanillaInstaller(GeneralInstaller):
@@ -18,12 +20,12 @@ class VanillaInstaller(GeneralInstaller):
             return cls(context)
         else:
             return None
-    
+
     def __init__(self, context: InstallContext):
         super().__init__(context)
         self.raw_version_meta: dict | None = None
         self.raw_assets_index: dict | None = None
-    
+
     async def fetch(self):
         manifest = await self.fetcher.fetch_model(
             fetcher=self.api.fetch_version_manifest,
@@ -44,13 +46,13 @@ class VanillaInstaller(GeneralInstaller):
         if not entry:
             raise VersionNotFound(self.spec.version)
 
-        self.raw_version_meta = await self.fetcher.fetch_model_into_pool(
+        raw_string_version_meta = await self.fetcher.fetch_raw_into_pool(
             key=f'versionmeta-{entry.id}.json',
-            filespec=FileSpec(
-                checksum=entry.sha1
-            ),
-            fetcher=lambda: self.fetcher.session.typed(entry.url)
+            filespec=FileSpec(checksum=entry.sha1),
+            fetcher=lambda: self.fetcher.session.read(entry.url)
         )
+
+        self.raw_version_meta = msgspec.json.decode(raw_string_version_meta)
 
         self.version_meta = unify(self.raw_version_meta, self.api.models.VersionMetaModel)
 
@@ -66,4 +68,3 @@ class VanillaInstaller(GeneralInstaller):
         )
 
         self.assets_index: AssetsIndex = unify(self.raw_assets_index, self.api.models.AssetIndexModel)
-    

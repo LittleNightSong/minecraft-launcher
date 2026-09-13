@@ -19,18 +19,13 @@ from app.core.i18n import tr
 from app.core.minecraft.directories import Repository
 from app.core.models.env import Environment
 from app.core.models.version_spec import VersionSpec
-from app.core.network import Session
-from app.core.network.downloader import Downloader
+from app.core.pprofile import chronomia
 from app.impls.installers import BaseInstaller
 from app.impls.installers.base_installer import Reasons, InstallContext
-from app.impls.installers.fabric_installer import FabricInstaller
-from app.impls.installers.neoforge_installer import NeoForgeInstaller
 from app.impls.installers.runner import InstallerRunner
-from app.impls.installers.vanilla_installer import VanillaInstaller
 from app.interfaces.commandline.base.command_base import Command
 from app.interfaces.commandline.base.console_extensions import console, MyConsole
 from app.interfaces.commandline.base.methods import find_repository
-from app.third_party.mojang import MinecraftAPI
 
 
 class CommandLineInteractor:
@@ -82,11 +77,14 @@ class InstallCommand(Command):
     name = 'install'
 
     installers: list[type[BaseInstaller]] = [
-        VanillaInstaller, FabricInstaller, NeoForgeInstaller
+        # VanillaInstaller, FabricInstaller, NeoForgeInstaller
     ]
 
     # ----------------------------------------------------------------------------------------------------
     async def init(self, repository, max_threads, timeout):
+        from app.third_party.mojang import MinecraftAPI
+        from app.core.network import Session
+
         self.repository: Repository = find_repository(repository, abort=True)
         self.repository.ensure_exists()
 
@@ -98,6 +96,12 @@ class InstallCommand(Command):
         self.session = Session(timeout=timeout)
         self.minecraft_api = MinecraftAPI(self.session)
         self.fetcher = Fetcher(self.session, self.cacher, self.file_cacher, self.file_validator)
+
+        from app.impls.installers.fabric_installer import FabricInstaller
+        from app.impls.installers.neoforge_installer import NeoForgeInstaller
+        from app.impls.installers.vanilla_installer import VanillaInstaller
+
+        self.installers.extend([FabricInstaller, NeoForgeInstaller, VanillaInstaller])
 
     async def cleanup(self, exc_type, exc_val, exc_tb):
         if exc_type is not None and issubclass(exc_type, FormattedExceptionBase):
@@ -113,6 +117,7 @@ class InstallCommand(Command):
             await self.session.close()
             self.thread_executor.shutdown()
 
+    @chronomia.async_cell(name='Command Install')
     async def main(
             self,
             version: str,
@@ -170,7 +175,8 @@ class InstallCommand(Command):
                 install_context
             )
 
-            await runner.fetch()
+            with chronomia("Fetch Metadata"):
+                await runner.fetch()
 
             console.print(tr("新的版本名为 {!r}", spec.name))
             ins_dir = self.repository.instance(spec.name)
@@ -189,21 +195,24 @@ class InstallCommand(Command):
                     console.confirm(tr("继续操作可能会破坏已有的版本文件，是否继续？"), skip=yes, abort=True)
 
             s.update(tr("分析元数据文件..."))
-            await runner.collect()
+            with chronomia("Collect Files"):
+                await runner.collect()
 
             s.update(tr("校验本地文件[yellow]...[/]"))
 
-            sync_generator, n_tasks = runner.validate()  # 获取校验任务的即时生成器和数量
-            async for _ in console.aprogress(  # 手动驱动校验任务，同时显示进度
-                    sync_generator,
-                    tr("正在校验"),
-                    total=n_tasks
-            ): ...
+            with chronomia("Validate Files"):
+                sync_generator, n_tasks = runner.validate()  # 获取校验任务的即时生成器和数量
+                async for _ in console.aprogress(  # 手动驱动校验任务，同时显示进度
+                        sync_generator,
+                        tr("正在校验"),
+                        total=n_tasks
+                ): ...
 
             # print(results)
             # console.print(res_false_filter(await asyncio.gather(*runner.validate_tasks)))
 
-            await runner.analyze()
+            with chronomia("Analyze Results"):
+                await runner.analyze()
 
             downloads = runner.download_plans
 
@@ -235,6 +244,8 @@ class InstallCommand(Command):
                     return
 
                 console.confirm(tr("安装？"), skip=yes, abort=True)
+
+                from app.core.network.downloader import Downloader
 
                 downloader = Downloader(
                     max_connections,

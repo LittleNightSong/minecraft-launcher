@@ -7,7 +7,6 @@ from rich.console import Group
 from rich.panel import Panel
 from app.core.i18n import tr
 from app.core.minecraft import MinecraftVersion
-from app.third_party.mojang import MinecraftAPI
 from app.core.network import Session
 from app.interfaces.commandline import typer_app
 from app.interfaces.commandline.base.command_base import Command
@@ -40,6 +39,8 @@ class ListCommand(Command, app=typer_app):
             type: Literal['release', 'snapshot', 'all'] | None = typer.Option(None, '-t', "--type"),
             full: bool = typer.Option(False, '-f', '--full')
     ):
+        from app.third_party.mojang import MinecraftAPI
+
         minecraft = find_repository(repo)
 
         online_manifest = None

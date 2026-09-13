@@ -1,1 +1,0 @@
-from .base_installer import Installer as BaseInstaller

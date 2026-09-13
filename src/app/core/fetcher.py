@@ -1,5 +1,6 @@
 import asyncio
 import builtins
+from collections.abc import Buffer
 from typing import Callable, Coroutine, Any
 
 from loguru import logger
@@ -10,6 +11,7 @@ from app.core.common import read_model, write_model
 from app.core.file_validator import FileValidator
 from app.core.models import FileSpec
 from app.core.network import Session
+from app.core.pprofile import chronomia
 
 type FetcherFunction[T] = Callable[[], Coroutine[Any, Any, T]]
 
@@ -57,6 +59,7 @@ class Fetcher:
             )
         return v
 
+    @chronomia.async_cell
     async def fetch_model[T](
             self, *,
             fetcher: FetcherFunction[T],
@@ -72,6 +75,7 @@ class Fetcher:
 
         return await self._task_mapping[key]
 
+    @chronomia.async_cell
     async def fetch_model_into[T](
             self, *,
             fetcher: FetcherFunction[T],
@@ -100,6 +104,7 @@ class Fetcher:
         write_model(filename, data)
         return data
 
+    @chronomia.async_cell
     async def fetch_model_into_pool[T](
             self, *,
             key: str,
@@ -113,20 +118,61 @@ class Fetcher:
         with self.file_cacher.open(key) as filename:
             if reuse:
                 if filespec:
-                    if (await self.validator.validate(filename, filespec)).ok:
-                        return read_model(
-                            filename,
-                            type=type or ...
-                        )
+                    with chronomia("Validate File"):
+                        v_res = await self.validator.validate(filename, filespec)
+                        if v_res.ok:
+                            logger.debug("文件完整性验证成功，返回数据")
+                            with chronomia("Read File"):
+                                return read_model(
+                                    filename,
+                                    type=type or ...
+                                )
+                        else:
+                            logger.debug("文件完整性校验失败 \n{!r}", v_res)
                 else:
                     try:
-                        return read_model(
-                            filename,
-                            type=type or ...
-                        )
+                        with chronomia("Read File (No Validation)"):
+                            return read_model(
+                                filename,
+                                type=type or ...
+                            )
                     except FileNotFoundError:
                         pass
 
+            logger.debug("将从提供的 fetcher 中拉取数据")
             data = await fetcher()
             write_model(filename, data)
+            return data
+
+    @chronomia.async_cell
+    async def fetch_raw_into_pool[T: bytes](
+            self, *,
+            key: str,
+            fetcher: FetcherFunction[T],
+            filespec: FileSpec | None = None,
+            reuse: bool = True
+    ):
+        self._assert_validator()
+
+        with self.file_cacher.open(key) as filename:
+            if reuse:
+                if filespec:
+                    with chronomia("Validate File"):
+                        v_res = await self.validator.validate(filename, filespec)
+                        if v_res.ok:
+                            logger.debug("文件完整性验证成功，返回数据")
+                            with chronomia("Read File"):
+                                return filename.read_bytes()
+                        else:
+                            logger.debug("文件完整性校验失败 \n{!r}", v_res)
+                else:
+                    try:
+                        with chronomia("Read File (No Validation)"):
+                            return filename.read_bytes()
+                    except FileNotFoundError:
+                        pass
+
+            logger.debug("将从提供的 fetcher 中拉取数据")
+            data = await fetcher()
+            filename.write_bytes(data)
             return data

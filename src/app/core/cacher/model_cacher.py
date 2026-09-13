@@ -6,6 +6,7 @@ from loguru import logger
 
 from app.core.cacher.cache_manager import CacheManager
 from app.core.common import read_model
+from app.core.pprofile import chronomia
 
 
 class ModelCacher(CacheManager):
@@ -39,6 +40,7 @@ class ModelCacher(CacheManager):
             )
         return value
 
+    @chronomia.cell(name='model-cacher.get')
     def get[T](self, key, type: builtins.type[T], allow_stale=False) -> T | None:
         with self.entity(key, suffix='model') as entity:
             if not allow_stale:  # 如果不允许返回过期的数据
@@ -46,8 +48,8 @@ class ModelCacher(CacheManager):
                     logger.debug("正在访问的缓存 {!r} 已过期（自动清理）", key)
                     return None  # 已过期，返回 None
                 else:  # 没过期，正常读取数据文件
-                    logger.debug("正在访问的缓存 {!r} 未过期（已返回）")
+                    logger.debug("正在访问的缓存 {!r} 未过期（已返回）", key)
                     return read_model(entity.data_file, type, decoder=msgspec.msgpack.decode)
             else:  # 允许过期，那么直接返回，不做处理
-                logger.debug("正在访问的缓存 {!r} 未检查（已返回）")
+                logger.debug("正在访问的缓存 {!r} 未检查（已返回）", key)
                 return read_model(entity.data_file, type, decoder=msgspec.msgpack.decode)

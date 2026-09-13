@@ -5,10 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f3c22379-fae8-4be9-ad82-64c08733155a" name="更改" comment="Commit for recent work">
+      <change afterPath="$PROJECT_DIR$/src/app/core/pprofile.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/addon/minecraft/client_meta.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/minecraft/client_meta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/addon/pack/oop.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/addon/pack/pack_file.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/core/minecraft/directories/instance.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/minecraft/directories/instance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cli.py" beforeDir="false" afterPath="$PROJECT_DIR$/cli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/core/cacher/model_cacher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/cacher/model_cacher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/core/fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/core/fetcher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/impls/installers/vanilla_installer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/impls/installers/vanilla_installer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/install.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/install.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/base_installer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/general_installer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/runner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/install/installers/vanilla_installer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/launch.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/launch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/list.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/instances_commands/list.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/java.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/java.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/mojang.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/interfaces/commandline/commands/mojang.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uv.lock" beforeDir="false" afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,90 +138,93 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.askdfjaldsf.executor&quot;: &quot;Run&quot;,
-    &quot;Python.assign_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.async_run_until_complete.executor&quot;: &quot;Run&quot;,
-    &quot;Python.build_dist.executor&quot;: &quot;Run&quot;,
-    &quot;Python.cli.executor&quot;: &quot;Run&quot;,
-    &quot;Python.color_code.executor&quot;: &quot;Run&quot;,
-    &quot;Python.convert_struct.executor&quot;: &quot;Run&quot;,
-    &quot;Python.data_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.dependency_analyzer (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.dependency_analyzer.executor&quot;: &quot;Run&quot;,
-    &quot;Python.expand_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filesize.executor&quot;: &quot;Run&quot;,
-    &quot;Python.filter_all_rules.executor&quot;: &quot;Run&quot;,
-    &quot;Python.install_vanilla.executor&quot;: &quot;Run&quot;,
-    &quot;Python.maven_metadata.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mc_version_lang.executor&quot;: &quot;Run&quot;,
-    &quot;Python.mvl (1).executor&quot;: &quot;Run&quot;,
-    &quot;Python.mvl.executor&quot;: &quot;Run&quot;,
-    &quot;Python.nbt_types.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pack_python.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pinger.executor&quot;: &quot;Run&quot;,
-    &quot;Python.pull_all_client_json.executor&quot;: &quot;Run&quot;,
-    &quot;Python.read_nbt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.remotezip.executor&quot;: &quot;Run&quot;,
-    &quot;Python.remove_invaild_files.executor&quot;: &quot;Run&quot;,
-    &quot;Python.rename_pkg.executor&quot;: &quot;Run&quot;,
-    &quot;Python.rich_output.executor&quot;: &quot;Run&quot;,
-    &quot;Python.router.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;Python.session_call.executor&quot;: &quot;Run&quot;,
-    &quot;Python.shell.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.something_bad.executor&quot;: &quot;Run&quot;,
-    &quot;Python.sources_loader.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_auto_convert.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_command_group.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_console.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_console_menu.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_doc.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_download.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_fabric_meta_v2.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_flow.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_get_versionmeta.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_load_modinfo.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_multi_await.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_multi_context.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_or_if.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_packaging.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_pattern_match.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_typer_call.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test_zstd_support.executor&quot;: &quot;Run&quot;,
-    &quot;Python.typer_command.executor&quot;: &quot;Run&quot;,
-    &quot;Python.validate_float_speed.executor&quot;: &quot;Run&quot;,
-    &quot;Python.version.executor&quot;: &quot;Run&quot;,
-    &quot;Python.version_parser.executor&quot;: &quot;Run&quot;,
-    &quot;Python.version_range.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/.projects/minecraft-launcher/tests/samples/neoforged&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.jshint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.jshint&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.askdfjaldsf.executor": "Run",
+    "Python.assign_speed.executor": "Run",
+    "Python.async_run_until_complete.executor": "Run",
+    "Python.build_dist.executor": "Run",
+    "Python.cli (1).executor": "Run",
+    "Python.cli.executor": "Run",
+    "Python.color_code.executor": "Run",
+    "Python.convert_struct.executor": "Run",
+    "Python.data_types.executor": "Run",
+    "Python.dependency_analyzer (1).executor": "Run",
+    "Python.dependency_analyzer.executor": "Run",
+    "Python.expand_speed.executor": "Run",
+    "Python.filesize.executor": "Run",
+    "Python.filter_all_rules.executor": "Run",
+    "Python.install_vanilla.executor": "Run",
+    "Python.maven_metadata.executor": "Run",
+    "Python.mc_version_lang.executor": "Run",
+    "Python.mvl (1).executor": "Run",
+    "Python.mvl.executor": "Run",
+    "Python.nbt_types.executor": "Run",
+    "Python.pack_python.executor": "Run",
+    "Python.pinger.executor": "Run",
+    "Python.pull_all_client_json.executor": "Run",
+    "Python.read_nbt.executor": "Run",
+    "Python.remotezip.executor": "Run",
+    "Python.remove_invaild_files.executor": "Run",
+    "Python.rename_pkg.executor": "Run",
+    "Python.rich_output.executor": "Run",
+    "Python.router.executor": "Run",
+    "Python.run.executor": "Run",
+    "Python.session_call.executor": "Run",
+    "Python.shell.executor": "Debug",
+    "Python.something_bad.executor": "Run",
+    "Python.sources_loader.executor": "Run",
+    "Python.test_auto_convert.executor": "Run",
+    "Python.test_command_group.executor": "Run",
+    "Python.test_console.executor": "Run",
+    "Python.test_console_menu.executor": "Run",
+    "Python.test_doc.executor": "Run",
+    "Python.test_download.executor": "Run",
+    "Python.test_fabric_meta_v2.executor": "Run",
+    "Python.test_flow.executor": "Run",
+    "Python.test_get_versionmeta.executor": "Run",
+    "Python.test_load_modinfo.executor": "Run",
+    "Python.test_multi_await.executor": "Run",
+    "Python.test_multi_context.executor": "Run",
+    "Python.test_or_if.executor": "Run",
+    "Python.test_packaging.executor": "Run",
+    "Python.test_pattern_match.executor": "Run",
+    "Python.test_typer_call.executor": "Run",
+    "Python.test_zstd_support.executor": "Run",
+    "Python.typer_command.executor": "Run",
+    "Python.validate_float_speed.executor": "Run",
+    "Python.version.executor": "Run",
+    "Python.version_parser.executor": "Run",
+    "Python.version_range.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/.projects/minecraft-launcher/tests/samples/neoforged",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.jshint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.jshint": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "python.packages.toolwindow.project.migrated.to.right.top.v2": "true",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件&quot;: [
-      &quot;Python&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/新建临时文件": [
+      "Python"
     ]
   }
-}</component>
+}]]></component>
   <component name="PyDebuggerOptionsProvider">
     <option name="myDebuggerBackend" value="PYDEVD" />
   </component>
@@ -226,7 +244,7 @@
       <recent name="E:\.projects\minecraft-launcher\src\app\core\addon\resourcepack" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.askdfjaldsf">
+  <component name="RunManager" selected="Python.cli">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -279,25 +297,35 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="cli" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+    <configuration name="cli" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="CHRONOMIA_ENABLE" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="false" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
       <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="cli.py" />
-      <option name="PARAMETERS" value="list" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/cli.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
       <option name="MODULE_MODE" value="false" />
@@ -375,32 +403,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="test_pattern_match" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="minecraft-launcher" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="uv (minecraft-launcher)" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/test_pattern_match.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="true" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="version" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="minecraft-launcher" />
       <option name="ENV_FILES" value="" />
@@ -432,23 +434,22 @@
       <item itemvalue="Python.askdfjaldsf" />
       <item itemvalue="Python.maven_metadata" />
       <item itemvalue="Python.remotezip" />
-      <item itemvalue="Python.test_pattern_match" />
       <item itemvalue="Python.version" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.cli" />
         <item itemvalue="Python.askdfjaldsf" />
         <item itemvalue="Python.maven_metadata" />
         <item itemvalue="Python.version" />
         <item itemvalue="Python.remotezip" />
-        <item itemvalue="Python.test_pattern_match" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-821f704e66d9-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.9437.214" />
+        <option value="bundled-python-sdk-eff1e8def5f5-5bd6d13a2a75-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-262.10315.174" />
       </set>
     </attachedChunks>
   </component>
@@ -579,7 +580,23 @@
       <option name="project" value="LOCAL" />
       <updated>1786518154817</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Commit for recent work">
+      <option name="closed" value="true" />
+      <created>1787649119388</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1787649119388</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Commit for recent work">
+      <option name="closed" value="true" />
+      <created>1787649155431</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1787649155431</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

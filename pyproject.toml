@@ -25,9 +25,9 @@ dependencies = [
     "xxhash~=4.0.0",
     "yarl~=1.24.0",
     "semver~=3.0.0",
-    "unified-range~=0.1.0",
     "asyncstdlib~=3.14.0",
     "rtzip==0.2.2",
+    "chronomia==0.3.0",
 ]
 
 #[[tool.uv.index]]
@@ -36,7 +36,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "memory-profiler~=0.61.0",
     "puremagic~=2.2.0",
     "py-spy~=0.4.2",
     "rangehttpserver~=1.4.0",
