@@ -65,6 +65,17 @@ uv run .\cli.py --help
   存档 / 资源包 / 光影包 / 模组 / 数据包数量，以及从客户端 jar 的 `version.json` 中读取的
   资源包与数据包格式版本。
 
+此外，以下结构性调整同样由 **DeepSeek** 完成：
+
+- **`MinecraftVersion.from_string`**：新增构造函数，修正 `1.RV-Pre1` 被误归为愚人节版本、
+  `26.4-snapshot-2` 的次版本号被快照编号覆盖的问题。
+- **解析客户端主文件**：新增 `app/core/files/client_version.py`，读取客户端 jar 中的
+  `version.json`（资源包 / 数据包格式、协议版本、Java 版本）。
+- **清理第三方库的重复副本**：删除 `app/core/third_party`。其内容早已迁移到
+  `app/third_party`，旧副本已无任何代码引用，且因引用了已删除的模块而无法导入。
+- **补充待办标记**：服务端安装（`app/impls/installers/server`）与存档目录抽象
+  （`app/core/minecraft/directories/level.py`）尚未完成，已在源码中以 `TODO` 标注。
+
 ## 目标
 
 - 同一个核心，不同的交互方式
