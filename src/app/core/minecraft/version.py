@@ -39,6 +39,14 @@ class MinecraftVersion:
     _mode_snapshot = re.compile(r"(\d+)w(\d+)([a-z])")
     _mode_special = re.compile(r"(\d+\.\d+(\.\d+)?)( Pre-Release (\d+))")  # 1.14.2 Pre-Release 4
 
+    # 额外的版本格式, 由 from_string() 在常规构造之后修正
+    # 1.RV-Pre1: 第二个"版本号"其实是字母代号, 因此不能写成 \d+
+    _mode_dotted_pre = re.compile(r"(\d+)\.([A-Za-z][A-Za-z0-9_]*)-(?:[A-Za-z]+)?(\d+)")
+    _mode_modern_part = re.compile(r"(\d+\.\d+(?:\.\d+)?)-(?:snapshot|pre|rc)-(\d+)")  # 26.4-snapshot-2
+
+    # 已经被 from_string() 修正过的版本号, 避免重复修正 (每次 from_string 都是新对象)
+    _patched: set[str] = set()
+
     _type_mapping = {
         'old': 0,
         'snapshot': 1,
@@ -76,7 +84,7 @@ class MinecraftVersion:
         self.week = None
         self.suffix = None
 
-        self.type: str = None
+        self.type: str
 
         if res := self._mode_common.fullmatch(v):
             self.type = res[4] or 'release'
@@ -107,8 +115,46 @@ class MinecraftVersion:
             self.type = 'april fool'
 
     @property
-    def simple_type(self):
+    def main_type(self):
         return self.type.removesuffix('(legacy)')
+
+    @classmethod
+    def from_string(cls, v: str) -> "MinecraftVersion":
+        """
+        由版本号字符串创建版本对象, 并修正若干容易被误判的格式
+
+        与直接构造 ``MinecraftVersion(...)`` 不同, 这里会额外处理两种特殊写法:
+
+        - ``1.RV-Pre1`` 这类愚人节版本会被识别为预览版;
+        - ``26.4-snapshot-2`` 让 minor 保持为 4, 而不是像常规解析那样把补丁号当作 minor。
+
+        :param v: 版本号字符串
+        :return: 版本对象
+        """
+        version = cls(v)
+
+        if version.version in cls._patched:
+            return version
+
+        if res := cls._mode_dotted_pre.fullmatch(version.version):
+            # 1.RV-Pre1 -> 主版本 1, 次版本 0 (RV 是代号), 预览编号 1
+            version.type = 'pre'
+            version.major = int(res[1])
+            version.minor = 0
+            version.patch = 0
+            version.snap = int(res[3])
+            cls._patched.add(version.version)
+
+        elif res := cls._mode_modern_part.fullmatch(version.version):
+            # 26.4-snapshot-2 会被 _mode_common 吃掉, 但它其实是 26.4 的快照:
+            # 需要让 minor 保持为 4, 而不是把快照编号当成 minor
+            parts = res[1].split('.')
+            version.major, version.minor = map(int, parts[:2])
+            version.patch = int(parts[2]) if len(parts) > 2 else 0
+            version.snap = int(res[2])
+            cls._patched.add(version.version)
+
+        return version
 
     def __str__(self) -> str:
         """
@@ -143,6 +189,7 @@ class MinecraftVersion:
         """
         return f'{self.__class__.__name__}({self.version})'
 
+    # noinspection method-overriding
     def __eq__(self, other):
         return self.version == other.version
 

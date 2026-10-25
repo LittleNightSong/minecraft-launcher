@@ -24,6 +24,10 @@ class VersionsDirectory(BaseDirectory):
             return (self.path / name).is_dir()
 
     def instances(self, skip_broken=True) -> list[InstanceDirectory]:
+        # 尚未安装过任何版本的储存库中不存在 versions 目录, 此时应该得到一个空列表而不是报错
+        if not self.path.is_dir():
+            return []
+
         return list(
             map(
                 lambda x: InstanceDirectory(x),

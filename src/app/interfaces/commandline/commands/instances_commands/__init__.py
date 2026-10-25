@@ -4,5 +4,7 @@ from . import (
     launch,
     list,
     remove,
-    server
+    server,
+    fix_metadata,
+    show,
 )
